@@ -42,7 +42,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
   @protected
   Future<Future<DocumentReference<Object?>>?> saveOrUpdateBase(
       {required Map<String, dynamic> data}) async {
-    if (data['id'] != null) {
+    if (data['id'] != null && data['id'].toString().isNotEmpty) {
       updateBase(data: data);
       return null;
     } else {

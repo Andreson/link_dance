@@ -40,6 +40,7 @@ class ContentGroupFormState extends State<ContentGroupFormComponent> {
   ContentGroupHelper contentGroupHelper = ContentGroupHelper();
   late ContentGroupRepository repository;
   bool isPublic = false;
+  bool imagemChange = false;
   bool classTypeIsValid = true;
   String? path;
   String? rhythmsSelected;
@@ -73,7 +74,7 @@ class ContentGroupFormState extends State<ContentGroupFormComponent> {
     }
     var userid = authentication.user!.id;
     formFieldsData['ownerId'] = userid;
-    if (path == null || path!.isEmpty) {
+    if (!imagemChange) {
       _saveMovieRegistry({});
     } else {
       var imagensUrls = await contentGroupHelper.uploadImageBanner(context, authentication, path!);
@@ -147,8 +148,8 @@ class ContentGroupFormState extends State<ContentGroupFormComponent> {
                     focusNode: _schoolFocus,
                       initialValue: formInitData['school'] ?? "",
                       onSaved: (value) {
-                        formFieldsData['school'] =
-                            value.toString().capitalize();
+                      print("School content group name  $value");
+                        formFieldsData['school'] = value;
                       },
                       hint: "ex.: Centro cultural, Escola XYZ, Salão do seu zé",
                       label: "Escola/Salão(onde a aula é ministrada)"),
@@ -228,6 +229,7 @@ class ContentGroupFormState extends State<ContentGroupFormComponent> {
                                 width: 170),
                             onPressed: () {
                               callFilePicker().then((filePickerResult) {
+                                imagemChange = true;
                                 setState(() {
                                   path = filePickerResult?.files.single.path;
 
@@ -258,7 +260,7 @@ class ContentGroupFormState extends State<ContentGroupFormComponent> {
         else {
           imagem = Image.file(File(path!));
         }
-    return Container( padding: EdgeInsets.only(top: 15), child: imagem);
+    return Container(width: 400,height: 400,  padding: EdgeInsets.only(top: 15,bottom: 20), child: imagem);
   }
 
   void selectDataAutocomplete(AutoCompleteItem value) {
@@ -336,7 +338,7 @@ class ContentGroupFormState extends State<ContentGroupFormComponent> {
     formFieldsData['rhythm'] = autocompleteTextEdit.text;
     repository
         .saveOrUpdate(
-        ContentGroupModel.fromJson(formFieldsData, formFieldsData["id"]))
+        ContentGroupModel.fromJson(formFieldsData, formFieldsData["id"] ??""))
         .then((value) {
       Navigator.of(context).pop();
       cleanForm();
@@ -354,7 +356,7 @@ class ContentGroupFormState extends State<ContentGroupFormComponent> {
   cleanForm() {
     final contentGroup =
     ModalRoute.of(context)!.settings.arguments as ContentGroupModel?;
-
+    imagemChange = false;
     if (contentGroup == null) {
       msgConfirmDialog="Cadastro de turma criada com sucesso.";
       setState(() {

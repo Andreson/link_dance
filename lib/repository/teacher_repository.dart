@@ -1,9 +1,8 @@
- 
 import 'package:link_dance/core/constants.dart';
+import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/rest/rest_template.dart';
 
 import 'package:link_dance/features/authentication/auth_facate.dart';
-
 
 import 'package:link_dance/model/teacher_model.dart';
 
@@ -14,30 +13,31 @@ class TeacherRepository extends BaseRepository<TeacherModel> {
 
   TeacherRepository({this.auth, List<TeacherModel>? data}) {
     listData = data ?? [];
-    restTemplate =RestTemplate(auth: auth!);
-    collectionName="teacher";
+    restTemplate = RestTemplate(auth: auth!);
+    collectionName = "teacher";
   }
 
   @deprecated
   Future<List<TeacherModel>> loadData() async {
     clear();
-     List<TeacherModel>? resp = (await listBase(notifyListen: false,orderBy: "name"));
-     listData = resp?? [];
-     notifyListeners();
+    List<TeacherModel>? resp = (await listBase(
+        notifyListen: false,
+        orderBy: "name",
+        conditions: [QueryCondition(fieldName: "status", isEqualTo: AccountStatus.enable.name())]));
+    listData = resp ?? [];
+    notifyListeners();
     return listData;
   }
 
-
-
   Future<TeacherModel?> findByUserId({required String userId}) async {
+    var responseList = (await listBase(
+        orderBy: "name",
+        conditions: [QueryCondition(fieldName: "userId", isEqualTo: userId)]));
 
-     var responseList= (await listBase(orderBy: "name", conditions: [QueryCondition(fieldName: "userId",isEqualTo: userId )]));
-
-     if ( responseList!=null && responseList.isNotEmpty) {
-       return responseList.first;
-     }
-     return null;
-
+    if (responseList != null && responseList.isNotEmpty) {
+      return responseList.first;
+    }
+    return null;
   }
 
   Future<Map<String, dynamic>> saveOrUpdate(TeacherModel teacher) async {
@@ -48,5 +48,4 @@ class TeacherRepository extends BaseRepository<TeacherModel> {
   factory TeacherRepository.New() {
     return TeacherRepository(auth: AuthenticationFacate(), data: []);
   }
-
 }

@@ -3,14 +3,14 @@ import 'package:intl/intl.dart';
 
 extension StringExtension on String {
   String capitalize() {
-    return _capitalize(this[0]);
+    return _capitalize(this);
   }
 
   String _capitalize(String text) {
     return "${text[0].toUpperCase()}${text.substring(1).toLowerCase()}";
   }
 
-  String capitalizePhrase({bool allWord = false}) {
+  String capitalizePhrase({bool allWord = true}) {
     try {
       List<String> phrase = split(" ");
       phrase[0] = _capitalize(phrase[0]);
@@ -51,6 +51,6 @@ extension StringExtension on String {
 }
 
 main() {
-  var value = "1.500,00";
-  print(value.parseDouble());
+  var value = "grupo de estudos ";
+  print(value.capitalizePhrase());
 }

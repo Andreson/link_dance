@@ -96,7 +96,7 @@ class UserModel extends AbastractModel {
   }
 
   static UserModel fromJson(Map<String, dynamic> json, String id) {
-    print("Json object $json");
+
     return UserModel(
         id: id,
         teacherProfile: json['teacherProfile'],

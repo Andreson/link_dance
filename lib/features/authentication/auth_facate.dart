@@ -80,7 +80,12 @@ class AuthenticationFacate with ChangeNotifier {
       throw Exception("Erro ao recuperar usuario durante a autenticação  ");
     }
     var dataUserApp = await userRepository.findUserByEmail(user!);
-    user = user!.enrich(dataUserApp!);
+    if(dataUserApp==null) {
+      user!.userType = UserType.aluno;
+      await userRepository.createUser(user!);
+    }else {
+      user = user!.enrich(dataUserApp);
+    }
 
     _writeUserAuthData(user!);
     return user;

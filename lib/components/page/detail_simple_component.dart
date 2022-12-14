@@ -1,6 +1,7 @@
 
 
 import 'package:link_dance/core/decorators/box_decorator.dart';
+import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/model/vo/detail_screen_vo.dart';
 import 'package:flutter/material.dart';
 
@@ -68,7 +69,7 @@ class PageDetailSimpleComponent  extends StatelessWidget {
               style: const TextStyle(
 
                   fontSize: 12, color: Colors.white),
-              "${bodyData.description} ${bodyData.description} ${bodyData.description} ${bodyData.description} ${bodyData.description} ${bodyData.description}" ,
+              "${bodyData.description.capitalize()} " ,
               overflow: TextOverflow.fade,
             ),
           ),

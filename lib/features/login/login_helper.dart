@@ -42,17 +42,11 @@ class LoginHelper {
       Navigator.of(context).pop();
       if (userData != null && userData.email != null) {
         authentication.user = userData;
-        UserRepository(auth: authentication)
-            .findUserByEmail(userData)
-            .then((user) {
-          if (user == null) {
-            Navigator.pushNamed(context, RoutesPages.registration.name,
-                arguments: userData);
-          } else {
-            Navigator.pushNamed(context, RoutesPages.home.name,
-                arguments: userData);
-          }
-        });
+        Navigator.pushNamed(context, RoutesPages.home.name,
+            arguments: userData);
+      }else {
+        Navigator.pushNamed(context, RoutesPages.registration.name,
+            arguments: userData);
       }
     }).onError((error, stackTrace) {
       Navigator.of(context).pop();

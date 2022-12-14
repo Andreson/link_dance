@@ -58,7 +58,7 @@ class MovieModel extends AbastractModel {
       createDate = (json['createDate'] as Timestamp).toDate();
     }
 
-    return MovieModel(
+    var m =  MovieModel(
         id: id,
         uri: json['uri'],
         contentGroupId: json['contentGroupId'],
@@ -71,6 +71,8 @@ class MovieModel extends AbastractModel {
         rhythm: json['rhythm'],
         contentGroupLabel: json['contentGroupLabel'],
         createDate: createDate);
+
+    return m;
   }
 
   //work around por causa das frescuras do null safe do dart

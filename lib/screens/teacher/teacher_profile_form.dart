@@ -250,9 +250,6 @@ class _MovieUploadFormState extends State<TeacherProfileFormComponent> {
   }
 
   void _changeImage(String path) {
-    setState(() {
-      imageAvatar = _getImageProfile(imageLocal: path);
-    });
     imageChange=true;
   }
 
@@ -306,6 +303,7 @@ class _MovieUploadFormState extends State<TeacherProfileFormComponent> {
           _saveRegistry();
         });
       }catch(err){
+        print("Erro nao esperado ao atualizar cadastro : $err");
         showError(context, content: "Ocorreu um erro nao esperado, por favor, tente novamente.");
       }
     }
@@ -340,6 +338,7 @@ class _MovieUploadFormState extends State<TeacherProfileFormComponent> {
 
     repository.saveOrUpdate(teacherModel).then((value) {
       Navigator.of(context).pop();
+      authentication.user!.teacherProfile!.photo = teacherModel.photo;
       cleanForm();
       showInfo(
           context: context,

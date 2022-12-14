@@ -117,7 +117,9 @@ class MovieRepository extends BaseRepository<MovieModel> {
       "Tango",
       "Lindy Hop",
       "Mambo",
-      "Cha cha cha"
+      "Dança do ventre",
+      "Cha chá chá",
+      "Varios ritmos"
     ];
   }
 

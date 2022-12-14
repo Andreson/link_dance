@@ -12,6 +12,9 @@ abstract class AbastractModel {
 
   static AbastractModel jsonData<T>(
       {required T type, required Map<String, dynamic> data}) {
+
+    print("jsonData parseAbastract model ${type.toString()}");
+
     var id = data['id'];
     if ("ContentGroupModel" == type.toString()) {
       return ContentGroupModel.fromJson(data, id);
@@ -20,7 +23,7 @@ abstract class AbastractModel {
       return EventModel.fromJson(data, id);
     }
     if ("MovieModel" == type.toString()) {
-      return MovieModel.fromJson(data, id);
+      return MovieModel.fromJson(data, id ??"");
     }
     if ("TeacherModel" == type.toString()) {
       return TeacherModel.fromJson(data, id);

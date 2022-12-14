@@ -391,7 +391,7 @@ class MovieUploadFormState extends State<MovieUploadFormComponent> {
    _formData['public'] = _movieIsPublic;
 
     repository
-        .create(MovieModel.fromJson(_formData, _formData['id']))
+        .create(MovieModel.fromJson(_formData, _formData['id'] ?? ""))
         .then((value) {
       Navigator.of(context).pop();
 
@@ -403,10 +403,10 @@ class MovieUploadFormState extends State<MovieUploadFormComponent> {
           content: "Seu video foi enviado com sucesso ",
           title: "Aêêêêêêêêê");
 
-    }).catchError((onError) {
+    }).catchError((e, stacktrace) {
       Navigator.of(context).pop();
       showError(context, content: "Erro ao salvar registro do video");
-      print("Erro ao salvar registro do video ${onError}");
+      print("Erro ao salvar registro do video ${stacktrace}");
     });
   }
 

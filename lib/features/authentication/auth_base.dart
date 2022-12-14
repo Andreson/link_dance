@@ -83,8 +83,8 @@ abstract class BaseAuthentication with ChangeNotifier {
       {required LoginProvider loginProvider,
       required UserCredential userCredential}) async {
     var token = await FirebaseAuth.instance.currentUser!.getIdTokenResult(true);
+    var tempUser = userCredential.user;
 
-    print("userCredential.user ${token.expirationTime}");
     var login = LoginModel(
         loginProvider: loginProvider,
         token: token.token ?? "",

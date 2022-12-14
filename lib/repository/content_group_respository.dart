@@ -63,7 +63,7 @@ class ContentGroupRepository extends BaseRepository<ContentGroupModel> {
 
 
   Future<void> saveOrUpdate(ContentGroupModel teamClass) async {
-    if (teamClass.id == null) {
+    if (teamClass.id.isEmpty) {
       return _save(teamClass);
     } else {
       return _update(teamClass);
