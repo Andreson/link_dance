@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "325634634089",
+    "project_id": "linkdance-691ad",
+    "storage_bucket": "linkdance-691ad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:325634634089:android:39ba96a9be77da9cb20df8",
+        "android_client_info": {
+          "package_name": "br.com.link_dance.link_dance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "325634634089-76pjhaukmugueoar59h3re6kkperauiq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.link_dance.link_dance",
+            "certificate_hash": "8a0e98009fae096481707c2061aba218de3b6b80"
+          }
+        },
+        {
+          "client_id": "325634634089-509nu7tvonf1aoqklth9vn6apgnbo0ro.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYjavKCwFGGfspj_ThSugG6C8MXZm9-x0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "325634634089-509nu7tvonf1aoqklth9vn6apgnbo0ro.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
