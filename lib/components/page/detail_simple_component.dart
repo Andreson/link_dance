@@ -21,14 +21,18 @@ class PageDetailSimpleComponent  extends StatelessWidget {
         children: [
           if ( bodyData.title.isNotEmpty)
           Align(
+
             alignment: Alignment.centerLeft,
-            child: SizedBox(
-              width: 220,
-              child: Text(
-                overflow:TextOverflow.clip ,
-                "${bodyData.title} ",
-                style: const TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.bold),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: SizedBox(
+                width: 220,
+                child: Text(
+                  overflow:TextOverflow.clip ,
+                  "${bodyData.title} ",
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ),

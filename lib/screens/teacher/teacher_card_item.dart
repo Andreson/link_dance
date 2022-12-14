@@ -40,14 +40,14 @@ class TeacherCardItemList extends StatelessWidget {
           ),
           Center(
               child: Container(
-                  padding: EdgeInsets.fromLTRB(15, 25, 15, 15),
+                  padding: const EdgeInsets.fromLTRB(15, 25, 15, 15),
                   width: 275,
                   height: 240,
                   child: ProductImage(teacherModel: teacher))),
           Container(
             width: 246,
             decoration: boxRadiusCustom(opacity: 0.3, radiusBottom: 15),
-            margin: EdgeInsets.fromLTRB(83, 193, 0, 0),
+            margin: const EdgeInsets.fromLTRB(74, 187, 0, 0),
             child: Padding(
               padding: EdgeInsets.fromLTRB(15, 00, 0, 5),
               child: Text(

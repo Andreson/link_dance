@@ -138,7 +138,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
         .orderBy(orderBy, descending: orderDesc);
     query = _mapQueryCondition(conditions, query);
 
-    print("query List  call  ${query.parameters}");
+
     //necessario esperar o resultado da chamada quando for chamar em seguida o notifyListener
     await _executeGenericQuery(
         query: query,

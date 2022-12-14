@@ -58,7 +58,7 @@ class CachedManagerHelper {
       }
       return img;
     } else {
-      print("### Cache imagem encontrado ${fileInfo.file}");
+
       var img = Image.file(fileInfo.file).image;
       if ( onCache!=null) {
         onCache(img);

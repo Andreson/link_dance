@@ -14,7 +14,7 @@ class FollowRepository extends BaseRepository<UserFollowTeacherModel> {
   Future<UserFollowTeacherModel> followOrUnfollow(
       {required UserFollowTeacherModel followVo}) async {
     if (followVo.status == FollowStatusStatus.follow) {
-      if (followVo.id == null) {
+      if (followVo.id.isEmpty) {
         await _registerFollow(followVo);
         followVo = (await getFollow(teacherId: followVo.teacherId))!;
       } else {

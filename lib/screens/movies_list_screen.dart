@@ -10,7 +10,6 @@ class MoviesListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("############################################## mMoviesListScreen screen call build #######################################");
 
     return Scaffold(
         appBar: AppBar(
