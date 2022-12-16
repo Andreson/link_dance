@@ -13,7 +13,7 @@ class PageDetailSimpleComponent  extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    // TODO: implement build6
     var width = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),

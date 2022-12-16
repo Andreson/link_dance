@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="br.com.link_dance.link_dance">
    <application
-        android:label="link_dance"
+        android:label="LinkDance"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

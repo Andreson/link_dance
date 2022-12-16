@@ -17,7 +17,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
 
 
   @protected
-  int _currentRegistryPagination = Constants.pageSize;
+  int currentRegistryPagination = Constants.pageSize;
   @protected
   late RestTemplate restTemplate;
 
@@ -28,8 +28,8 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
 
   Future<List<T>?> nextPageBase({int? nextRegistry}) {
     var tempNextRegistry =
-        nextRegistry ?? _currentRegistryPagination + Constants.pageSize;
-    _currentRegistryPagination = tempNextRegistry;
+        nextRegistry ?? currentRegistryPagination + Constants.pageSize;
+    currentRegistryPagination = tempNextRegistry;
     var response = listBase(
         nextPage: true,
         limit: tempNextRegistry,
@@ -119,7 +119,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
     return listData;
   }
 
-  void _setNextPageParams(
+  void setNextPageParams(
       {List<QueryCondition>? conditions, required String orderBy}) {
     _queryConditions = conditions;
     _orderBy = orderBy;
@@ -136,7 +136,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
     var query = _queryRef(collectionName: collectionName)
         .limit(limit)
         .orderBy(orderBy, descending: orderDesc);
-    query = _mapQueryCondition(conditions, query);
+    query = mapQueryCondition(conditions, query);
 
 
     //necessario esperar o resultado da chamada quando for chamar em seguida o notifyListener
@@ -159,12 +159,12 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
       List<QueryCondition>? conditions,
       String orderBy = "createDate",
       required Query<T> query}) async {
-    _setNextPageParams(orderBy: orderBy, conditions: conditions);
+    setNextPageParams(orderBy: orderBy, conditions: conditions);
 
     if (nextPage) {
       query = query.startAfterDocument(paginationPointer);
     } else {
-      _currentRegistryPagination = Constants.pageSize;
+      currentRegistryPagination = Constants.pageSize;
       clear();
     }
 
@@ -209,7 +209,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
     notifyListeners();
   }
 
-  Query<T> _mapQueryCondition(List<QueryCondition>? conditions, Query<T> q) {
+  Query<T> mapQueryCondition(List<QueryCondition>? conditions, Query<T> q) {
     if (conditions == null) {
       return q;
     }
