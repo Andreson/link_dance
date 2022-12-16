@@ -20,7 +20,8 @@ class RestTemplate {
 
 
   Future<Map<String, dynamic>> Patch({required Object body,required String url, Map<String, String>? headers,Encoding? encoding}) async {
-    url =await  refresthToken(url: url);
+    String token=auth.user!.login!.token;
+    url = "$url&auth=$token";
     final response = await http.patch(
       Uri.parse(url),
       headers: headers,
@@ -41,7 +42,8 @@ class RestTemplate {
 
   Future<Map<String, dynamic>> Post({required Object body,required String url, Map<String, String>? headers,Encoding? encoding}) async {
     debugPrint("Body request ${jsonEncode(body)}");
-    url =await  refresthToken(url: url);
+    String token=auth.user!.login!.token;
+    url = "$url&auth=$token";
     final response = await http.post(
       Uri.parse(url),
       headers: headers,
@@ -62,10 +64,12 @@ class RestTemplate {
 
   Future<Map<String, dynamic>> Get({required String url, Map<String, String>? headers,Encoding? encoding}) async {
 
-    if ( auth.user!=null) {
-      url = await refresthToken(url: url);
-    }
+    // if ( auth.user!=null) {
+    //   url = await refresthToken(url: url);
+    // }
 
+    String token=auth.user!.login!.token;
+    url = "$url&auth=$token";
     debugPrint(url);
     final response = await http.get(
       Uri.parse(url),
@@ -81,7 +85,7 @@ class RestTemplate {
   }
 
 
-  Future<String> refresthToken({required String url}) async{
+  Future<String> _refresthToken({required String url}) async{
     LoginModel loginModel = auth.user!.login!;
     TokenRefresh? tr;
     if ( loginModel.loginProvider==LoginProvider.email) {

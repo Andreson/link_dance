@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  late  LoginHelper loginHelper ;
+  late LoginHelper loginHelper;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -35,24 +35,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void initState() {
     super.initState();
-
   }
 
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-   loginHelper = LoginHelper(context: context);
+    loginHelper = LoginHelper(context: context);
     loginHelper.tryAutoLogin();
   }
 
 
-
-
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: false,
@@ -86,12 +81,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       children: [
         sizedBox50(),
-         Text(
-          "LinkDance",
-          style: TextStyle(fontSize: 28,shadows: [shadowText()], fontWeight: FontWeight.bold),
-        ),
-        sizedBox10(),
-         Text(
+        sizedBox15(),
+        FractionallySizedBox(child: Image.asset("assets/images/logo/logo-720.png",width: 300,height: 50),),
+
+        Text(
           "Aqui a felicidade não tem preço, tem ritmo.",
           style: TextStyle(
             shadows: [shadowText()],
@@ -99,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
             fontSize: 17,
           ),
         ),
-        sizedBox30(),
+
       ],
     );
   }
@@ -119,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       children: [
         const Text(
-          "Ou entre usando rede social",
+          "Ou entre usando sua rede social",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         Row(

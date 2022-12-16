@@ -79,6 +79,11 @@ flutter:
     - assets/images/start.jpeg
     - assets/images/default_profile.jpg
     - assets/images/backgroud2.jpg
+    - assets/images/logo/logo.jpg
+    - assets/images/logo/logo.png
+    - assets/images/logo/logo-720.jpg
+    - assets/images/logo/logo-720.png
+
 
 
 

@@ -109,6 +109,7 @@ abstract class BaseAuthentication with ChangeNotifier {
     return _token != null && isValid;
   }
 
+  @deprecated
   Future<LoginModel> authenticate(
       String email, String password, String url) async {
 

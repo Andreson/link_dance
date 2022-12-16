@@ -9,6 +9,7 @@ import 'package:link_dance/components/contentGroup/content_group_list_component.
 import 'package:link_dance/components/event/event_list_component.dart';
 import 'package:link_dance/components/menu_drawer.dart';
 import 'package:link_dance/components/movie/movie_list.dart';
+import 'package:link_dance/model/user_model.dart';
 import 'package:link_dance/screens/teacher/teacher_list_component.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/factory_widget.dart';
@@ -105,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         drawer: ClipPath(
             clipper: _DrawerClipper(),
-            child: MenuOptionsComponent(user: authentication.user!)),
+            child: MenuOptionsComponent(user: authentication.user ?? UserModel.New())),
         body: pages[_pageIndexSelected]);
   }
 

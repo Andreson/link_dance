@@ -136,17 +136,17 @@ class AuthenticationFacate with ChangeNotifier {
         authentication = _buildAuthType(user!.login!.loginProvider);
 
         var login = user?.login;
-        if (login?.loginProvider == LoginProvider.email) {
-          TokenRefresh token =
-              await authentication.refreshToken(login!.refreshtoken!);
-          String? tokenStr =
-              await FirebaseAuth.instance.currentUser?.getIdToken(true);
-          user?.login?.setToken(token);
-        } else {
+        // if (login?.loginProvider == LoginProvider.email) {
+        //   TokenRefresh token =
+        //       await authentication.refreshToken(login!.refreshtoken!);
+        //   String? tokenStr =
+        //       await FirebaseAuth.instance.currentUser?.getIdToken(true);
+        //   user?.login?.setToken(token);
+        // } else {
           String? token =
               await FirebaseAuth.instance.currentUser?.getIdToken(true);
           user?.login?.token = token!;
-        }
+        //}
         //  notifyListeners();
         return user;
       } else {
