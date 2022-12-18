@@ -1,6 +1,6 @@
 name: link_dance
-description: Visualização de videos
-version: 1.0.0
+description: Rede social de dança
+version: 0.0.1
 environment:
   sdk: ">=2.17.5 <3.0.0"
 dependencies:

@@ -35,14 +35,22 @@ class CachedManagerHelper {
         future: getImageFuture(url:url,onCache: onCache),
         builder: (BuildContext context, AsyncSnapshot<ImageProvider> snapshot) {
           if (snapshot.data == null) {
-            return SizedBox();
+            return const SizedBox();
           }
 
+          if (url.contains("http")){
           return SizedBox(
             height: height,
             width: width,
             child: Image(fit: fit, image: snapshot.data!),
-          );
+          );}
+          else {
+            return Image.asset(
+                fit: BoxFit.cover,
+                width: width,
+                height: height,
+                url);
+          }
         });
   }
 

@@ -162,7 +162,7 @@ class EventRepository extends BaseRepository<EventModel> {
   }
 
   Future<void> saveOrUpdate(EventModel event) async {
-    if (event.id == null) {
+    if (event.id.isEmpty) {
       print("Criando novo  evento ${event.title}");
       return _save(event);
     } else {

@@ -252,7 +252,6 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
   }
 
   _submit(BuildContext context) async {
-
     if (!validations()) {
       return;
     }
@@ -260,10 +259,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
       _saveEventRegistry({});
       return;
     }
-
-
     var imagensUrls =await eventHelper.uploadImageBanner( context,authentication,path!);
-
     _saveEventRegistry(imagensUrls);
   }
 

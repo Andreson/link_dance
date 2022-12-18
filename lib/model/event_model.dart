@@ -20,7 +20,7 @@ class EventModel extends AbastractModel {
   String _rhythm;
   EventStatus status;
 
-  String get id=> _id!;
+  String get id=> _id ??"";
 
   //Caminho dos arquivos no firebase para que eles possam ser deletados caso o registro seja removido
   List<String>? storageRef;

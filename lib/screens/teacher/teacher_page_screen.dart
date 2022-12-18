@@ -5,6 +5,7 @@ import 'package:link_dance/components/page/detail_simple_component.dart';
 import 'package:link_dance/components/page/header_page_component.dart';
 
 import 'package:link_dance/components/movie/movie_item_list.dart';
+import 'package:link_dance/core/constants.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/core/enumerate.dart';
@@ -235,7 +236,7 @@ class TeacherPageScreen extends StatelessWidget {
     return PageHeaderComponent(
         headerData: PageHeaderDetailVo(
 
-            imageBackground: teacherModel.photo ?? "",
+            imageBackground: teacherModel.photo ?? Constants.defaultAvatar,
             width: width,
             height: height));
   }

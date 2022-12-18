@@ -49,7 +49,7 @@ class TeacherCardItemList extends StatelessWidget {
             decoration: boxRadiusCustom(opacity: 0.3, radiusBottom: 15),
             margin: const EdgeInsets.fromLTRB(74, 187, 0, 0),
             child: Padding(
-              padding: EdgeInsets.fromLTRB(15, 00, 0, 5),
+              padding: const EdgeInsets.fromLTRB(15, 00, 0, 5),
               child: Text(
                 teacher.name,
                 style: boxTitleStyle(),
