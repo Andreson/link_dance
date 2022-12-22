@@ -10,6 +10,7 @@ import '../core/extensions/string_extensions.dart.dart';
  * Classe que sera usada  a principio para representar as turmas , mas podera agrear outros tipos de conteudo
  */
 class ContentGroupModel extends AbastractModel{
+  @override
   String id;
   String ownerId;
   String _title;

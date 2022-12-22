@@ -21,15 +21,11 @@ import './core/routes.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-
     options: const FirebaseOptions(
       apiKey: "AIzaSyBYjavKCwFGGfspj_ThSugG6C8MXZm9-x0",
       appId: "1:325634634089:android:39ba96a9be77da9cb20df8",
       messagingSenderId: "325634634089",
       projectId: "linkdance-691ad",
-
-
-
     ),
   );
   runApp(DevicePreview(

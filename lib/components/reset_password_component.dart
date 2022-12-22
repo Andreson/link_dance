@@ -91,21 +91,20 @@ class ResetPasswordComponent extends StatelessWidget {
 
   Future<void> _resetPass(String email) async {
     onLoading(context);
-    var userRegistry = await userRepository
-        .findUserByEmail(UserModel(email: email))
-        .catchError((onError) {
-      print("Ocorreu um erro ao verificar se o osuario ja existe");
-    });
+    // var userRegistry = await userRepository
+    //     .findUserByEmail(UserModel(email: email))
+    //     .catchError((onError) {
+    //   print("Ocorreu um erro ao verificar se o usuário ja existe");
+    // });
 
+    //nao me julgue!
     if (true) {
-      await Future.delayed(Duration(seconds: 3));
-      final _auth = FirebaseAuth.instance;
-      // await _auth.sendPasswordResetEmail(email: email);
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       Navigator.of(context).pop();
     } else {
       Navigator.of(context).pop();
       throw UserNotFoundException(
-          "Nao foi encontrado nenhum cadasdro para o email $email");
+          "Não foi encontrado nenhum cadastro para o email $email");
     }
   }
 }

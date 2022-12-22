@@ -16,7 +16,7 @@ class VideoPlayComponent extends StatefulWidget {
   VideoPlayComponent({Key? key,
     required this.urlVideo,
     this.aspectRatio=5/8,
-    this.fullScreenByDefault = false,
+    this.fullScreenByDefault = true,
     this.autoPlay=false,
     this.allowFullScreen = true})
       : super(key: key);
@@ -56,6 +56,7 @@ class _VideoPlayComponentState extends State<VideoPlayComponent> {
             chewieController = ChewieController(
               autoInitialize: true,
               allowMuting: true,
+              aspectRatio: widget.aspectRatio,
               deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
               fullScreenByDefault: widget.fullScreenByDefault,
               allowFullScreen: widget.allowFullScreen,

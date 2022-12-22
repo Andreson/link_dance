@@ -1,7 +1,10 @@
 import 'package:link_dance/components/list_view_component.dart';
 import 'package:link_dance/components/movie/movie_item_list_admin.dart';
 import 'package:link_dance/core/enumerate.dart';
+import 'package:link_dance/features/authentication/auth_facate.dart';
 import 'package:link_dance/model/movie_model.dart';
+import 'package:link_dance/model/user_model.dart';
+import 'package:link_dance/repository/base_repository.dart';
 import 'package:link_dance/repository/movie_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -18,6 +21,7 @@ class MovieAdminListComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     repository = Provider.of<MovieRepository>(context, listen: false);
+    UserModel user = Provider.of<AuthenticationFacate>(context, listen: false).user!;
     return Scaffold(
       appBar: AppBar(
         title: Text("Meus videos"),
@@ -37,7 +41,7 @@ class MovieAdminListComponent extends StatelessWidget {
           query: () async {
             return repository.nextPageBase();
           },
-          loadDataFuture: repository.listBase(orderBy: "rhythm"),
+          loadDataFuture: repository.listBase(orderBy: "rhythm",conditions: [QueryCondition(fieldName: "ownerId",isEqualTo: user.id)]),
           itemBuild: (data) => MovieAdminItemComponent(movie: data)),
     );
   }

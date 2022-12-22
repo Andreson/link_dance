@@ -66,7 +66,7 @@ class MovieModel extends AbastractModel {
         thumb: json['thumb'],
 
         public: json['public'],
-        description: json['description']?.toString()?.capitalizePhrase(),
+        description: json['description'],
         fingerPrint: json['fingerPrint'],
         rhythm: json['rhythm'],
         contentGroupLabel: json['contentGroupLabel'],

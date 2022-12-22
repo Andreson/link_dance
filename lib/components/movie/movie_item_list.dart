@@ -29,7 +29,7 @@ class _MovieItemListComponentState extends State<MovieItemListComponent> {
   void initState() {
     super.initState();
 
-    isSourceYoutube = widget.movie.uri.contains("youtube") ? true : false;
+    isSourceYoutube = widget.movie.uri.contains("youtu") ? true : false;
 
     if (!isSourceYoutube) {
       _controller = VideoPlayerController.network(widget.movie.uri)
@@ -37,10 +37,8 @@ class _MovieItemListComponentState extends State<MovieItemListComponent> {
           //when your thumbnail will show.
         });
     } else {
-      var indexInit = widget.movie.uri.indexOf("v=") + 2;
-      var indexEnd = widget.movie.uri.indexOf("&", indexInit);
-      indexEnd = indexEnd > 0 ? indexEnd : widget.movie.uri.length;
-      _youTubeCode = widget.movie.uri.substring(indexInit, indexEnd);
+
+      _youTubeCode = widget.movie.getYoutubeCode();
     }
   }
 

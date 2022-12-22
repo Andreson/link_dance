@@ -236,7 +236,7 @@ class MovieUploadFormState extends State<MovieUploadFormComponent> {
                           _isYouTube = true;
                         },
                         initialValue:
-                            _formData['uri'].toString().contains("youtube")
+                            _formData['uri'].toString().contains("youtu")
                                 ? _formData['uri']
                                 : "",
                         onSaved: (value) {
@@ -369,7 +369,8 @@ class MovieUploadFormState extends State<MovieUploadFormComponent> {
 
   void submitForm() {
     print("Enviando formulario");
-
+    var userid = _authentication.user!.id;
+    _formData['ownerId'] = userid;
     if ( _isEdit || _isYouTube){
       var validations =_validations();
       if (validations) {
@@ -414,9 +415,9 @@ class MovieUploadFormState extends State<MovieUploadFormComponent> {
     if (!_validations()) {
       throw Exception("Formulario invalido");
     }
-    var userid = _authentication.user!.id;
-    _formData['ownerId'] = userid;
+
     if (_localPathMovie != null && !_isYouTube) {
+      var userid = _authentication.user!.id;
       String? movieThumb =
           await FileUpload.generateThumbnailMovie(File(_localPathMovie!));
       FileUploadResponse thumbMovie = await _fileUpload.fileUpload(

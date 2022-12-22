@@ -38,7 +38,7 @@ class UserRepository extends BaseRepository<UserModel> {
   }
 
   Future<UserModel?> findUserByEmail(UserModel user) async {
-    print("User $user");
+
     return restTemplate.Get(
             url:
                 "${Constants.userDbUrl}.json?orderBy=\"email\"&equalTo=\"${user.email}\"")
