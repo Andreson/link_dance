@@ -1,19 +1,13 @@
-import 'package:link_dance/components/input_fields/text_buton.dart';
-import 'package:link_dance/screens/login/login_form.dart';
 
+import 'package:link_dance/screens/login/login_form.dart';
 import 'package:link_dance/components/reset_password_component.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/theme/fontStyles.dart';
 import 'package:link_dance/features/authentication/auth_facate.dart';
 import 'package:link_dance/features/login/login_helper.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import '../../core/decorators/box_decorator.dart';
-import '../../core/routes.dart';
-import '../../core/factory_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen();
@@ -52,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
         key: _scaffoldKey,
         resizeToAvoidBottomInset: false,
         body: Container(
-          decoration: boxImage("assets/images/large/home.png", opacity: 0.6),
+          decoration: boxImage("assets/images/large/home.jpg", opacity: 0.6),
           child: body(context),
         ));
   }

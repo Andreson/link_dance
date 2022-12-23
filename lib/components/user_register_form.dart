@@ -27,6 +27,7 @@ import '../core/theme/fontStyles.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../core/factory_widget.dart';
 import '../features/upload_files/file_upload.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RegisterUserFormComponent extends StatefulWidget {
   UserModel? userModel;
@@ -49,7 +50,8 @@ class RegistrationUserFormState extends State<RegisterUserFormComponent> {
   bool _passwordVisible = false;
   String rhythms = "";
   bool isUpdate = false;
-
+  bool iAgreement = true;
+  Color linkColor = const Color(0xff0000ff);
   late ImageAvatarComponent imageAvatar;
   bool imageChange = false;
 
@@ -308,14 +310,13 @@ class RegistrationUserFormState extends State<RegisterUserFormComponent> {
                         widget.userModel!.phone = value!;
                       }),
                   DateInputField(
-                    readOnly: true,
+                      readOnly: true,
                       isDatePicker: true,
                       focusNode: _birthDate,
                       initValue: widget.userModel!.birthDate?.toDate() ??
                           DateTime(DateTime.now().year - 18),
                       label: "Data do seu aniversario",
                       onSaved: (value) {
-
                         widget.userModel!.birthDate = value!;
                       }),
                   CustomTextField(
@@ -341,6 +342,29 @@ class RegistrationUserFormState extends State<RegisterUserFormComponent> {
                           }),
                       label: "CEP do seu endereço",
                       icon: const Icon(Icons.home)),
+                  Row(
+                    children: [
+                      Flexible(
+                          child: InkWell(
+                              onTap: () => launchUrl(Uri.parse("https://pub.dev/packages/url_launcher")),
+                              child: const Padding(
+                                padding: EdgeInsets.only(left: 25),
+                                child: Text(
+                                  "Li e concordo com os termos de uso e política de privacidade",
+                                  style: TextStyle(color: Colors.blue,fontSize: 12),
+                                ),
+                              ))),
+                      Checkbox(
+                        value: iAgreement,
+                        onChanged: (value) {
+                          setState(() {
+                            iAgreement = value!;
+                            //formFieldsData['isPublic'] = isPublic;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                   Container(
                       margin: const EdgeInsets.fromLTRB(40, 10, 0, 0),
                       child: addressText),
