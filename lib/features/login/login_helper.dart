@@ -40,6 +40,7 @@ class LoginHelper {
         loginProvider: loginProvider, username: username, password: password)
         .then((userData) {
       Navigator.of(context).pop();
+
       if (userData != null && userData.email != null) {
         authentication.user = userData;
         Navigator.pushNamed(context, RoutesPages.home.name,

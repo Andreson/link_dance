@@ -1,3 +1,4 @@
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:link_dance/components/movie/video_play.dart';
 import 'package:link_dance/features/authentication/auth_facate.dart';
 import 'package:link_dance/repository/event_repository.dart';
@@ -90,7 +91,12 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'LinkDance',
+        supportedLocales: const [Locale('pt', 'BR')],
         routes: routes,
+          localizationsDelegates:  const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate
+          ],
         theme: ThemeData.dark().copyWith(
           textTheme: ThemeData.dark().textTheme.apply(
                 fontFamily: 'Oswald',

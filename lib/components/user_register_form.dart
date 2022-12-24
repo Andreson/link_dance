@@ -346,7 +346,7 @@ class RegistrationUserFormState extends State<RegisterUserFormComponent> {
                     children: [
                       Flexible(
                           child: InkWell(
-                              onTap: () => launchUrl(Uri.parse("https://pub.dev/packages/url_launcher")),
+                              onTap: () => launchUrl(Uri.parse("https://drive.google.com/file/d/17sqKBswiK1pz8NMlszDxa-Mad2tXT14G/view?usp=share_link")),
                               child: const Padding(
                                 padding: EdgeInsets.only(left: 25),
                                 child: Text(
