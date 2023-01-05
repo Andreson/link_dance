@@ -27,7 +27,7 @@ class FileUpload {
           .child('/$storageFileName.$videoFormat');
       final metadata = SettableMetadata(contentType: 'video/mp4');
       var task = ref.putFile(File(filePath), metadata);
-      print("ref.fullPath movie upload firestore ${ref.fullPath} --------------------------------");
+
       return Future.value(FileUploadResponse(ref, task, ref.fullPath));
     } catch (error) {
       print("putFile cath error $error");

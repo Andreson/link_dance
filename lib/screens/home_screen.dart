@@ -18,6 +18,7 @@ import 'package:link_dance/features/filter/movie_wrapper_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:upgrader/upgrader.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -69,45 +70,52 @@ class _HomeScreenState extends State<HomeScreen> {
     teacherFilter = TeacherWrapperFilter(context: context).filter;
     movieFilter = MovieWrapperFilter(context: context).filter;
     initFilters();
-    return Scaffold(
-        key: _scaffoldKey,
-        bottomNavigationBar: bottomNavigationComponent,
-        appBar: AppBar(
-          title: const Text("Inicio"),
-          automaticallyImplyLeading: true,
-          actions: [
-            if (_pageIndexSelected == 0)
-              PopupMenuButton<String>(
-                icon: Icon(FontAwesomeIcons.bell),
-                onSelected: choiceAction,
-                itemBuilder: (BuildContext context) {
-                  return ["Sem notificações"].map((String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  }).toList();
-                },
-              ),
-            if (filtersPopUp[_pageIndexSelected] != null)
-              IconButton(
-                  onPressed: () {
-                    var popUpFilter = filtersPopUp[_pageIndexSelected];
 
-                    if (popUpFilter != null) {
-                      modalBottomScroll(
-                          child: popUpFilter,
-                          context: context,
-                          isFullScreen: true);
-                    }
+    return UpgradeAlert(
+      upgrader: Upgrader(languageCode: "pt",minAppVersion: "0.2.1",),
+      child: Scaffold(
+          key: _scaffoldKey,
+          bottomNavigationBar: bottomNavigationComponent,
+          appBar: AppBar(
+            title: const Text("Inicio"),
+            automaticallyImplyLeading: true,
+            actions: [
+              if (_pageIndexSelected == 0)
+                PopupMenuButton<String>(
+                  icon: const Icon(FontAwesomeIcons.bell),
+                  onSelected: choiceAction,
+                  itemBuilder: (BuildContext context) {
+                    return ["Sem notificações"].map((String choice) {
+                      return PopupMenuItem<String>(
+                        value: choice,
+                        onTap: (){
+
+                        },
+                        child: Text(choice),
+                      );
+                    }).toList();
                   },
-                  icon: const Icon(FontAwesomeIcons.magnifyingGlass))
-          ],
-        ),
-        drawer: ClipPath(
-            clipper: _DrawerClipper(),
-            child: MenuOptionsComponent(user: authentication.user ?? UserModel.New())),
-        body: pages[_pageIndexSelected]);
+                ),
+              if (filtersPopUp[_pageIndexSelected] != null)
+                IconButton(
+                    onPressed: () {
+                      var popUpFilter = filtersPopUp[_pageIndexSelected];
+
+                      if (popUpFilter != null) {
+                        modalBottomScroll(
+                            child: popUpFilter,
+                            context: context,
+                            isFullScreen: true);
+                      }
+                    },
+                    icon: const Icon(FontAwesomeIcons.magnifyingGlass))
+            ],
+          ),
+          drawer: ClipPath(
+              clipper: _DrawerClipper(),
+              child: MenuOptionsComponent(user: authentication.user ?? UserModel.New())),
+          body: pages[_pageIndexSelected]),
+    );
   }
 
 

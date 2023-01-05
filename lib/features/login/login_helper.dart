@@ -1,5 +1,6 @@
 
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/exception/exceptions.dart';
 import 'package:link_dance/core/factory_widget.dart';
@@ -43,6 +44,9 @@ class LoginHelper {
 
       if (userData != null && userData.email != null) {
         authentication.user = userData;
+
+        FirebaseCrashlytics.instance.setUserIdentifier(userData.email!);
+
         Navigator.pushNamed(context, RoutesPages.home.name,
             arguments: userData);
       }else {

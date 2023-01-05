@@ -4,6 +4,7 @@ import 'package:link_dance/model/abastract_model.dart';
 
 class NotifyMessageModel extends AbastractModel {
   String _id;
+  String ownerId;
   int countErros;
   DateTime? dateProcessed;
   String? bannerUrl;
@@ -18,6 +19,7 @@ class NotifyMessageModel extends AbastractModel {
 
   NotifyMessageModel({
     required id,
+    required this.ownerId,
     this.sendBanner = true,
     required this.createDate,
     required this.countErros,
@@ -36,6 +38,7 @@ class NotifyMessageModel extends AbastractModel {
     return {
       "id": id,
       "countErros": countErros,
+      "ownerId":ownerId,
       "notifyErros": notifyErros,
       "dateProcessed": dateProcessed,
       "bannerUrl": bannerUrl,
@@ -69,9 +72,10 @@ class NotifyMessageModel extends AbastractModel {
 
     return NotifyMessageModel(
         id: json['id'],
+        ownerId:json['ownerId'],
         createDate: createDate,
         sendDate : (json['sendDate'] as Timestamp).toDate(),
-        countErros: json['countErros'],
+        countErros: json['countErros'] ??0,
         dateProcessed: json['dateProcessed']!=null?(json['dateProcessed'] as Timestamp).toDate():null ,
         bannerUrl: json['bannerUrl'],
         isProcessed: json['isProcessed'],

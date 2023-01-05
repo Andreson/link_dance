@@ -34,7 +34,7 @@ class _ImageAvatarState extends State<ImageAvatarComponent> {
   @override
   void didChangeDependencies() {
 
-    print("********************* didChangeDependencies  imagem avagar componente ");
+
     _getImage().then((value) {
 
 
@@ -54,7 +54,7 @@ class _ImageAvatarState extends State<ImageAvatarComponent> {
   @override
   void initState() {
     // TODO: implement initState
-    print("****************************** Iniciando estado imagem avagar componente ");
+
     _getImage().then((value) {
 
       setState((){
@@ -124,7 +124,7 @@ class _ImageAvatarState extends State<ImageAvatarComponent> {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       widget.path = result.files.single.path!;
-      print("widget.path in image avatar is ${widget.path}");
+
       return result;
     } else {
       return null;
@@ -135,7 +135,7 @@ class _ImageAvatarState extends State<ImageAvatarComponent> {
 
     var imageLocal = widget.imageLocal ?? Constants.defaultAvatar;
 
-    print("GET IMAGEM IS IMAGENlOCAL $imageLocal");
+
     if (imageLocal.contains("assets")) {
       widget.path =imageLocal;
       image = Image.asset(imageLocal).image;

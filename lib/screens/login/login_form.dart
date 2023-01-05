@@ -31,6 +31,7 @@ class _LoginFormComponentState extends State<LoginFormComponent> {
     loginHelper = LoginHelper(context: context);
     return Column(
       children: [
+        sizedBox30(),
         Text("Acessar sua conta"),
         sizedBox30(),
         _inputFields(),

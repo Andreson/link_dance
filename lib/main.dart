@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:link_dance/components/movie/video_play.dart';
 import 'package:link_dance/features/authentication/auth_facate.dart';
@@ -15,6 +18,7 @@ import 'package:link_dance/screens/event_register_screen.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import './core/routes.dart';
@@ -29,6 +33,20 @@ void main() async {
       projectId: "linkdance-691ad",
     ),
   );
+
+
+
+  bool weWantFatalErrorRecording = true;
+  FlutterError.onError = (errorDetails) {
+    if (weWantFatalErrorRecording) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    }
+  };
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
   runApp(DevicePreview(
     builder: (_) => MyApp(),
     enabled: false,
@@ -93,10 +111,10 @@ class MyApp extends StatelessWidget {
         title: 'LinkDance',
         supportedLocales: const [Locale('pt', 'BR')],
         routes: routes,
-          localizationsDelegates:  const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate
-          ],
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate
+        ],
         theme: ThemeData.dark().copyWith(
           textTheme: ThemeData.dark().textTheme.apply(
                 fontFamily: 'Oswald',

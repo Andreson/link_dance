@@ -13,6 +13,7 @@ import 'package:link_dance/core/exception/exceptions.dart';
 
 import 'package:link_dance/features/authentication/auth_facate.dart';
 import 'package:link_dance/model/notify_message_model.dart';
+import 'package:link_dance/model/user_model.dart';
 
 import 'package:link_dance/repository/notify_repository.dart';
 
@@ -46,7 +47,7 @@ class MovieUploadFormState extends State<MenssageRegistryPage> {
   AutoCompleteItem? autoCompleteData;
   late AuthenticationFacate _authentication;
   NotifyMessageModel? _notifyMessage;
-
+  late UserModel user;
   final FocusNode _youtubeFocus = FocusNode();
 
   @override
@@ -66,7 +67,7 @@ class MovieUploadFormState extends State<MenssageRegistryPage> {
       isExpanded: expanded,
     );
     _isEdit = true;
-
+    _initWidgets();
 
   }
 
@@ -78,7 +79,7 @@ class MovieUploadFormState extends State<MenssageRegistryPage> {
     if (_notifyMessage != null) {
       _formData = _notifyMessage!.deserialize();
     } else {
-      var user = _authentication.user;
+      user = _authentication.user!;
       _formData =  NotifyMessageModel.defaultData(typeId:user!.id);
       _formData['bannerUrl'] =user.teacherProfile!.photo ?? "";
     }
@@ -86,7 +87,7 @@ class MovieUploadFormState extends State<MenssageRegistryPage> {
 
   @override
   Widget build(BuildContext context) {
-    _initWidgets();
+
 
     return Scaffold(
       appBar: AppBar(actions: [
@@ -98,7 +99,7 @@ class MovieUploadFormState extends State<MenssageRegistryPage> {
               _inforSourceMovie();
             },
             icon: const Icon(FontAwesomeIcons.question))
-      ], title: Text("Cadatrar envio de mensagem")),
+      ], title: Text("Enviar mensagem")),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10),
@@ -330,6 +331,7 @@ class MovieUploadFormState extends State<MenssageRegistryPage> {
     } else if (!_attachBanner) {
       _formData['bannerUrl'] = null;
     }
+    _formData['ownerId']= user.id;
     await repository.saveOrUpdateBase(data: _formData).then((value) {
       //oculta onloading
       Navigator.of(context).pop();
@@ -338,10 +340,10 @@ class MovieUploadFormState extends State<MenssageRegistryPage> {
           context: context,
           content: "Mensagem cadastrada som sucesso",
           title: "Aêêêêêêêêê");
-    }).catchError((onError) {
+    }).catchError((onError,stacktrance) {
       Navigator.of(context).pop();
       showError(context, content: "Erro ao salvar mensagem");
-      print("erro ao salvar mensagem ${onError}");
+      print("erro ao salvar mensagem ${stacktrance}");
     }).whenComplete(() {});
   }
 

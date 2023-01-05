@@ -29,6 +29,7 @@ abstract class AbastractModel {
       return TeacherModel.fromJson(data, id);
     }
     if ("NotifyMessageModel" == type.toString()) {
+
       return NotifyMessageModel.fromJson(data, id);
     }
 

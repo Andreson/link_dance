@@ -223,7 +223,7 @@ class MovieUploadFormState extends State<MovieUploadFormComponent> {
                             "ex.: https://www.youtube.com/watch?v=WhGs1DGAQEX",
                         focusNode: _youtubeFocus,
                         onChanged: (value) {
-                          print("onChanged youtube field $value");
+
                         },
                         onEditingComplete: () {
                           // _videoPlay = YoutubePlayComponent(
@@ -342,7 +342,6 @@ class MovieUploadFormState extends State<MovieUploadFormComponent> {
     var formIsvalid = _formKey.currentState!.validate();
 
     if (!formIsvalid) {
-      print("formIsvalid  ????????????????  $formIsvalid");
       return false;
     } else {
       _formKey.currentState?.save();
@@ -368,7 +367,7 @@ class MovieUploadFormState extends State<MovieUploadFormComponent> {
   }
 
   void submitForm() {
-    print("Enviando formulario");
+
     var userid = _authentication.user!.id;
     _formData['ownerId'] = userid;
     if ( _isEdit || _isYouTube){

@@ -57,6 +57,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
     data.removeWhere((key, value) => key == "id");
     var response = getCollectionBase(collectionName: collectionName).add(data);
     await response.then((value) {
+      data["id"] = value.id;
       listData.insert(0, AbastractModel.jsonData(type: T, data: data) as T);
       notifyListeners();
     });

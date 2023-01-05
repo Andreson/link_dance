@@ -1,4 +1,3 @@
-
 import 'package:link_dance/screens/login/login_form.dart';
 import 'package:link_dance/components/reset_password_component.dart';
 import 'package:link_dance/core/enumerate.dart';
@@ -7,6 +6,7 @@ import 'package:link_dance/features/authentication/auth_facate.dart';
 import 'package:link_dance/features/login/login_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../../core/decorators/box_decorator.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -24,21 +24,22 @@ class _LoginScreenState extends State<LoginScreen> {
   late LoginHelper loginHelper;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  late String version;
   bool _showPassword = false;
 
+  @override
   void initState() {
     super.initState();
-  }
 
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     loginHelper = LoginHelper(context: context);
     loginHelper.tryAutoLogin();
+    _getVersion().then((value) => version = value);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +54,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Column body(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
         Expanded(child: _header()),
-        Expanded(
+        Flexible(
           flex: 2,
           child: Container(
+            height: 350,
             padding: const EdgeInsets.only(left: 25, right: 25),
             decoration: box(opacity: 0.3, allBorderRadius: 15),
             child: LoginFormComponent(onSubmit: () {
@@ -76,8 +80,10 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         sizedBox50(),
         sizedBox15(),
-        FractionallySizedBox(child: Image.asset("assets/images/logo/logo-720.png",width: 300,height: 50),),
-
+        FractionallySizedBox(
+          child: Image.asset("assets/images/logo/logo-720.png",
+              width: 300, height: 50),
+        ),
         Text(
           "Aqui a felicidade não tem preço, tem ritmo.",
           style: TextStyle(
@@ -93,11 +99,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _footer() {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
       children: [
         sizedBox15(),
         _socialNetworkButtons(),
         sizedBox15(),
-        _auxButtons()
+        _auxButtons(),
+        sizedBox30(),
+        Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Align(
+              alignment: FractionalOffset.bottomRight, child: Text(version, style: TextStyle(fontSize: 8),)),
+        )
       ],
     );
   }
@@ -187,4 +202,18 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     _loginController.dispose();
   }
+
+  Future<String>  _getVersion() async {
+
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    String appName = packageInfo.appName;
+    String packageName = packageInfo.packageName;
+    String version = packageInfo.version;
+    String buildNumber = packageInfo.buildNumber;
+
+    return "v$buildNumber.$version";
+
+  }
+
 }
