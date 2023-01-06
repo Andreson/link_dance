@@ -64,8 +64,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   Widget _body(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    print("height $height");
-    print("width $width");
 
     return SingleChildScrollView(
       child: Center(
@@ -77,7 +75,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   onTap: () {
                     showImageViewer(context, imageProviderCache,
                         onViewerDismissed: () {
-                      print("dismissed");
+
                     });
                   },
                   child: event.uriBanner == null || event.uriBanner!.isEmpty
@@ -197,13 +195,13 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
     if (userEvent != null &&
         userEvent!.status == EventRegisterStatus.subscribe) {
-      print("build EventRegisterStatus.subscribe  button");
-      buttonSubscribe = eventHelper.buttonUnsubscription(
-          text: "Inscrito", onPressed: unSubscribe);
+
+      buttonSubscribe = eventHelper.buttonUnsubscription(context: context,
+          text: "Vip", onPressed: unSubscribe);
     } else {
       print("build userEventis null or unsubscribe  button");
       buttonSubscribe = eventHelper.buttonSubscription(
-          text: "Inscrever-se", onPressed: subscribe);
+          text: "Pegar meu vip", onPressed: subscribe);
     }
   }
 
@@ -215,11 +213,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       showError(context);
     });
     setState(() {
-      buttonSubscribe = eventHelper.buttonUnsubscription(
-          text: "Inscrito", onPressed: unSubscribe);
+      buttonSubscribe = eventHelper.buttonUnsubscription(context: context,
+          text: "Vip", onPressed: unSubscribe);
     });
   }
-
   void unSubscribe() async {
     await eventRepository
         .unsubscribeEvent(userEvent: userEvent!)
@@ -230,7 +227,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
     setState(() {
       buttonSubscribe = eventHelper.buttonSubscription(
-          text: "Inscrever-se", onPressed: subscribe);
+          text: "Garantir meu Vip", onPressed: subscribe);
       userEvent!.status = EventRegisterStatus.unsubscribe;
     });
   }

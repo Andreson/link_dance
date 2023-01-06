@@ -32,7 +32,7 @@ class _LoginFormComponentState extends State<LoginFormComponent> {
     return Column(
       children: [
         sizedBox30(),
-        Text("Acessar sua conta"),
+        const Text("Acessar sua conta"),
         sizedBox30(),
         _inputFields(),
         sizedBox30(),

@@ -55,6 +55,7 @@ dependencies:
   firebase_crashlytics: ^3.0.9
   upgrader: ^5.0.0
   package_info_plus: ^3.0.2
+  qr_flutter: ^4.0.0
 
 
 
@@ -97,6 +98,7 @@ flutter:
     - assets/images/logo/logo-720.png
     - assets/images/logo/icon.png
     - assets/images/splash.jpg
+    - assets/images/logo/logo-vertical.png
 
 
 
