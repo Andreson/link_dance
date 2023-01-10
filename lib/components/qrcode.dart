@@ -32,7 +32,7 @@ class _QrCodeComponentState extends State<QrCodeComponent> {
       builder: (ctx, snapshot) {
         final size = 280.0;
         if (!snapshot.hasData) {
-          return Container(width: size, height: size);
+          return SizedBox(width: size, height: size);
         }
         return CustomPaint(
           size: Size.square(size),
@@ -63,20 +63,18 @@ class _QrCodeComponentState extends State<QrCodeComponent> {
       child: SafeArea(
         top: true,
         bottom: true,
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: Center(
-                  child: Container(
-                    width: 280,
-                    child: qrFutureBuilder,
-                  ),
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Center(
+                child: SizedBox(
+                  width: 280,
+                  child: qrFutureBuilder,
                 ),
               ),
+            ),
 
-            ],
-          ),
+          ],
         ),
       ),
     );

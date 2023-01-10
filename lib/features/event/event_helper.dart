@@ -35,7 +35,7 @@ class EventHelper {
       required Text text,
       required Color buttonBackgroud,
       required Icon icon}) {
-    return Container(
+    return SizedBox(
       width: 150,
       child: TextButton.icon(
           icon: icon,
