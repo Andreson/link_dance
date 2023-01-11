@@ -97,7 +97,7 @@ class MovieRepository extends BaseRepository<MovieModel> {
   Future<List<String>> findRhythms() async {
     return [
       "Sertanejo",
-      "Vaneira paulista",
+      "Vanera paulista",
       "Forró",
       "Salsa",
       "Ballet",

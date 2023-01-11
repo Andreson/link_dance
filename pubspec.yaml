@@ -56,6 +56,7 @@ dependencies:
   upgrader: ^5.0.0
   package_info_plus: ^3.0.2
   qr_flutter: ^4.0.0
+  flutter_spinbox: ^0.12.0
 
 
 

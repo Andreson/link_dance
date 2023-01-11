@@ -1,12 +1,13 @@
 import 'package:link_dance/components/autocomplete.dart';
 import 'package:link_dance/components/widgets/autocomplete/autocomplete_rhythm_component.dart';
+import 'package:link_dance/core/theme/theme_data.dart';
 import 'package:link_dance/features/event/event_helper.dart';
 import 'package:link_dance/model/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'dart:io';
-
 
 import 'package:path_provider/path_provider.dart';
 import '../core/decorators/box_decorator.dart';
@@ -44,57 +45,56 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final EventHelper eventHelper = EventHelper();
   late AutoCompleteRhythmComponent autoCompleteRhythmComponent;
+  bool _vipList = false;
+  final Map<String, dynamic> _formData = {};
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _initAutocomplete();
-    final event = ModalRoute.of(context)!.settings.arguments as EventModel?;
-
-    widget.eventModel = event ?? EventModel.New();
   }
 
   @override
   Widget build(BuildContext context) {
-
+    final event = ModalRoute.of(context)!.settings.arguments as EventModel?;
+    widget.eventModel = event ?? EventModel.New();
     return Scaffold(
-      key: _scaffoldKey,
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {
-                _submit(context);
-              },
-              icon: Icon(Icons.save))
-        ],
-        title: Text("Cadastrar Evento"),
-      ),
-      body: Container(
+        key: _scaffoldKey,
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  _submit(context);
+                },
+                icon: const Icon(Icons.save))
+          ],
+          title: Text("Cadastrar Evento"),
+        ),
+        body: Container(
           decoration: boxImage("assets/images/backgroud4.jpg"),
-          child:buildBody(context),
-    ));
+          child: buildBody(context),
+        ));
   }
 
   void _selectDataRhythmsAutocomplete(AutoCompleteItem value) {
     widget.eventModel?.rhythm = value.id;
   }
 
-
   void _initAutocomplete() {
     autoCompleteRhythmComponent = AutoCompleteRhythmComponent(
         isExpanded: false,
         required: false,
         textInputAction: TextInputAction.next,
-        inputDecoration: const InputDecoration(labelText: "Ritmo",icon: Icon(FontAwesomeIcons.music)),
-        onSelected: _selectDataRhythmsAutocomplete
-    );
+        inputDecoration: const InputDecoration(
+            labelText: "Ritmo", icon: Icon(FontAwesomeIcons.music)),
+        onSelected: _selectDataRhythmsAutocomplete);
   }
 
   Widget buildBody(BuildContext context) {
@@ -119,7 +119,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                       label: "Nome",
                       icon: Icon(FontAwesomeIcons.plus),
                       onSaved: (value) {
-                        widget.eventModel!.title = value!;
+                        _formData['title'] = value;
                       }),
                   autoCompleteRhythmComponent,
                   CustomTextField(
@@ -128,7 +128,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                       label: "Descrição",
                       icon: const Icon(FontAwesomeIcons.list),
                       onSaved: (value) {
-                        widget.eventModel!.description = value!;
+                        _formData['description'] = value;
                       }),
 
                   CustomTextField(
@@ -138,7 +138,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                       label: "Local do evento",
                       icon: const Icon(FontAwesomeIcons.house),
                       onSaved: (value) {
-                        widget.eventModel!.place = value!;
+                        _formData['place'] = value;
                       }),
                   CustomTextField(
                       initialValue: widget.eventModel!.address,
@@ -146,7 +146,8 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                       label: "Endereço",
                       icon: const Icon(FontAwesomeIcons.signsPost),
                       onSaved: (value) {
-                        widget.eventModel!.address = value!;
+
+                        _formData['address'] = value;
                       }),
                   CustomTextField(
                       initialValue: widget.eventModel!.contact,
@@ -154,7 +155,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                       label: "Contatos",
                       icon: const Icon(FontAwesomeIcons.whatsapp),
                       onSaved: (value) {
-                        widget.eventModel!.contact = value!;
+                        _formData['contact'] = value;
                       }),
                   DateInputField(
                       initValue: widget.eventModel!.eventDate,
@@ -163,28 +164,73 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                       label: "Data",
                       hint: "Data da realização do evento",
                       onSaved: (value) {
-                        widget.eventModel!.eventDate =
-                            value.toString().toDate();
+                        _formData['eventDate'] = value.toString().toDate();
                       }),
-                  CurrencyInputField(
-                      initialValue: widget.eventModel!.price.toString(),
-                      required: false,
-                      label: "Preço",
-                      onSaved: (value) {
-                        if (value != null && value.isNotEmpty) {
-                          widget.eventModel!.price = value.parseDouble();
-                        }
-                      }),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: CurrencyInputField(
+                            initialValue: widget.eventModel!.price.toString(),
+                            required: false,
+                            label: "Preço Homem",
+                            onSaved: (value) {
+                              if (value != null && value.isNotEmpty) {
+                                _formData['malePrice']=value.parseDouble();
+                              }
+                            }),
+                      ),
+                      Flexible(
+                        child: CurrencyInputField(
+                            initialValue: widget.eventModel!.price.toString(),
+                            required: false,
+                            label: "Preço Mulher",
+                            onSaved: (value) {
+                              if (value != null && value.isNotEmpty) {
+                                widget.eventModel!.price = value.parseDouble();
+                                _formData['femalePrice']=value.parseDouble();
+                              }
+                            }),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Icon(FontAwesomeIcons.tag),
+                      ),
+                      const Text(
+                        "Lista Vip ?",
+                        style: formInputsStyles,
+                      ),
+                      Checkbox(
+                          activeColor: Colors.white54,
+                          value: _vipList,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _vipList = !_vipList;
+                            });
+                          }),
+
+                    ],
+                  ),
+                  if (_vipList)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40),
+                      child: Row(
+                      children: _getInputVipList(),
+                  ),
+                    ),
+
                   CustomTextField(
-                    textInputAction: TextInputAction.next,
+                      textInputAction: TextInputAction.next,
                       inputType: TextInputType.text,
-                      initialValue:widget.eventModel!.paymentData ,
+                      initialValue: widget.eventModel!.paymentData,
                       label: "Pix",
                       required: false,
                       icon: const Icon(Icons.wallet),
                       onSaved: (value) {
-                        widget.eventModel!.paymentData =value;
-
+                        _formData['paymentData']=value;
                       }),
                   // CustomTextField(
                   //     initialValue: widget.eventModel!.tags.join(","),
@@ -259,7 +305,8 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
       _saveEventRegistry({});
       return;
     }
-    var imagensUrls =await eventHelper.uploadImageBanner( context,authentication,path!);
+    var imagensUrls =
+        await eventHelper.uploadImageBanner(context, authentication, path!);
     _saveEventRegistry(imagensUrls);
   }
 
@@ -271,6 +318,46 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
           "As tags seram utilizadas para que os interessados encontrem o evento ao fazer uma busca."
           "Você pode user varias tags, basta digita-lás separando por virgula.  Tente usar termos intuitivos como o ritmo do evento, ou o tipo dele.",
     );
+  }
+
+  List<Widget> _getInputVipList() {
+    return [
+      const Text("Feminino : ",style: TextStyle(color:inputField )),
+      Flexible(
+        child: TextFormField(
+          textAlign: TextAlign.center,
+          style: const TextStyle(color:inputField ),
+          inputFormatters: [mask()],
+          onChanged: (value) {
+            _formData['femaleVip']=_formData;
+          },
+          keyboardType: TextInputType.number,
+          initialValue: "100",
+        ),
+      ),
+      sizedBoxH15(),
+      const Text("Masculino: ",style: TextStyle(color:inputField )),
+      Flexible(
+
+        child: TextFormField(
+          textAlign: TextAlign.center,
+          style: const TextStyle(color:inputField ),
+          inputFormatters: [mask()],
+          keyboardType: TextInputType.number,
+          initialValue: "0",
+          onChanged: (value){
+            _formData['maleVip']=_formData;
+          },
+        ),
+      )
+    ];
+  }
+
+  mask({String initValue = "0"}) {
+    return MaskTextInputFormatter(
+        initialText: initValue,
+        mask: '####',
+        type: MaskAutoCompletionType.lazy);
   }
 
   bool validations() {
@@ -285,11 +372,18 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
       return;
     }
     onLoading(context);
+    widget.eventModel =  EventModel.fromJson( _formData, '');
+
     if (bannerData.isNotEmpty) {
-      widget.eventModel?.uriBanner = bannerData['banner'] ;
-      widget.eventModel?.uriBannerThumb = bannerData['thumb'] ;
-      widget.eventModel?.storageRef = [ bannerData['bannerRef']!, bannerData['thumbRef']!,];
+      widget.eventModel?.uriBanner = bannerData['banner'];
+      widget.eventModel?.uriBannerThumb = bannerData['thumb'];
+      widget.eventModel?.storageRef = [
+        bannerData['bannerRef']!,
+        bannerData['thumbRef']!,
+      ];
     }
+
+
     widget.eventModel?.ownerId = authentication.user!.id;
     _formKey.currentState?.save();
     repository.saveOrUpdate(widget.eventModel!).then((value) {
@@ -302,8 +396,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
     }).catchError((onError) {
       Navigator.of(context).pop();
       showError(context,
-          content:
-              "Ocorreu um erro nao esperado ao salvar o evento");
+          content: "Ocorreu um erro nao esperado ao salvar o evento");
       print("Erro ao salvar flyer  do evento $onError");
     });
   }
@@ -314,8 +407,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
       path = null;
       widget.eventModel = EventModel.New();
       showImageName = const Text("");
-      autoCompleteRhythmComponent.textEdit.text="";
-
+      autoCompleteRhythmComponent.textEdit.text = "";
     });
   }
 

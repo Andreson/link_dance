@@ -24,13 +24,15 @@ class _LoginScreenState extends State<LoginScreen> {
   late LoginHelper loginHelper;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late String version;
+  Text version = Text("");
   bool _showPassword = false;
 
   @override
   void initState() {
     super.initState();
-
+    _getVersion().then((value) => setState(() {
+      version = Text(value, style: TextStyle(fontSize: 7),);
+    }));
   }
 
   @override
@@ -38,11 +40,12 @@ class _LoginScreenState extends State<LoginScreen> {
     super.didChangeDependencies();
     loginHelper = LoginHelper(context: context);
     loginHelper.tryAutoLogin();
-    _getVersion().then((value) => version = value);
+
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: false,
@@ -56,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
         Expanded(child: _header()),
         Flexible(
@@ -92,7 +95,6 @@ class _LoginScreenState extends State<LoginScreen> {
             fontSize: 17,
           ),
         ),
-
       ],
     );
   }
@@ -109,10 +111,11 @@ class _LoginScreenState extends State<LoginScreen> {
         _auxButtons(),
         sizedBox30(),
         Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Align(
-              alignment: FractionalOffset.bottomRight, child: Text(version, style: TextStyle(fontSize: 8),)),
-        )
+            padding: const EdgeInsets.all(5.0),
+            child: Align(
+              alignment: FractionalOffset.bottomRight,
+              child: version,
+            ))
       ],
     );
   }
@@ -203,8 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _loginController.dispose();
   }
 
-  Future<String>  _getVersion() async {
-
+  Future<String> _getVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
     String appName = packageInfo.appName;
@@ -213,7 +215,5 @@ class _LoginScreenState extends State<LoginScreen> {
     String buildNumber = packageInfo.buildNumber;
 
     return "v$buildNumber.$version";
-
   }
-
 }

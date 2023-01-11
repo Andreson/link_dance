@@ -74,9 +74,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 GestureDetector(
                   onTap: () {
                     showImageViewer(context, imageProviderCache,
-                        onViewerDismissed: () {
-
-                    });
+                        onViewerDismissed: () {});
                   },
                   child: event.uriBanner == null || event.uriBanner!.isEmpty
                       ? _getImageDefault()
@@ -106,7 +104,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             _detail(),
             EventListTileItem(
                 title: event.place ?? "Endereço",
-                subtitle: event.address,
+                subtitle: Text(event.address),
                 icon: FontAwesomeIcons.mapLocation,
                 iconTrailing: Icons.copy,
                 onPressedTrailing: () {
@@ -115,18 +113,16 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 }),
             EventListTileItem(
                 title: "Data",
-                subtitle: event.eventDate.showString(),
+                subtitle: Text(event.eventDate.showString()),
                 icon: FontAwesomeIcons.calendarCheck),
             EventListTileItem(
-                title: "Investimento",
-                subtitle: event.price != null
-                    ? "R\$ ${event.price!.toString()}"
-                    : "Na Faixa",
+                title: "Valor",
+                subtitle: getPrice(),
                 icon: Icons.monetization_on),
-            if (event.paymentData != null && event.paymentData!.isNotEmpty)
+          if (event.paymentData != null && event.paymentData!.isNotEmpty)
               EventListTileItem(
                 title: "Pix",
-                subtitle: event.paymentData!,
+                subtitle: Text(event.paymentData!),
                 icon: Icons.payments_outlined,
                 iconTrailing: Icons.copy,
                 onPressedTrailing: () {
@@ -134,9 +130,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       mensage: "Contato copiado.");
                 },
               ),
+        if (event.contact != null && event.contact!.isNotEmpty)
             EventListTileItem(
               title: "Contato",
-              subtitle: event.contact ,
+              subtitle: Text(event.contact),
               icon: Icons.perm_contact_cal,
               iconTrailing: Icons.copy,
               onPressedTrailing: () {
@@ -147,6 +144,26 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           ]),
         ),
       ),
+    );
+  }
+
+  Row getPrice() {
+    
+    return Row(
+      children: [
+        Icon(FontAwesomeIcons.person),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("R\$ 50"),
+        ),
+        sizedBoxH20(),
+        Icon(FontAwesomeIcons.personDress),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("R\$  70"),
+        ),
+        
+      ],
     );
   }
 
@@ -195,9 +212,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
     if (userEvent != null &&
         userEvent!.status == EventRegisterStatus.subscribe) {
-
-      buttonSubscribe = eventHelper.buttonUnsubscription(context: context,
-          text: "Vip", onPressed: unSubscribe);
+      buttonSubscribe = eventHelper.buttonUnsubscription(
+          context: context, text: "Vip", onPressed: unSubscribe);
     } else {
       print("build userEventis null or unsubscribe  button");
       buttonSubscribe = eventHelper.buttonSubscription(
@@ -213,10 +229,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       showError(context);
     });
     setState(() {
-      buttonSubscribe = eventHelper.buttonUnsubscription(context: context,
-          text: "Vip", onPressed: unSubscribe);
+      buttonSubscribe = eventHelper.buttonUnsubscription(
+          context: context, text: "Vip", onPressed: unSubscribe);
     });
   }
+
   void unSubscribe() async {
     await eventRepository
         .unsubscribeEvent(userEvent: userEvent!)

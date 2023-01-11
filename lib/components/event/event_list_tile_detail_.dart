@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class EventListTileItem extends StatelessWidget {
   String title;
-  String subtitle;
+  Widget subtitle;
   final IconData icon;
   IconData? iconTrailing;
   Function()? onPressedTrailing;
@@ -14,13 +14,13 @@ class EventListTileItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       shape: RoundedRectangleBorder( //<-- SEE HERE
-        side: BorderSide(width: 1),
+        side: const BorderSide(width: 1),
         borderRadius: BorderRadius.circular(1),
       ),
       tileColor: Colors.transparent,
       leading: Icon(icon),
       title: SelectableText(title),
-      subtitle: Text(subtitle),
+      subtitle: subtitle,
       trailing: trailing(),
     );
   }
