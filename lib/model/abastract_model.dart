@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:link_dance/core/exception/exceptions.dart';
 import 'package:link_dance/model/content_group_model.dart';
-import 'package:link_dance/model/event_model.dart';
+import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/model/movie_model.dart';
 import 'package:link_dance/model/notify_message_model.dart';
 import 'package:link_dance/model/teacher_model.dart';
@@ -20,7 +20,7 @@ abstract class AbastractModel {
       return ContentGroupModel.fromJson(data, id);
     }
     if ("EventModel" == type.toString()) {
-      return EventModel.fromJson(data, id);
+      return EventModel.fromJson(data);
     }
     if ("MovieModel" == type.toString()) {
       return MovieModel.fromJson(data, id ??"");

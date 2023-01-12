@@ -1,6 +1,6 @@
 import 'package:link_dance/components/contentGroup/content_group_item_list.dart';
 import 'package:link_dance/components/list_view_component.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/model/content_group_model.dart';
 import 'package:link_dance/model/user_model.dart';
 import 'package:link_dance/repository/base_repository.dart';

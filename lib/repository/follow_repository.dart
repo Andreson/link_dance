@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/model/follow_count_model.dart';
 import 'package:link_dance/model/user_follow_teacher_model.dart';
 import 'package:link_dance/repository/base_repository.dart';

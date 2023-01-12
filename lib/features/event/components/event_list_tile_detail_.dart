@@ -7,13 +7,18 @@ class EventListTileItem extends StatelessWidget {
   IconData? iconTrailing;
   Function()? onPressedTrailing;
 
-
-  EventListTileItem({required this.title,this.onPressedTrailing, this.iconTrailing, required this.subtitle,required this.icon});
+  EventListTileItem(
+      {required this.title,
+      this.onPressedTrailing,
+      this.iconTrailing,
+      required this.subtitle,
+      required this.icon});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      shape: RoundedRectangleBorder( //<-- SEE HERE
+      shape: RoundedRectangleBorder(
+        //<-- SEE HERE
         side: const BorderSide(width: 1),
         borderRadius: BorderRadius.circular(1),
       ),
@@ -27,13 +32,11 @@ class EventListTileItem extends StatelessWidget {
 
 
   Widget? trailing() {
-
     IconData temp = iconTrailing ?? Icons.add;
-    if ( onPressedTrailing!=null) {
+    if (onPressedTrailing != null) {
       return IconButton(onPressed: onPressedTrailing, icon: Icon(temp));
-    }else {
+    } else {
       return null;
     }
   }
-
 }

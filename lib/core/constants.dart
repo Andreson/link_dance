@@ -1,6 +1,6 @@
 abstract class Constants {
-  static String env="prod";
-  static const String baseUrlDev = "https://linkdance-691ad-default-rtdb.firebaseio.com";
+  static String env="dev";
+  static const String baseUrlDev = "https://ballo-app-default-rtdb.firebaseio.com";
   static const String baseUrlProd = "https://linkdance-691ad-default-rtdb.firebaseio.com";
   static const String firebaseApiKeyDev = "AIzaSyDeh0P4Qc2rm4hDOQmhK7COUkQZazSM3pg";
   static const String firebaseApiKeyProd = "AIzaSyBYjavKCwFGGfspj_ThSugG6C8MXZm9-x0";

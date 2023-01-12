@@ -1,5 +1,5 @@
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/features/authentication/auth_base.dart';
+import 'package:link_dance/core/authentication/auth_base.dart';
 
 import 'abastract_model.dart';
 

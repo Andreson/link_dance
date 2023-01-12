@@ -123,4 +123,33 @@ SizedBox sizedBoxH20() {
   );
 }
 
+SizedBox sizedBoxH25() {
+  return const SizedBox(
+    width: 25,
+  );
+}
+
+SizedBox sizedBoxH30() {
+  return const SizedBox(
+    width: 30,
+  );
+}
+
+SizedBox sizedBoxH35() {
+  return const SizedBox(
+    width: 35,
+  );
+}
+
+SizedBox sizedBoxH40() {
+  return const SizedBox(
+    width: 40,
+  );
+}
+
+SizedBox sizedBoxH50() {
+  return const SizedBox(
+    width: 50,
+  );
+}
 

@@ -4,9 +4,9 @@ import 'package:link_dance/components/widgets/autocomplete/autocomplete_teacher_
 import 'package:link_dance/components/widgets/filter_component.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/features/filter/base_wrapper_filter.dart';
+import 'package:link_dance/core/filter/base_wrapper_filter.dart';
 
-import 'package:link_dance/repository/event_repository.dart';
+import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:link_dance/repository/teacher_repository.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';

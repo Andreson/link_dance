@@ -1,13 +1,13 @@
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/features/cache/movie_cache_helper.dart';
+import 'package:link_dance/core/cache/movie_cache_helper.dart';
 
 import 'package:link_dance/model/teacher_model.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/theme/fontStyles.dart';
-import '../../core/theme/theme_data.dart';
-import '../../core/decorators/box_decorator.dart';
+import '../../../core/theme/fontStyles.dart';
+import '../../../core/theme/theme_data.dart';
+import '../../../core/decorators/box_decorator.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 
 

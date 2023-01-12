@@ -2,7 +2,7 @@ import 'package:link_dance/components/autocomplete.dart';
 import 'package:link_dance/components/widgets/autocomplete/autocomplete_rhythm_component.dart';
 import 'package:link_dance/components/widgets/filter_component.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/features/filter/base_wrapper_filter.dart';
+import 'package:link_dance/core/filter/base_wrapper_filter.dart';
 
 import 'package:link_dance/repository/content_group_respository.dart';
 import 'package:flutter/widgets.dart';

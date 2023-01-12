@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:link_dance/core/constants.dart';
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
-import 'package:link_dance/model/event_model.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/model/user_event_model.dart';
 import 'package:link_dance/model/user_model.dart';
 import 'package:link_dance/repository/base_repository.dart';
@@ -156,7 +156,9 @@ class EventRepository extends BaseRepository<EventModel> {
   Query<EventModel> _queryRef() {
     return _getCollection().withConverter<EventModel>(
         fromFirestore: (snapshots, _) {
-          return EventModel.fromJson(snapshots.data()!, snapshots.id);
+          var data = snapshots.data()!;
+          data['id'] = snapshots.id;
+          return EventModel.fromJson(data);
         },
         toFirestore: (event, _) => event.body());
   }
@@ -182,7 +184,7 @@ class EventRepository extends BaseRepository<EventModel> {
   Future<void> _update(EventModel event) async {
     return _getCollection()
         .doc(event.id)
-        .update(event.bodyToUpdate())
+        .update(event.deserialize())
         .catchError((error) => throw error);
   }
 

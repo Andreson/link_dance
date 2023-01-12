@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:chewie/chewie.dart';
-import 'package:link_dance/features/cache/movie_cache_helper.dart';
+import 'package:link_dance/core/cache/movie_cache_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';

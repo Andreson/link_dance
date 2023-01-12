@@ -5,9 +5,9 @@ import 'package:link_dance/components/widgets/filter_component.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/features/filter/base_wrapper_filter.dart';
+import 'package:link_dance/core/filter/base_wrapper_filter.dart';
 
-import 'package:link_dance/repository/event_repository.dart';
+import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';

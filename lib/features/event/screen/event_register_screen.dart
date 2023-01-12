@@ -1,35 +1,35 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:link_dance/components/autocomplete.dart';
 import 'package:link_dance/components/widgets/autocomplete/autocomplete_rhythm_component.dart';
+import 'package:link_dance/core/extensions/datetime_extensions.dart';
 import 'package:link_dance/core/theme/theme_data.dart';
 import 'package:link_dance/features/event/event_helper.dart';
-import 'package:link_dance/model/event_model.dart';
+import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_image/flutter_native_image.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'dart:io';
-
-import 'package:path_provider/path_provider.dart';
-import '../core/decorators/box_decorator.dart';
+import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/components/input_fields/currency_field.dart';
 import 'package:link_dance/components/input_fields/date_field.dart';
 import 'package:link_dance/components/input_fields/text_buton.dart';
 import 'package:link_dance/components/input_fields/text_field.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
-import 'package:link_dance/features/upload_files/file_upload.dart';
-import 'package:link_dance/repository/event_repository.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/core/upload_files/file_upload.dart';
+import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:provider/provider.dart';
-import '../../core/decorators/box_decorator.dart';
-import '../../core/factory_widget.dart';
-import '../../core/theme/fontStyles.dart';
+
+import 'package:link_dance/core/factory_widget.dart';
+import 'package:link_dance/core/theme/fontStyles.dart';
+
+import '../../../model/user_model.dart';
 
 class EventRegisterScreen extends StatefulWidget {
-  EventModel? eventModel;
 
-  EventRegisterScreen({Key? key, this.eventModel}) : super(key: key);
+  EventRegisterScreen({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _RegisterEventFormState();
@@ -41,29 +41,39 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
   FileUpload fileUpload = FileUpload();
   String? path;
   Text showImageName = const Text("");
-  late AuthenticationFacate authentication;
+  late UserModel userModel;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final EventHelper eventHelper = EventHelper();
   late AutoCompleteRhythmComponent autoCompleteRhythmComponent;
   bool _vipList = false;
-  final Map<String, dynamic> _formData = {};
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
+  Map<String, dynamic> _formData = {};
+  TextEditingController eventDateController =    TextEditingController();
+  final FocusNode _timeMaleFocus = FocusNode();
+  final FocusNode _timeFemaleFocus = FocusNode();
+  late String pageTitle;
   @override
   void didChangeDependencies() {
-    super.didChangeDependencies();
+      var event = ModalRoute.of(context)!.settings.arguments as EventModel?;
+    if (event != null) {
+      _formData = event.deserialize();
+      eventDateController.text = event.createDate.showString();
+      pageTitle = _formData['id']!=null && _formData['id'].toString().isNotEmpty ? "Editar Evento":"Cadastrar evento";
+      _vipList =_formData['hasVip'];
+    } else {
+      _formData = {};
+      pageTitle="Criar novo evento";
+    }
     _initAutocomplete();
+    userModel = Provider.of<AuthenticationFacate>(context, listen: false).user!;
+    repository = Provider.of<EventRepository>(context, listen: false);
+
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    final event = ModalRoute.of(context)!.settings.arguments as EventModel?;
-    widget.eventModel = event ?? EventModel.New();
+
+
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
@@ -75,7 +85,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                 },
                 icon: const Icon(Icons.save))
           ],
-          title: Text("Cadastrar Evento"),
+          title: Text(pageTitle),
         ),
         body: Container(
           decoration: boxImage("assets/images/backgroud4.jpg"),
@@ -84,7 +94,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
   }
 
   void _selectDataRhythmsAutocomplete(AutoCompleteItem value) {
-    widget.eventModel?.rhythm = value.id;
+    _formData['rhythm'] = value.id;
   }
 
   void _initAutocomplete() {
@@ -93,14 +103,16 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
         required: false,
         textInputAction: TextInputAction.next,
         inputDecoration: const InputDecoration(
-            labelText: "Ritmo", icon: Icon(FontAwesomeIcons.music)),
+            labelText: "Ritmo",
+            icon: Icon(
+              FontAwesomeIcons.music,
+              size: 18,
+            )),
         onSelected: _selectDataRhythmsAutocomplete);
+    autoCompleteRhythmComponent.textEdit.text=_formData['rhythm'] ;
   }
 
   Widget buildBody(BuildContext context) {
-    authentication = Provider.of<AuthenticationFacate>(context, listen: false);
-    repository = Provider.of<EventRepository>(context, listen: false);
-
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(10),
@@ -114,19 +126,19 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CustomTextField(
-                      initialValue: widget.eventModel!.title,
+                      initialValue: _formData['title'],
                       inputType: TextInputType.streetAddress,
                       label: "Nome",
-                      icon: Icon(FontAwesomeIcons.plus),
+                      iconData: FontAwesomeIcons.user,
                       onSaved: (value) {
                         _formData['title'] = value;
                       }),
                   autoCompleteRhythmComponent,
                   CustomTextField(
                       maxLines: 2,
-                      initialValue: widget.eventModel!.description,
+                      initialValue: _formData['description'],
                       label: "Descrição",
-                      icon: const Icon(FontAwesomeIcons.list),
+                      iconData: FontAwesomeIcons.list,
                       onSaved: (value) {
                         _formData['description'] = value;
                       }),
@@ -134,60 +146,63 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                   CustomTextField(
                       required: false,
                       hint: "ex.: Espaço cultural, Ibirapuera.",
-                      initialValue: widget.eventModel!.place,
+                      initialValue: _formData['place'],
                       label: "Local do evento",
-                      icon: const Icon(FontAwesomeIcons.house),
+                      iconData: FontAwesomeIcons.house,
                       onSaved: (value) {
                         _formData['place'] = value;
                       }),
                   CustomTextField(
-                      initialValue: widget.eventModel!.address,
+                      initialValue: _formData['address'],
                       inputType: TextInputType.streetAddress,
                       label: "Endereço",
-                      icon: const Icon(FontAwesomeIcons.signsPost),
+                      iconData: FontAwesomeIcons.signsPost,
                       onSaved: (value) {
-
                         _formData['address'] = value;
                       }),
                   CustomTextField(
-                      initialValue: widget.eventModel!.contact,
+                      initialValue: _formData['contact'],
                       hint: "@meu_insta  | (11) 91047-7815 ou (11) 90478-6211",
                       label: "Contatos",
-                      icon: const Icon(FontAwesomeIcons.whatsapp),
+                      iconData: FontAwesomeIcons.whatsapp,
                       onSaved: (value) {
                         _formData['contact'] = value;
                       }),
                   DateInputField(
-                      initValue: widget.eventModel!.eventDate,
-                      onlyFutureDate: true,
+                      textController: eventDateController ,
+                      isDatePicker: true,
+
+                      onlyFuture: true,
                       required: true,
                       label: "Data",
                       hint: "Data da realização do evento",
                       onSaved: (value) {
-                        _formData['eventDate'] = value.toString().toDate();
+                        _formData['eventDate'] = value.toString().toTimestamp();
                       }),
                   Row(
                     children: [
                       Flexible(
                         child: CurrencyInputField(
-                            initialValue: widget.eventModel!.price.toString(),
+                            initialValue:
+                                _formData['malePrice'].toString().emptyIfNull(),
                             required: false,
                             label: "Preço Homem",
                             onSaved: (value) {
                               if (value != null && value.isNotEmpty) {
-                                _formData['malePrice']=value.parseDouble();
+                                _formData['malePrice'] = value.parseDouble();
                               }
                             }),
                       ),
                       Flexible(
                         child: CurrencyInputField(
-                            initialValue: widget.eventModel!.price.toString(),
+                            initialValue: _formData['femalePrice']
+                                .toString()
+                                .emptyIfNull(),
                             required: false,
                             label: "Preço Mulher",
                             onSaved: (value) {
                               if (value != null && value.isNotEmpty) {
-                                widget.eventModel!.price = value.parseDouble();
-                                _formData['femalePrice']=value.parseDouble();
+                                _formData['femalePrice'] = value.parseDouble();
                               }
                             }),
                       ),
@@ -197,7 +212,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                     children: [
                       const Padding(
                         padding: EdgeInsets.only(right: 10),
-                        child: Icon(FontAwesomeIcons.tag),
+                        child: Icon(FontAwesomeIcons.ticket),
                       ),
                       const Text(
                         "Lista Vip ?",
@@ -211,26 +226,61 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                               _vipList = !_vipList;
                             });
                           }),
-
                     ],
                   ),
                   if (_vipList)
                     Padding(
                       padding: const EdgeInsets.only(left: 40),
                       child: Row(
-                      children: _getInputVipList(),
-                  ),
+                        children: _getInputValueVipList(),
+                      ),
                     ),
+                  if (_vipList)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40),
+                      child: Row(
+                        children: [
 
+                          Flexible(
+                            child: CustomTextField(
+                                focusNode: _timeFemaleFocus,
+                                inputType: TextInputType.number,
+                                inputFormatter: [hourMask()],
+                                required: false,
+                                hint: "Horário do vip Feminino",
+                                initialValue: _formData['vipTimeFemale'] ?? "",
+                                label: "Vip até",
+                                onSaved: (value) {
+                                  _formData['vipTimeFemale'] = value;
+                                }),
+                          ),
+                          sizedBoxH15(),
+                          Flexible(
+                            child: CustomTextField(
+                                focusNode: _timeMaleFocus,
+                                inputType: TextInputType.number,
+                                inputFormatter: [hourMask()],
+                                required: false,
+                                hint: "Horário do vip masculino",
+                                initialValue: _formData['vipTimeMale'] ?? "",
+                                label: "Vip até",
+                                onSaved: (value) {
+                                  _formData['vipTimeMale'] = value;
+                                }),
+                          )
+
+                        ],
+                      ),
+                    ),
                   CustomTextField(
                       textInputAction: TextInputAction.next,
                       inputType: TextInputType.text,
-                      initialValue: widget.eventModel!.paymentData,
+                      initialValue: _formData['paymentData'],
                       label: "Pix",
                       required: false,
                       icon: const Icon(Icons.wallet),
                       onSaved: (value) {
-                        _formData['paymentData']=value;
+                        _formData['paymentData'] = value;
                       }),
                   // CustomTextField(
                   //     initialValue: widget.eventModel!.tags.join(","),
@@ -275,6 +325,11 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                             label: "Selecionar Flyer "),
                       )),
                   sizedBox10(),
+                  if (path != null) OutlinedButton(onPressed: () {
+                    setState((){
+                      path=null;
+                    });
+                  }, child: const Text("Remover imagem")) ,
                   if (path != null) showImageName,
                   sizedBox10(),
                   Row(
@@ -305,51 +360,63 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
       _saveEventRegistry({});
       return;
     }
-    var imagensUrls =
-        await eventHelper.uploadImageBanner(context, authentication, path!);
+    Map<String, dynamic> imagensUrls = {};
+    await eventHelper
+        .uploadImage(
+            path: path!,
+            showLoading: (stream) {
+              onLoading(context,
+                  stream: stream, actionMesage: "Fazer upload da imagem");
+            })
+        .then((value) {
+      Navigator.of(context).pop();
+      imagensUrls = value;
+    }).catchError((onError) {
+      showError(context,
+          content: "Ocorreu um erro nao esperado, por favor, tente novamente.");
+      print("Erro ao fazer upload de imagem $onError");
+    });
+
     _saveEventRegistry(imagensUrls);
   }
 
-  void showInfoTags() {
-    showInfo(
-      context: context,
-      title: "Pra que servem as tags?",
-      content:
-          "As tags seram utilizadas para que os interessados encontrem o evento ao fazer uma busca."
-          "Você pode user varias tags, basta digita-lás separando por virgula.  Tente usar termos intuitivos como o ritmo do evento, ou o tipo dele.",
-    );
-  }
-
-  List<Widget> _getInputVipList() {
+  List<Widget> _getInputValueVipList() {
     return [
-      const Text("Feminino : ",style: TextStyle(color:inputField )),
+      const Text("Feminino : ", style: TextStyle(color: inputField)),
       Flexible(
         child: TextFormField(
           textAlign: TextAlign.center,
-          style: const TextStyle(color:inputField ),
+          style: const TextStyle(color: inputField),
           inputFormatters: [mask()],
-          onChanged: (value) {
-            _formData['femaleVip']=_formData;
+          onSaved: (value) {
+            _formData['femaleVip'] = int.parse( value??"0");
+            print("femaleVip VIP ${_formData['femaleVip']}");
           },
           keyboardType: TextInputType.number,
-          initialValue: "100",
+          initialValue: _formData['femaleVip'].toString().emptyIfNull(),
         ),
       ),
       sizedBoxH15(),
-      const Text("Masculino: ",style: TextStyle(color:inputField )),
+      const Text("Masculino: ", style: TextStyle(color: inputField)),
       Flexible(
-
         child: TextFormField(
           textAlign: TextAlign.center,
-          style: const TextStyle(color:inputField ),
+          style: const TextStyle(color: inputField),
           inputFormatters: [mask()],
           keyboardType: TextInputType.number,
-          initialValue: "0",
-          onChanged: (value){
-            _formData['maleVip']=_formData;
+          initialValue: _formData['maleVip'].toString().emptyIfNull(),
+          onSaved: (value) {
+            _formData['maleVip'] = int.parse( value ?? "0");
+            print("Male VIP ${_formData['maleVip']}");
           },
         ),
       )
+    ];
+  }
+
+  List<Widget> _getInputVipHourList() {
+    return [
+
     ];
   }
 
@@ -367,28 +434,26 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
     return true;
   }
 
-  _saveEventRegistry(Map<String, String> bannerData) {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+  _saveEventRegistry(Map<String, dynamic> bannerData) {
+    _formKey.currentState!.save();
+    _formData['ownerId'] = userModel.id;
+    _formData['createDate'] = Timestamp.now();
+    _formData['hasVip']= _vipList;
+
     onLoading(context);
-    widget.eventModel =  EventModel.fromJson( _formData, '');
+    EventModel eventModel = EventModel.fromJson(_formData);
 
     if (bannerData.isNotEmpty) {
-      widget.eventModel?.uriBanner = bannerData['banner'];
-      widget.eventModel?.uriBannerThumb = bannerData['thumb'];
-      widget.eventModel?.storageRef = [
-        bannerData['bannerRef']!,
-        bannerData['thumbRef']!,
-      ];
+      eventModel.uriBanner = bannerData['photo'];
+      eventModel.uriBannerThumb = bannerData['thumbPhoto'];
+      eventModel.storageRef = bannerData['storageRef']!;
     }
 
-
-    widget.eventModel?.ownerId = authentication.user!.id;
+    eventModel.ownerId = userModel.id;
     _formKey.currentState?.save();
-    repository.saveOrUpdate(widget.eventModel!).then((value) {
+    repository.saveOrUpdate(eventModel!).then((value) {
       Navigator.of(context).pop();
-      cleanForm();
+      //cleanForm();
       showInfo(
           context: context,
           content: "Evento cadastrado com sucesso",
@@ -405,7 +470,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
     setState(() {
       _formKey.currentState?.reset();
       path = null;
-      widget.eventModel = EventModel.New();
+
       showImageName = const Text("");
       autoCompleteRhythmComponent.textEdit.text = "";
     });

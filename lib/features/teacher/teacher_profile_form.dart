@@ -8,8 +8,8 @@ import 'package:link_dance/components/widgets/autocomplete/autocomplete_rhythm_c
 import 'package:link_dance/components/widgets/imagem_avatar_component.dart';
 import 'package:link_dance/core/constants.dart';
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
-import 'package:link_dance/features/upload_files/file_upload.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/core/upload_files/file_upload.dart';
 import 'package:link_dance/model/movie_model.dart';
 import 'package:link_dance/model/teacher_model.dart';
 import 'package:link_dance/repository/content_group_respository.dart';

@@ -1,12 +1,13 @@
-import 'package:link_dance/screens/teacher/teacher_card_item.dart';
 
-import 'package:link_dance/features/authentication/auth_facate.dart';
+
+import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/features/teacher/components/teacher_card_item.dart';
 import 'package:link_dance/model/teacher_model.dart';
 import 'package:flutter/material.dart';
 import 'package:link_dance/repository/teacher_repository.dart';
 import 'package:provider/provider.dart';
-import '../../core/decorators/box_decorator.dart';
-import '../../core/factory_widget.dart';
+import '../../../core/decorators/box_decorator.dart';
+import '../../../core/factory_widget.dart';
 
 class TeacherListComponent extends StatelessWidget {
   late TeacherRepository repository;

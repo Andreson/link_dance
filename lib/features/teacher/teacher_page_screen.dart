@@ -9,7 +9,7 @@ import 'package:link_dance/core/constants.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
 
 import 'package:link_dance/model/content_user_acess_model.dart';
 import 'package:link_dance/model/follow_count_model.dart';

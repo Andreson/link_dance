@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:link_dance/core/extensions/datetime_extensions.dart';
-import 'package:link_dance/features/cache/movie_cache_helper.dart';
+import 'package:link_dance/core/cache/movie_cache_helper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:link_dance/core/enumerate.dart';

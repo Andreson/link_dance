@@ -1,9 +1,9 @@
 import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/model/event_model.dart';
+import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/model/movie_model.dart';
-import 'package:link_dance/repository/event_repository.dart';
+import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:link_dance/repository/movie_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

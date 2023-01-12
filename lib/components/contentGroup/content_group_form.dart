@@ -8,7 +8,7 @@ import 'package:link_dance/components/input_fields/text_buton.dart';
 import 'package:link_dance/components/input_fields/text_field.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/features/contentgroup/content_group_helper.dart';
 
 

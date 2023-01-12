@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:link_dance/core/constants.dart';
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
+
 import 'package:link_dance/model/user_model.dart';
 import 'package:link_dance/repository/user_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../model/login_model.dart';
 import 'auth_base.dart';
+import 'auth_facate.dart';
 
 class EmailAuthentication extends BaseAuthentication {
   AuthenticationFacate auth;

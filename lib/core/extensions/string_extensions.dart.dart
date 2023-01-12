@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 extension StringExtension on String {
@@ -43,9 +44,16 @@ extension StringExtension on String {
     return DateFormat(format).parse(this);
   }
 
+  String emptyIfNull() {
+    return this=="null" ? "":this;
+  }
+  Timestamp toTimestamp({String format = "dd/MM/yyyy"}) {
+    return Timestamp.fromDate(DateFormat(format).parse(this));
+  }
+
   double parseDouble() {
     var temp = replaceAll("R\$", "").replaceFirst(",", ".");
-    print("valor double convertido  $temp");
+
     return double.parse(temp);
   }
 }

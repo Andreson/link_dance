@@ -1,12 +1,12 @@
-import 'package:link_dance/components/event/event_item_list.dart';
+import 'package:link_dance/features/event/components/event_item_list.dart';
 import 'package:link_dance/components/list_view_component.dart';
 import 'package:link_dance/components/notify/notify_item_list.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
-import 'package:link_dance/model/event_model.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/model/notify_message_model.dart';
 import 'package:link_dance/model/user_model.dart';
 import 'package:link_dance/repository/base_repository.dart';
-import 'package:link_dance/repository/event_repository.dart';
+import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:link_dance/repository/notify_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

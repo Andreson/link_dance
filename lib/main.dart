@@ -3,18 +3,19 @@ import 'dart:ui';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:link_dance/components/movie/video_play.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
-import 'package:link_dance/repository/event_repository.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/features/login/login_screen.dart';
+import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:link_dance/repository/follow_repository.dart';
 import 'package:link_dance/repository/movie_repository.dart';
 import 'package:link_dance/repository/notify_repository.dart';
 import 'package:link_dance/repository/teacher_repository.dart';
 import 'package:link_dance/repository/content_group_respository.dart';
 import 'package:link_dance/repository/user_repository.dart';
-import 'package:link_dance/screens/login/login_screen.dart';
+
 import 'package:link_dance/screens/movie_play_screen.dart';
 import 'package:link_dance/screens/movie_upload_screen.dart';
-import 'package:link_dance/screens/event_register_screen.dart';
+
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -25,16 +26,17 @@ import './core/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: const FirebaseOptions(
-      apiKey: "AIzaSyBYjavKCwFGGfspj_ThSugG6C8MXZm9-x0",
-      appId: "1:325634634089:android:39ba96a9be77da9cb20df8",
-      messagingSenderId: "325634634089",
-      projectId: "linkdance-691ad",
-    ),
-  );
 
-
+  if ( Firebase.apps.isEmpty ) {
+    await Firebase.initializeApp(
+        // options: const FirebaseOptions(
+        //   apiKey: "AIzaSyBYjavKCwFGGfspj_ThSugG6C8MXZm9-x0",
+        //   appId: "1:325634634089:android:39ba96a9be77da9cb20df8",
+        //   messagingSenderId: "325634634089",
+        //   projectId: "linkdance-691ad",
+        // ),
+        );
+  }
 
   bool weWantFatalErrorRecording = true;
   FlutterError.onError = (errorDetails) {

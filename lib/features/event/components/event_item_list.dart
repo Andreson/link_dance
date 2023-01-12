@@ -1,12 +1,13 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/features/cache/movie_cache_helper.dart';
-import 'package:link_dance/model/event_model.dart';
-import 'package:link_dance/repository/event_repository.dart';
+import 'package:link_dance/core/cache/movie_cache_helper.dart';
+import 'package:link_dance/features/event/model/event_model.dart';
+import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/extensions/datetime_extensions.dart';
-import '../../core/theme/fontStyles.dart';
+import '../../../core/extensions/datetime_extensions.dart';
+import '../../../core/theme/fontStyles.dart';
 
 class EventItemComponent extends StatelessWidget {
   EventModel event;
@@ -21,15 +22,13 @@ class EventItemComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     eventRepository = Provider.of<EventRepository>(context, listen: false);
     var listTiler = _contentBody(context);
-    if ( readOnly ) {
+    if (readOnly) {
       return listTiler;
     }
-    return _dimissible(listTiler,context);
-
+    return _dimissible(listTiler, context);
   }
 
-
-  Widget _dimissible(Widget child,BuildContext context) {
+  Widget _dimissible(Widget child, BuildContext context) {
     return Dismissible(
       direction: DismissDirection.startToEnd,
       background: Container(
@@ -68,20 +67,39 @@ class EventItemComponent extends StatelessWidget {
                 children: [
                   Flexible(
                       child: Text(
-                        event.title,
-                        overflow: TextOverflow.ellipsis,
-                      )),
-                  Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: _getPrice()),
+                    event.title,
+                    overflow: TextOverflow.ellipsis,
+                  )),
+
                 ]),
-            trailing: readOnly?null: IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, RoutesPages.eventRegister.name,
-                    arguments: event);
-              },
-              icon: const Icon(Icons.edit),
-            ),
+            trailing: readOnly
+                ? null
+                : Column(children: [
+                    Flexible(
+                      child: IconButton(
+                        tooltip: "Criar novo apartir desse",
+                        onPressed: () {
+                          event.id = "";
+                          event.title= "";
+                          Navigator.pushNamed(
+                              context, RoutesPages.eventRegister.name,
+                              arguments: event);
+                        },
+                        icon: const Icon(FontAwesomeIcons.clone, size: 16),
+                      ),
+                    ),
+                    Flexible(
+                      child: IconButton(
+                        tooltip: "Editar",
+                        onPressed: () {
+                          Navigator.pushNamed(
+                              context, RoutesPages.eventRegister.name,
+                              arguments: event);
+                        },
+                        icon: const Icon(Icons.edit, size: 16),
+                      ),
+                    )
+                  ]),
           ),
         ));
   }
@@ -94,12 +112,6 @@ class EventItemComponent extends StatelessWidget {
     }).whenComplete(() => Navigator.of(context).pop());
   }
 
-  Text _getPrice() {
-    if (event.price == null || event.price == 0) {
-      return const Text("Na faixa");
-    }
-    return Text("R\$ ${event.price ?? 0}");
-  }
 
   Widget _getImage() {
     double width = 70;
@@ -113,8 +125,8 @@ class EventItemComponent extends StatelessWidget {
     } else {
       String url = event.uriBannerThumb ?? event.uriBanner!;
 
-      return cachedManager.getImage(url: url, width: 70, height: 70,fit: BoxFit.cover);
-
+      return cachedManager.getImage(
+          url: url, width: 70, height: 70, fit: BoxFit.cover);
     }
   }
 }

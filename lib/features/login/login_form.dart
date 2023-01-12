@@ -2,7 +2,7 @@ import 'package:link_dance/components/input_fields/text_buton.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/routes.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/features/login/login_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

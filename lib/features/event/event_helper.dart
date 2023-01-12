@@ -1,12 +1,14 @@
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:link_dance/components/qrcode.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
-import 'package:link_dance/features/upload_files/file_upload.dart';
-import 'package:link_dance/model/event_model.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/core/types.dart';
+import 'package:link_dance/core/upload_files/file_upload.dart';
+import 'package:link_dance/features/event/model/event_model.dart';
 
-import 'package:link_dance/repository/event_repository.dart';
+import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -57,7 +59,10 @@ class EventHelper {
   }
 
   Widget buttonUnsubscription(
-      {required Function() onPressed, required String text, required BuildContext context}) {
+      {required Function() onPressed,
+      required String text,
+      required BuildContext context,
+      bool hasTicket = false}) {
     var t =
         Text(text, style: const TextStyle(color: Colors.white, fontSize: 14));
     var button = _buildButton(
@@ -73,75 +78,82 @@ class EventHelper {
           padding: const EdgeInsets.only(left: 15),
           child: button,
         ),
-
-        Row(children: [
-          TextButton.icon(onPressed: () {
-            print("object");
-            showQrCode(context);
-          }, icon: Icon(FontAwesomeIcons.qrcode), label: Text("Ingresso"),),
-
-        ],)
-
+        if (hasTicket)
+          Row(
+            children: [
+              TextButton.icon(
+                onPressed: () {
+                  showQrCode(context);
+                },
+                icon: const Icon(FontAwesomeIcons.qrcode),
+                label: const Text("Ingresso"),
+              ),
+            ],
+          )
       ],
     );
   }
 
-  void  showQrCode(BuildContext context) {
-    showDialog(context: context,builder:  (BuildContext context)
-    {
-     return  GestureDetector(
-       onTap: (){
-         Navigator.of(context).pop();
-       },
-       child: AlertDialog(
-          title: Text("Ingresso"),
-
-          content: SizedBox(width: 350,height: 350, child: QrCodeComponent(content: "https://firebasestorage.googleapis.com/v0/b/linkdance-691ad.appspot.com/o/pictures%2Fpicture-12181671396354326.jpg?alt=media&token=1b2a2813-e011-48da-aff9-c0fd7a8860f8")),
-        ),
-     );
-    });
-
+  void showQrCode(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: AlertDialog(
+              title: const Text("Ingresso"),
+              content: SizedBox(
+                  width: 350,
+                  height: 350,
+                  child: QrCodeComponent(
+                      content:
+                          "https://firebasestorage.googleapis.com/v0/b/linkdance-691ad.appspot.com/o/pictures%2Fpicture-12181671396354326.jpg?alt=media&token=1b2a2813-e011-48da-aff9-c0fd7a8860f8")),
+            ),
+          );
+        });
   }
 
-  @Deprecated("use FileUpload().imageUpload")
-  Future<Map<String, String>> uploadImageBanner(BuildContext context,
-      AuthenticationFacate authentication, String path) async {
-    Map<String, String> responseMap = <String, String>{};
+  Future<Map<String, dynamic>> uploadImage({required String path, ShowLoadingCallback? showLoading }) async {
+    Map<String, dynamic> formData = {};
+    ImageUploadResponse imageUploadResponse =
+        await fileUpload.imageUpload(filePath: path!);
 
-    var imagens = (await fileUpload.compressImagensUpload(path: path));
-    var responseThumb = await fileUpload
-        .fileUpload(file: imagens['thumb']!, subFolder: authentication.user!.id)
-        .catchError((onError) {
-      print("Erro ao fazer upload do arquivo $onError");
-      Navigator.of(context).pop();
-      showError(context,
-          content: "Ocorreu um erro não esperado ao fazer upload do Flyer!");
-    });
+    FileUploadResponse bannerResp = imageUploadResponse.banner;
+    FileUploadResponse thumbnailResp = imageUploadResponse.thumbnail;
 
-    onLoading(context, stream: responseThumb.task.snapshotEvents);
-    await responseThumb.task.then((p0) async {
-      Navigator.of(context).pop();
-      responseMap['thumb'] = await responseThumb.ref.getDownloadURL();
-      responseMap['thumbRef'] = responseThumb.storageRef;
-    });
+    try {
+      if(showLoading!=null) {
+        showLoading(bannerResp.task.snapshotEvents);
+      }
 
-    var response = await fileUpload
-        .fileUpload(
-            file: imagens['banner']!, subFolder: authentication.user!.id)
-        .catchError((onError) {
-      print("Erro ao fazer upload do arquivo $onError");
-      Navigator.of(context).pop();
-      showError(context,
-          content: "Ocorreu um erro não esperado ao fazer upload do Flyer!");
-    });
-
-    onLoading(context, stream: response.task.snapshotEvents);
-
-    await response.task.then((p0) async {
-      responseMap['banner'] = await response.ref.getDownloadURL();
-      responseMap['bannerRef'] = response.storageRef;
-      Navigator.of(context).pop();
-    });
-    return responseMap;
+      await bannerResp.task.then((p0) async {
+        var urlPhoto = await bannerResp.ref.getDownloadURL();
+        var urlThumb = await thumbnailResp.ref.getDownloadURL();
+        formData['photo'] = urlPhoto;
+        formData['thumbPhoto'] = urlThumb;
+        formData['storageRef'] = [
+          thumbnailResp.storageRef,
+          bannerResp.storageRef
+        ];
+      });
+      return formData;
+    } catch (err) {
+      rethrow;
+    }
   }
+
+
+  void showInfoTags(BuildContext context) {
+    showInfo(
+      context: context,
+      title: "Pra que servem as tags?",
+      content:
+      "As tags seram utilizadas para que os interessados encontrem o evento ao fazer uma busca."
+          "Você pode user varias tags, basta digita-lás separando por virgula.  Tente usar termos intuitivos como o ritmo do evento, ou o tipo dele.",
+    );
+  }
+
+
 }

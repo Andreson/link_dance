@@ -1,22 +1,12 @@
-import 'package:link_dance/components/event/event_list_component.dart';
-
+import 'package:link_dance/features/event/components/event_list_component.dart';
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/core/theme/theme_data.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
-
-import 'package:link_dance/model/user_model.dart';
-import 'package:link_dance/repository/event_repository.dart';
-
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
+
 
 class EventListScreen extends StatelessWidget {
 
-
- EventListScreen() ;
-
+  EventListScreen();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 

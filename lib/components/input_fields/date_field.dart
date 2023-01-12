@@ -9,7 +9,6 @@ class DateInputField extends StatelessWidget {
   String? hint;
   bool required;
   bool showIcon;
-  bool onlyFutureDate;
   bool readOnly;
   bool onlyFuture;
   bool onlyPast;
@@ -40,7 +39,6 @@ class DateInputField extends StatelessWidget {
       this.hint,
       this.initValue,
       this.onSaved,
-      this.onlyFutureDate = false,
       this.required = false})
       : super(key: key);
 
@@ -80,7 +78,7 @@ class DateInputField extends StatelessWidget {
           final year = int.tryParse(components[2]);
           if (day != null && month != null && year != null) {
             final date = DateTime(year, month, day);
-            if (onlyFutureDate && date.isBefore(DateTime.now())) {
+            if (onlyFuture && date.isBefore(DateTime.now())) {
               return "Data inválida. Não é permitido datas anteriores ao dia de hoje!";
             }
             if (date.year == year && date.month == month && date.day == day) {

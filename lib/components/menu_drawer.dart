@@ -2,7 +2,7 @@ import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:link_dance/components/widgets/imagem_avatar_component.dart';
 import 'package:link_dance/core/constants.dart';
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/model/teacher_model.dart';
 import 'package:link_dance/model/user_model.dart';
 import 'package:flutter/material.dart';

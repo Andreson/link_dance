@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
-import 'package:link_dance/features/upload_files/file_upload.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/core/upload_files/file_upload.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 

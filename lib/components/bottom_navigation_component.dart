@@ -32,7 +32,7 @@ class _BottomNavigationComponentState extends State<BottomNavigationComponent> {
       BottomNavigationBarItem(
           icon: _buildIcon(FontAwesomeIcons.house), label: "Inicio"),
       BottomNavigationBarItem(
-          icon: _buildIcon(Icons.person), label: "Professores"),
+          icon: _buildIcon(Icons.link_rounded), label: "Linkers"),
       BottomNavigationBarItem(
         icon: _buildIcon(
           FontAwesomeIcons.icons,

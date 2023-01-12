@@ -1,10 +1,10 @@
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/features/cache/movie_cache_helper.dart';
+import 'package:link_dance/core/cache/movie_cache_helper.dart';
 import 'package:link_dance/model/content_group_model.dart';
-import 'package:link_dance/model/event_model.dart';
+import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/repository/content_group_respository.dart';
-import 'package:link_dance/repository/event_repository.dart';
+import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/extensions/datetime_extensions.dart';

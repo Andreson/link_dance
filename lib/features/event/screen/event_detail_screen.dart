@@ -1,21 +1,20 @@
-import 'package:link_dance/components/event/event_list_tile_detail_.dart';
+import 'package:link_dance/features/event/components/event_list_tile_detail_.dart';
+import 'package:link_dance/core/cache/movie_cache_helper.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/extensions/datetime_extensions.dart';
 import 'package:link_dance/core/factory_widget.dart';
 
 import 'package:link_dance/features/event/event_helper.dart';
-import 'package:link_dance/model/event_model.dart';
+import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/model/user_event_model.dart';
-import 'package:link_dance/repository/event_repository.dart';
+import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:provider/provider.dart';
-
-import '../features/cache/movie_cache_helper.dart';
 
 class EventDetailScreen extends StatefulWidget {
   @override
@@ -117,9 +116,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 icon: FontAwesomeIcons.calendarCheck),
             EventListTileItem(
                 title: "Valor",
-                subtitle: getPrice(),
+                subtitle: Column(
+                  children: [
+                    getPrice(),
+                    if ( event.hasVip)
+                    getTimeVip()],
+                ),
                 icon: Icons.monetization_on),
-          if (event.paymentData != null && event.paymentData!.isNotEmpty)
+            if (event.paymentData != null && event.paymentData!.isNotEmpty)
               EventListTileItem(
                 title: "Pix",
                 subtitle: Text(event.paymentData!),
@@ -130,17 +134,18 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                       mensage: "Contato copiado.");
                 },
               ),
-        if (event.contact != null && event.contact!.isNotEmpty)
-            EventListTileItem(
-              title: "Contato",
-              subtitle: Text(event.contact),
-              icon: Icons.perm_contact_cal,
-              iconTrailing: Icons.copy,
-              onPressedTrailing: () {
-                copyClipboardData(event.contact, context,
-                    mensage: "Contato copiado.");
-              },
-            ),
+            if (event.contact != null && event.contact!.isNotEmpty)
+              EventListTileItem(
+                title: "Contato",
+                subtitle: Text(event.contact),
+                icon: Icons.perm_contact_cal,
+                iconTrailing: Icons.copy,
+                onPressedTrailing: () {
+                  copyClipboardData(event.contact, context,
+                      mensage: "Contato copiado.");
+                },
+              ),
+            sizedBox50()
           ]),
         ),
       ),
@@ -148,21 +153,37 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   }
 
   Row getPrice() {
-    
     return Row(
       children: [
         Icon(FontAwesomeIcons.person),
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: event.malePrice != null
+                  ? Text("R\$ ${event.malePrice}")
+                  : Text("Free"),
+            ),
+          ],
+        ),
+        sizedBoxH30(),
+        const Icon(FontAwesomeIcons.personDress),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text("R\$ 50"),
+          child: event.femalePrice != null
+              ? Text("R\$ ${event.femalePrice}")
+              : Text("Free"),
         ),
-        sizedBoxH20(),
-        Icon(FontAwesomeIcons.personDress),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text("R\$  70"),
-        ),
-        
+      ],
+    );
+  }
+
+  Row getTimeVip() {
+    return Row(
+      children: [
+        const Text("Até às 20h", textAlign: TextAlign.center),
+        sizedBoxH50(),
+        const Text("Até às 00h", textAlign: TextAlign.center),
       ],
     );
   }
@@ -209,15 +230,26 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   buildButtons() {
     eventHelper = EventHelper(event: event, eventRepository: eventRepository);
+    var titleButton = "";
 
     if (userEvent != null &&
         userEvent!.status == EventRegisterStatus.subscribe) {
-      buttonSubscribe = eventHelper.buttonUnsubscription(
-          context: context, text: "Vip", onPressed: unSubscribe);
+      if (event.hasVip) {
+        titleButton = "vip";
+      } else {
+        titleButton = "Inscrito";
+      }
+      buttonSubscribe = eventHelper.buttonUnsubscription(hasTicket:event.hasVip ,
+          context: context, text: titleButton, onPressed: unSubscribe);
     } else {
-      print("build userEventis null or unsubscribe  button");
+      if (event.hasVip) {
+        titleButton = "Pegar meu vip";
+      } else {
+        titleButton = "Inscrever-se";
+      }
+
       buttonSubscribe = eventHelper.buttonSubscription(
-          text: "Pegar meu vip", onPressed: subscribe);
+          text: titleButton, onPressed: subscribe);
     }
   }
 

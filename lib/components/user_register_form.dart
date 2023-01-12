@@ -10,7 +10,8 @@ import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/exception/exceptions.dart';
 import 'package:link_dance/core/rest/address_rest_client.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/core/upload_files/file_upload.dart';
 import 'package:link_dance/model/address_model.dart';
 import 'package:link_dance/model/imagem_model.dart';
 import 'package:link_dance/model/login_model.dart';
@@ -26,7 +27,7 @@ import '../core/decorators/box_decorator.dart';
 import '../core/theme/fontStyles.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../core/factory_widget.dart';
-import '../features/upload_files/file_upload.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 class RegisterUserFormComponent extends StatefulWidget {

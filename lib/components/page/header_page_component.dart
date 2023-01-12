@@ -1,5 +1,5 @@
 import 'package:link_dance/core/decorators/box_decorator.dart';
-import 'package:link_dance/features/cache/movie_cache_helper.dart';
+import 'package:link_dance/core/cache/movie_cache_helper.dart';
 import 'package:link_dance/model/vo/detail_screen_vo.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';

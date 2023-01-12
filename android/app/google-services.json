@@ -1,42 +1,42 @@
 {
   "project_info": {
-    "project_number": "325634634089",
-    "project_id": "linkdance-691ad",
-    "storage_bucket": "linkdance-691ad.appspot.com"
+    "project_number": "464199158475",
+    "firebase_url": "https://ballo-app-default-rtdb.firebaseio.com",
+    "project_id": "ballo-app",
+    "storage_bucket": "ballo-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:325634634089:android:39ba96a9be77da9cb20df8",
+        "mobilesdk_app_id": "1:464199158475:android:18ea3cc808c705ac21e94e",
         "android_client_info": {
           "package_name": "br.com.link_dance.link_dance"
         }
       },
       "oauth_client": [
         {
-          "client_id": "325634634089-76pjhaukmugueoar59h3re6kkperauiq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "br.com.link_dance.link_dance",
-            "certificate_hash": "8a0e98009fae096481707c2061aba218de3b6b80"
-          }
-        },
-        {
-          "client_id": "325634634089-509nu7tvonf1aoqklth9vn6apgnbo0ro.apps.googleusercontent.com",
+          "client_id": "464199158475-f3rbnc82aujkevmb612c2vdp1aqr7mp0.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBYjavKCwFGGfspj_ThSugG6C8MXZm9-x0"
+          "current_key": "AIzaSyDeh0P4Qc2rm4hDOQmhK7COUkQZazSM3pg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "325634634089-509nu7tvonf1aoqklth9vn6apgnbo0ro.apps.googleusercontent.com",
+              "client_id": "464199158475-f3rbnc82aujkevmb612c2vdp1aqr7mp0.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "464199158475-ca4ikgo40it2p9c494hp9r0djub94nr3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.danceja.danceJa"
+              }
             }
           ]
         }

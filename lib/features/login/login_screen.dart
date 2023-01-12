@@ -1,8 +1,8 @@
-import 'package:link_dance/screens/login/login_form.dart';
+import 'package:link_dance/features/login/login_form.dart';
 import 'package:link_dance/components/reset_password_component.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/theme/fontStyles.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/features/login/login_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

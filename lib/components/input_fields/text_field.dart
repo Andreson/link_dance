@@ -24,10 +24,12 @@ class CustomTextField extends StatelessWidget {
   TextEditingController? controller;
   FocusNode? focusNode;
   int? maxLines;
+   IconData? iconData;
 
   CustomTextField({Key? key,
     required this.label,
     this.hint,
+    this.iconData,
     this.maxLines = 1,
     this.customValidator,
     this.required = true,
@@ -48,6 +50,7 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     focusNode = focusNode ?? FocusNode();
     return TextFormField(
       maxLines: maxLines,
@@ -65,7 +68,7 @@ class CustomTextField extends StatelessWidget {
       onSaved: onSaved,
       onFieldSubmitted: onSubmit,
       decoration: InputDecoration(
-          icon: icon,
+          icon: getIcon(),
           hintText: hint ?? label,
           floatingLabelAlignment: FloatingLabelAlignment.start,
           floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -73,6 +76,17 @@ class CustomTextField extends StatelessWidget {
           prefixIcon:prefixIcon,
           suffixIcon: suffixIcon),
     );
+  }
+
+
+  Widget? getIcon() {
+    if ( icon==null && iconData!=null) {
+      return Icon(iconData,size: 18,);
+    }
+    else if ( icon!=null ){
+      return icon;
+    }
+    return null;
   }
 
   String? defaultInputValidator(String? value) {

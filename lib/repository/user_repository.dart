@@ -1,7 +1,7 @@
 import 'package:link_dance/core/constants.dart';
 import 'package:link_dance/core/rest/rest_template.dart';
-import 'package:link_dance/features/authentication/auth_email.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
+import 'package:link_dance/core/authentication/auth_email.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/model/user_model.dart';
 import 'package:link_dance/repository/base_repository.dart';
 

@@ -1,8 +1,8 @@
 import 'package:link_dance/components/autocomplete.dart';
-import 'package:link_dance/features/authentication/auth_facate.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/repository/base_repository.dart';
 import 'package:link_dance/repository/content_group_respository.dart';
-import 'package:link_dance/repository/event_repository.dart';
+import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

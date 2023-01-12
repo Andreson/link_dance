@@ -2,10 +2,10 @@ import 'package:link_dance/core/constants.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/exception/exceptions.dart';
 import 'package:link_dance/core/rest/rest_template.dart';
-import 'package:link_dance/features/authentication/auth_base.dart';
-import 'package:link_dance/features/authentication/auth_email.dart';
-import 'package:link_dance/features/authentication/auth_facebook.dart';
-import 'package:link_dance/features/authentication/auth_google.dart';
+import 'package:link_dance/core/authentication/auth_base.dart';
+import 'package:link_dance/core/authentication/auth_email.dart';
+import 'package:link_dance/core/authentication/auth_facebook.dart';
+import 'package:link_dance/core/authentication/auth_google.dart';
 import 'package:link_dance/model/login_model.dart';
 import 'package:link_dance/model/teacher_model.dart';
 import 'package:link_dance/model/user_model.dart';
@@ -130,11 +130,7 @@ class AuthenticationFacate with ChangeNotifier {
         if (user?.userType == UserType.professor) {
           user?.teacherProfile =await _getTeacherProfile(userId: user!.id);
         }
-
-
-
         authentication = _buildAuthType(user!.login!.loginProvider);
-
         var login = user?.login;
         // if (login?.loginProvider == LoginProvider.email) {
         //   TokenRefresh token =
@@ -143,6 +139,7 @@ class AuthenticationFacate with ChangeNotifier {
         //       await FirebaseAuth.instance.currentUser?.getIdToken(true);
         //   user?.login?.setToken(token);
         // } else {
+        // erro login google aconteceu uma vez aqui
           String? token =
               await FirebaseAuth.instance.currentUser?.getIdToken(true);
           user?.login?.token = token!;
