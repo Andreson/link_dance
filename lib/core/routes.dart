@@ -24,7 +24,7 @@ import 'package:link_dance/screens/movies_list_screen.dart';
 
 import 'package:link_dance/features/contentgroup/content_group_screnn.dart';
 
-import 'package:link_dance/screens/user_registration_screen.dart';
+import 'package:link_dance/features/user/screen/user_registration_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

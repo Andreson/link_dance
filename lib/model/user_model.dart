@@ -17,8 +17,9 @@ class UserModel extends AbastractModel {
   UserType? userType;
   LoginModel? login;
   ImagemModel? imagemModel;
-
+  GenderType? gender;
   TeacherModel? teacherProfile;
+  bool fullRegistryCheck=false;
 
   String emailKey() {
     return email!.replaceAll(".", "").replaceAll("@", "");
@@ -34,6 +35,7 @@ class UserModel extends AbastractModel {
 
   UserModel(
       {this.id = "",
+        this.gender,
       this.imagemModel,
       this.login,
       this.name,
@@ -78,6 +80,7 @@ class UserModel extends AbastractModel {
         postalCode: appUserData.postalCode ?? postalCode,
         userType: appUserData.userType ?? userType,
         photoUrl: urlPhoto,
+        gender:appUserData.gender,
         login: appUserData.login ?? login);
     return u;
   }
@@ -86,6 +89,7 @@ class UserModel extends AbastractModel {
     return {
       "imagem": imagemModel?.body(),
       "name": name,
+      "gender":gender,
       "email": email,
       "birthDate": birthDate,
       "phone": phone,
@@ -106,6 +110,7 @@ class UserModel extends AbastractModel {
         phone: json['phone'],
         photoUrl: json['photoUrl'],
         userType: UserType.values.byName(json['userType']),
+        gender: GenderType.values.byName(json['gender'] ??"other"),
         postalCode: json['postalCode']);
   }
 

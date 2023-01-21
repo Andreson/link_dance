@@ -53,12 +53,17 @@ class EventItemComponent extends StatelessWidget {
           child: ListTile(
             key: Key(event.id),
             onTap: () {
-              eventRepository
-                  .getSubscriptionEvent(eventId: event.id)
-                  .then((userEvent) {
-                Navigator.pushNamed(context, RoutesPages.eventDetail.name,
-                    arguments: {"event": event, "userEvent": userEvent});
-              });
+              if (readOnly) {
+                eventRepository
+                    .getSubscriptionEvent(eventId: event.id)
+                    .then((userEvent) {
+                  Navigator.pushNamed(context, RoutesPages.eventDetail.name,
+                      arguments: {"event": event, "userEvent": userEvent});
+                });
+              } else {
+                Navigator.pushNamed(context, RoutesPages.eventRegister.name,
+                    arguments: event);
+              }
             },
             leading: _getImage(),
             subtitle: Text(event.eventDate.showString()),
@@ -70,7 +75,6 @@ class EventItemComponent extends StatelessWidget {
                     event.title,
                     overflow: TextOverflow.ellipsis,
                   )),
-
                 ]),
             trailing: readOnly
                 ? null
@@ -80,25 +84,26 @@ class EventItemComponent extends StatelessWidget {
                         tooltip: "Criar novo apartir desse",
                         onPressed: () {
                           event.id = "";
-                          event.title= "";
+
                           Navigator.pushNamed(
                               context, RoutesPages.eventRegister.name,
                               arguments: event);
                         },
-                        icon: const Icon(FontAwesomeIcons.clone, size: 16),
+                        icon: const Icon(FontAwesomeIcons.clone),
                       ),
                     ),
-                    Flexible(
-                      child: IconButton(
-                        tooltip: "Editar",
-                        onPressed: () {
-                          Navigator.pushNamed(
-                              context, RoutesPages.eventRegister.name,
-                              arguments: event);
-                        },
-                        icon: const Icon(Icons.edit, size: 16),
-                      ),
-                    )
+                    // Flexible(
+                    //   child: IconButton(
+                    //     tooltip: "Editar",
+                    //     onPressed: () {
+                    //       print("Editando evento ${event.id} - ${event.title}");
+                    //       Navigator.pushNamed(
+                    //           context, RoutesPages.eventRegister.name,
+                    //           arguments: event);
+                    //     },
+                    //     icon: const Icon(Icons.edit, size: 16),
+                    //   ),
+                    // )
                   ]),
           ),
         ));
@@ -111,7 +116,6 @@ class EventItemComponent extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(snackBar());
     }).whenComplete(() => Navigator.of(context).pop());
   }
-
 
   Widget _getImage() {
     double width = 70;

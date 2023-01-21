@@ -11,26 +11,22 @@ class EventModel extends AbastractModel {
   String? paymentData;
   String address;
   String contact;
-  String? place;
+  String place;
   double? price;
-  double? malePrice;
-  double? femalePrice;
   DateTime eventDate;
   DateTime createDate;
   String? uriBanner;
   String? uriBannerThumb;
   String _rhythm;
-  String? vipTimeFemale;
-  String? vipTimeMale;
-  int? maleVip;
-  int? femaleVip;
-  bool hasVip;
   EventStatus status;
+  EventListModel? listData;
 
   @override
   String get id => _id ?? "";
 
-   set id(id)  => _id =id;
+  set id(id) => _id = id;
+
+  bool hasList() => listData != null;
 
   //Caminho dos arquivos no firebase para que eles possam ser deletados caso o registro seja removido
   List<String>? storageRef;
@@ -40,15 +36,11 @@ class EventModel extends AbastractModel {
       {required this.ownerId,
       required title,
       required rhythm,
+      this.listData,
       this.status = EventStatus.hidden,
       id = "",
-      this.vipTimeFemale,
-      this.vipTimeMale,
-      this.maleVip = 0,
-      this.femaleVip = 0,
-      this.hasVip = false,
       this.price,
-      this.place,
+      required this.place,
       this.paymentData,
       this.storageRef,
       required this.address,
@@ -58,20 +50,15 @@ class EventModel extends AbastractModel {
       this.tags,
       this.uriBannerThumb,
       required this.createDate,
-      this.femalePrice,
-      this.malePrice,
       this.uriBanner})
       : _title = title,
         _rhythm = rhythm,
         _id = id;
 
   String get title => _title.capitalizePhrase();
-
   String get rhythm => _rhythm;
-
   set rhythm(rhythm) => _rhythm = rhythm;
-
-  void set title(String title) => _title = title.trim();
+  set title(String title) => _title = title.trim();
 
   @override
   Map<String, dynamic> body() {
@@ -81,8 +68,7 @@ class EventModel extends AbastractModel {
       "title": title.toLowerCase().trim(),
       "place": place,
       "description": description,
-      "vipTimeFemale": vipTimeFemale,
-      "vipTimeMale": vipTimeMale,
+      "listData": listData?.body(),
       "tags": tags,
       "eventDate": eventDate,
       "contact": contact,
@@ -93,17 +79,13 @@ class EventModel extends AbastractModel {
       "createDate": createDate,
       "storageRef": storageRef,
       "paymentData": paymentData,
-      "femaleVip": femaleVip,
-      "femalePrice": femalePrice,
-      "malePrice": malePrice,
-      "maleVip": maleVip,
-      "hasVip": hasVip
     };
   }
 
   factory EventModel.New({String? id = ""}) {
     return EventModel(
         id: id,
+        place: "",
         rhythm: "",
         ownerId: "",
         title: "",
@@ -137,14 +119,9 @@ class EventModel extends AbastractModel {
         description: json['description'],
         eventDate: (json['eventDate'] as Timestamp).toDate(),
         uriBanner: json['uriBanner'],
-        createDate: (json['createDate'] as Timestamp).toDate(),
-        hasVip: json['hasVip'] ?? false,
-        femalePrice: json['femalePrice'],
-        femaleVip: json['femaleVip'],
-        malePrice: json['malePrice'],
-        maleVip: json['maleVip'],
-        vipTimeFemale: json['vipTimeFemale'],
-        vipTimeMale: json['vipTimeMale'],
+        createDate: (json['createDate'] as Timestamp).toDate(), 
+        listData: EventListModel.fromJson(json)
+
       );
     } catch (error) {
       print("Erro ao carregar event model $error");
@@ -154,4 +131,61 @@ class EventModel extends AbastractModel {
   }
 }
 
-class EventVipData {}
+class EventListModel {
+  EventListModel(
+      {required this.vipTimeFemale,
+      required this.vipTimeMale,
+      this.maleVip = 0,
+      this.femaleVip = 0,
+      this.malePrice = 0,
+      this.femalePrice = 0,
+      this.malePriceDiscount = 0,
+      this.femalePriceDiscount = 0,
+      required this.listType});
+
+  String? vipTimeFemale;
+  String? vipTimeMale;
+  int? maleVip;
+  int? femaleVip;
+  double malePrice;
+  double femalePrice;
+  double? malePriceDiscount;
+  double? femalePriceDiscount;
+  late EventListType listType;
+
+  Map<String, dynamic> body() {
+    return {
+      "vipTimeFemale": vipTimeFemale,
+      "vipTimeMale": vipTimeMale,
+      "maleVip": maleVip,
+      "femaleVip": femaleVip,
+      "malePrice": malePrice,
+      "femalePrice": femalePrice,
+      "malePriceDiscount": malePriceDiscount,
+      "listType": listType.name
+    };
+  }
+
+  static EventListModel? fromJson(Map<String, dynamic> json) {
+    try {
+      if(json['listData']!=null)  {
+        json = json['listData'];
+      }
+
+      return EventListModel(
+          vipTimeFemale: json['vipTimeFemale'],
+          vipTimeMale: json['vipTimeMale']?? 0,
+          listType: EventListType.values.byName(json['listType'] ?? "none"),
+          maleVip: json['maleVip'] ?? 0,
+          femalePrice: json['femalePrice'] ?? 0,
+          femalePriceDiscount: json['femalePriceDiscount'] ?? 0,
+          femaleVip: json['femaleVip'] ?? 0,
+          malePrice: json['malePrice'] ?? 0,
+          malePriceDiscount: json['malePriceDiscount']);
+    }
+    catch(err, trace) {
+      print("Erro ao carregar lista do evento $trace");
+      return null;
+    }
+  }
+}

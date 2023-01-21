@@ -27,7 +27,7 @@ class CustomTextField extends StatelessWidget {
    IconData? iconData;
 
   CustomTextField({Key? key,
-    required this.label,
+    this.label="",
     this.hint,
     this.iconData,
     this.maxLines = 1,

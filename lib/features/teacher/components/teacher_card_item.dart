@@ -1,3 +1,4 @@
+import 'package:link_dance/components/widgets/image_card.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/core/cache/movie_cache_helper.dart';
@@ -43,7 +44,7 @@ class TeacherCardItemList extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(15, 25, 15, 15),
                   width: 275,
                   height: 240,
-                  child: ProductImage(teacherModel: teacher))),
+                  child: ImagemCardComponent(imagemURL: teacher.photo,))),
           Container(
             width: 246,
             decoration: boxRadiusCustom(opacity: 0.3, radiusBottom: 15),
@@ -102,34 +103,6 @@ class TeacherCardItemList extends StatelessWidget {
   }
 }
 
-class ProductImage extends StatelessWidget {
-    ProductImage({
-    Key? key,
-    required this.teacherModel,
-  }) : super(key: key);
-    CachedManagerHelper cachedManager = CachedManagerHelper();
-
-  final TeacherModel teacherModel;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget imagem;
-    if(teacherModel.photo!=null) {
-      imagem = cachedManager.getImage(
-        url: teacherModel.photo!,
-      );
-    }else {
-      imagem =  teacherModel.photoAvatar;
-    }
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(15)),
-      child: Opacity(
-        opacity: 0.85,
-        child: imagem,
-      ),
-    );
-  }
-}
 
 class LikeCount extends StatelessWidget {
   const LikeCount({

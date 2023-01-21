@@ -1,39 +1,46 @@
 
 
 import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/features/event/components/event_card_item.dart';
+import 'package:link_dance/features/event/model/event_model.dart';
+import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:link_dance/features/teacher/components/teacher_card_item.dart';
 import 'package:link_dance/model/teacher_model.dart';
 import 'package:flutter/material.dart';
+import 'package:link_dance/repository/base_repository.dart';
 import 'package:link_dance/repository/teacher_repository.dart';
 import 'package:provider/provider.dart';
 import '../../../core/decorators/box_decorator.dart';
 import '../../../core/factory_widget.dart';
+import '../repository/event_repository.dart';
 
-class TeacherListComponent extends StatelessWidget {
-  late TeacherRepository repository;
+class EventListCardComponent extends StatelessWidget {
+
+  late EventRepository repository;
+  var condition = QueryCondition(fieldName: "eventDate",isGreaterThanOrEqualTo: DateTime.now());
   @override
   Widget build(BuildContext context) {
-    repository = Provider.of<TeacherRepository>(context, listen: false);
+    repository = Provider.of<EventRepository>(context, listen: false);
     Future.delayed(Duration.zero, () async {
-      await repository.loadData();
+      await repository.listBase(conditions: [condition]);
     });
 
     return Container(
       decoration: boxImage("assets/images/backgroud1.jpg"),
-      child: Consumer<TeacherRepository>(
-        builder: (context, teacherRepository, child) => Scrollbar(
-          child: futureBuilderList<TeacherRepository>(
+      child: Consumer<EventRepository>(
+        builder: (context, repository, child) => Scrollbar(
+          child: futureBuilderList<EventRepository>(
             refreshData: refresh,
               context: context,
               initialData: repository.listData,
               itemBuild: (data) =>
-                  TeacherCardItemList(teacher: (data as TeacherModel))),
+                  EventCardItemList(event: (data as EventModel))),
         ),
       ),
     );
   }
 
   Future<void> refresh() async {
-    repository.loadData();
+    repository.listBase(conditions: [condition]);
   }
 }

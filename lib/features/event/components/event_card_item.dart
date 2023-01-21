@@ -1,40 +1,51 @@
+import 'package:link_dance/components/widgets/image_card.dart';
 import 'package:link_dance/core/enumerate.dart';
+import 'package:link_dance/core/extensions/datetime_extensions.dart';
+import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/core/cache/movie_cache_helper.dart';
+import 'package:link_dance/features/event/model/event_model.dart';
+import 'package:link_dance/features/event/repository/event_repository.dart';
 
 import 'package:link_dance/model/teacher_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/theme/fontStyles.dart';
 import '../../../core/theme/theme_data.dart';
 import '../../../core/decorators/box_decorator.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 
-
-class TeacherCardItemList extends StatelessWidget {
-  const TeacherCardItemList({
-    required this.teacher,
+class EventCardItemList extends StatelessWidget {
+  const EventCardItemList({
+    required this.event,
     Key? key,
   }) : super(key: key);
 
-  final TeacherModel teacher;
+  final EventModel event;
 
   @override
   Widget build(BuildContext context) {
+    var eventRepository = Provider.of<EventRepository>(context, listen: false);
+
     return GestureDetector(
       onTap: () => {
-        Navigator.pushNamed(context, RoutesPages.teacherPage.name,
-            arguments: teacher)
+        eventRepository
+            .getSubscriptionEvent(eventId: event.id)
+            .then((userEvent) {
+          Navigator.pushNamed(context, RoutesPages.eventDetail.name,
+              arguments: {"event": event, "userEvent": userEvent});
+        })
       },
       child: Stack(
         children: [
           Padding(
-            padding:const EdgeInsets.fromLTRB(15, 10, 15, 15),
+            padding: const EdgeInsets.fromLTRB(15, 10, 15, 15),
             child: Center(
               child: Container(
                 decoration: box(opacity: 0.3, allBorderRadius: 0),
                 width: 300,
-                height: 300,
+                height: 270,
               ),
             ),
           ),
@@ -43,7 +54,9 @@ class TeacherCardItemList extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(15, 25, 15, 15),
                   width: 275,
                   height: 240,
-                  child: ProductImage(teacherModel: teacher))),
+                  child: ImagemCardComponent(
+                    imagemURL: event.uriBannerThumb,
+                  ))),
           Container(
             width: 246,
             decoration: boxRadiusCustom(opacity: 0.3, radiusBottom: 15),
@@ -51,23 +64,28 @@ class TeacherCardItemList extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(15, 00, 0, 5),
               child: Text(
-                teacher.name,
+                event.title,
                 style: boxTitleStyle(),
               ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.fromLTRB(85, 230, 0, 0),
-            child: const Text(
-              "Ritmos",
-            ),
-          ),
           Center(
             child: Container(
-              margin: EdgeInsets.fromLTRB(0, 250, 0, 0),
-              width: 240,
-              child: Wrap(
-                children: [buildTags(teacher.danceRhythms)],
+              alignment: Alignment.center,
+              margin: EdgeInsets.fromLTRB(0, 240, 0, 0),
+              width: 230,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 15),
+                child: Wrap(
+                  children: [
+                    Text(event.eventDate.showString()),
+                    const Text(" - "),
+                    Text(event.place!.capitalizePhrase()),
+                    if(event.hasList())
+                        Text(" - ${event.listData!.listType.label}")
+
+                  ],
+                ),
               ),
             ),
           )
@@ -75,8 +93,6 @@ class TeacherCardItemList extends StatelessWidget {
       ),
     );
   }
-
-
 
   Widget buildTags(List<String> tagsData) {
     const double edges = 5;
@@ -97,35 +113,6 @@ class TeacherCardItemList extends StatelessWidget {
         source: tagsData,
         value: (i, v) => i,
         label: (i, v) => v,
-      ),
-    );
-  }
-}
-
-class ProductImage extends StatelessWidget {
-    ProductImage({
-    Key? key,
-    required this.teacherModel,
-  }) : super(key: key);
-    CachedManagerHelper cachedManager = CachedManagerHelper();
-
-  final TeacherModel teacherModel;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget imagem;
-    if(teacherModel.photo!=null) {
-      imagem = cachedManager.getImage(
-        url: teacherModel.photo!,
-      );
-    }else {
-      imagem =  teacherModel.photoAvatar;
-    }
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(15)),
-      child: Opacity(
-        opacity: 0.85,
-        child: imagem,
       ),
     );
   }

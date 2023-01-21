@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:link_dance/components/autocomplete.dart';
 import 'package:link_dance/components/widgets/autocomplete/autocomplete_rhythm_component.dart';
+import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/extensions/datetime_extensions.dart';
 import 'package:link_dance/core/theme/theme_data.dart';
 import 'package:link_dance/features/event/event_helper.dart';
@@ -28,7 +29,6 @@ import 'package:link_dance/core/theme/fontStyles.dart';
 import '../../../model/user_model.dart';
 
 class EventRegisterScreen extends StatefulWidget {
-
   EventRegisterScreen({Key? key}) : super(key: key);
 
   @override
@@ -45,23 +45,31 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final EventHelper eventHelper = EventHelper();
   late AutoCompleteRhythmComponent autoCompleteRhythmComponent;
-  bool _vipList = false;
+  EventListType _listType = EventListType.none;
+  bool _hasList = false;
   Map<String, dynamic> _formData = {};
-  TextEditingController eventDateController =    TextEditingController();
+  TextEditingController eventDateController = TextEditingController();
   final FocusNode _timeMaleFocus = FocusNode();
   final FocusNode _timeFemaleFocus = FocusNode();
   late String pageTitle;
+
   @override
   void didChangeDependencies() {
-      var event = ModalRoute.of(context)!.settings.arguments as EventModel?;
+    var event = ModalRoute.of(context)!.settings.arguments as EventModel?;
     if (event != null) {
       _formData = event.deserialize();
-      eventDateController.text = event.createDate.showString();
-      pageTitle = _formData['id']!=null && _formData['id'].toString().isNotEmpty ? "Editar Evento":"Cadastrar evento";
-      _vipList =_formData['hasVip'];
+      eventDateController.text = event.eventDate.showString();
+      pageTitle =
+          _formData['id'] != null && _formData['id'].toString().isNotEmpty
+              ? "Editar Evento"
+              : "Cadastrar evento";
+      if (event.listData != null) {
+        _listType = event.listData!.listType;
+      }
     } else {
       _formData = {};
-      pageTitle="Criar novo evento";
+
+      pageTitle = "Criar novo evento";
     }
     _initAutocomplete();
     userModel = Provider.of<AuthenticationFacate>(context, listen: false).user!;
@@ -72,8 +80,6 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
@@ -109,7 +115,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
               size: 18,
             )),
         onSelected: _selectDataRhythmsAutocomplete);
-    autoCompleteRhythmComponent.textEdit.text=_formData['rhythm'] ;
+    autoCompleteRhythmComponent.textEdit.text = _formData['rhythm'] ?? "";
   }
 
   Widget buildBody(BuildContext context) {
@@ -169,15 +175,24 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                         _formData['contact'] = value;
                       }),
                   DateInputField(
-                      textController: eventDateController ,
+                      textController: eventDateController,
                       isDatePicker: true,
-
                       onlyFuture: true,
                       required: true,
                       label: "Data",
                       hint: "Data da realização do evento",
                       onSaved: (value) {
                         _formData['eventDate'] = value.toString().toTimestamp();
+                      }),
+                  CustomTextField(
+                      textInputAction: TextInputAction.next,
+                      inputType: TextInputType.text,
+                      initialValue: _formData['paymentData'],
+                      label: "Pix",
+                      required: false,
+                      icon: const Icon(Icons.wallet),
+                      onSaved: (value) {
+                        _formData['paymentData'] = value;
                       }),
                   Row(
                     children: [
@@ -208,39 +223,69 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                       ),
                     ],
                   ),
+                  sizedBox15(),
+                  Divider(height: 25, color: inputField),
                   Row(
                     children: [
                       const Padding(
-                        padding: EdgeInsets.only(right: 10),
+                        padding: EdgeInsets.only(right: 15),
                         child: Icon(FontAwesomeIcons.ticket),
                       ),
                       const Text(
-                        "Lista Vip ?",
+                        "Lista : ",
                         style: formInputsStyles,
                       ),
-                      Checkbox(
+                      sizedBoxH15(),
+                      Radio(
                           activeColor: Colors.white54,
-                          value: _vipList,
+                          groupValue: _listType,
+                          value: EventListType.none,
                           onChanged: (newValue) {
                             setState(() {
-                              _vipList = !_vipList;
+                              _hasList = !_hasList;
+                              if (_hasList) {
+                                _listType = EventListType.vip;
+                              } else {
+                                _listType = EventListType.none;
+                              }
+
                             });
                           }),
+                      Text("Nenhuma", style: TextStyle(color: inputField)),
+                      Radio<EventListType>(
+                          activeColor: Colors.white54,
+                          groupValue: _listType,
+                          value: EventListType.vip,
+                          onChanged: (EventListType? newValue) {
+                            setState(() {
+                              _listType = newValue!;
+                            });
+                          }),
+                      const Text("Vip", style: TextStyle(color: inputField)),
+                      Radio<EventListType>(
+                          activeColor: Colors.white54,
+                          groupValue: _listType,
+                          value: EventListType.discount,
+                          onChanged: (EventListType? newValue) {
+                            setState(() {
+                              _listType = newValue!;
+                            });
+                          }),
+                      const Text("Desconto", style: TextStyle(color: inputField)),
                     ],
                   ),
-                  if (_vipList)
+                  if (_listType != EventListType.none)
                     Padding(
                       padding: const EdgeInsets.only(left: 40),
                       child: Row(
                         children: _getInputValueVipList(),
                       ),
                     ),
-                  if (_vipList)
+                  if (_listType != EventListType.none)
                     Padding(
                       padding: const EdgeInsets.only(left: 40),
                       child: Row(
                         children: [
-
                           Flexible(
                             child: CustomTextField(
                                 focusNode: _timeFemaleFocus,
@@ -249,7 +294,6 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                                 required: false,
                                 hint: "Horário do vip Feminino",
                                 initialValue: _formData['vipTimeFemale'] ?? "",
-                                label: "Vip até",
                                 onSaved: (value) {
                                   _formData['vipTimeFemale'] = value;
                                 }),
@@ -263,41 +307,16 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                                 required: false,
                                 hint: "Horário do vip masculino",
                                 initialValue: _formData['vipTimeMale'] ?? "",
-                                label: "Vip até",
                                 onSaved: (value) {
                                   _formData['vipTimeMale'] = value;
                                 }),
                           )
-
                         ],
                       ),
                     ),
-                  CustomTextField(
-                      textInputAction: TextInputAction.next,
-                      inputType: TextInputType.text,
-                      initialValue: _formData['paymentData'],
-                      label: "Pix",
-                      required: false,
-                      icon: const Icon(Icons.wallet),
-                      onSaved: (value) {
-                        _formData['paymentData'] = value;
-                      }),
-                  // CustomTextField(
-                  //     initialValue: widget.eventModel!.tags.join(","),
-                  //     inputType: TextInputType.text,
-                  //     hint: "ex.: workshop,salsa,baile,aulão com pratica",
-                  //     label: "Tags",
-                  //     suffixIcon: IconButton(
-                  //         icon: const Icon(FontAwesomeIcons.circleQuestion),
-                  //         tooltip: "O que é isso ?",
-                  //         onPressed: () {
-                  //           showInfoTags();
-                  //         }),
-                  //     icon: const Icon(FontAwesomeIcons.tags),
-                  //     onSaved: (value) {
-                  //       widget.eventModel!.tags =
-                  //           value!.toLowerCase().trim().split(",");
-                  //     }),
+                  if (_listType == EventListType.discount)
+                    getInputValueDiscount(),
+
                   Padding(
                       padding: const EdgeInsets.only(top: 25),
                       child: Container(
@@ -325,11 +344,14 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                             label: "Selecionar Flyer "),
                       )),
                   sizedBox10(),
-                  if (path != null) OutlinedButton(onPressed: () {
-                    setState((){
-                      path=null;
-                    });
-                  }, child: const Text("Remover imagem")) ,
+                  if (path != null)
+                    OutlinedButton(
+                        onPressed: () {
+                          setState(() {
+                            path = null;
+                          });
+                        },
+                        child: const Text("Remover imagem")),
                   if (path != null) showImageName,
                   sizedBox10(),
                   Row(
@@ -382,31 +404,39 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
 
   List<Widget> _getInputValueVipList() {
     return [
-      const Text("Feminino : ", style: TextStyle(color: inputField)),
       Flexible(
         child: TextFormField(
-          textAlign: TextAlign.center,
+
+          decoration: const InputDecoration(
+            hintText: "QTDE Feminino",
+            label: Text("QTDE Feminino"),
+            hintStyle: TextStyle(fontSize: 13),
+          ),
+          textAlign: TextAlign.left,
           style: const TextStyle(color: inputField),
           inputFormatters: [mask()],
           onSaved: (value) {
-            _formData['femaleVip'] = int.parse( value??"0");
-            print("femaleVip VIP ${_formData['femaleVip']}");
+            _formData['femaleVip'] = int.parse(value ?? "0");
+
           },
+          
           keyboardType: TextInputType.number,
-          initialValue: _formData['femaleVip'].toString().emptyIfNull(),
+          initialValue: _formData['femaleVip'].toString().emptyIfNull(value: "1000"),
         ),
       ),
       sizedBoxH15(),
-      const Text("Masculino: ", style: TextStyle(color: inputField)),
       Flexible(
         child: TextFormField(
-          textAlign: TextAlign.center,
+          decoration: const InputDecoration(label: Text("QTDE Masculino"),
+              hintText: "QTDE Masculino", hintStyle: TextStyle(fontSize: 13)),
+          textAlign: TextAlign.left,
           style: const TextStyle(color: inputField),
           inputFormatters: [mask()],
           keyboardType: TextInputType.number,
-          initialValue: _formData['maleVip'].toString().emptyIfNull(),
+
+          initialValue: _formData['maleVip'].toString().emptyIfNull(value: "0"),
           onSaved: (value) {
-            _formData['maleVip'] = int.parse( value ?? "0");
+            _formData['maleVip'] = int.parse(value ?? "0");
             print("Male VIP ${_formData['maleVip']}");
           },
         ),
@@ -414,10 +444,43 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
     ];
   }
 
-  List<Widget> _getInputVipHourList() {
-    return [
+  Row getInputValueDiscount() {
+    return Row(
+      children: [
+        sizedBoxH40(),
+        Flexible(
+          child: CurrencyInputField(
+              hideIcon: true,
+              label: "Valor masculino",
+              initialValue:
+                  _formData['malePriceDiscount'].toString().emptyIfNull(),
+              required: false,
+              onSaved: (value) {
+                if (value != null && value.isNotEmpty) {
+                  _formData['malePriceDiscount'] = value.parseDouble();
+                }
+              }),
+        ),
+        sizedBoxH15(),
+        Flexible(
+          child: CurrencyInputField(
+              hideIcon: true,
+              initialValue:
+                  _formData['femalePriceDiscount'].toString().emptyIfNull(),
+              required: false,
+              label: "Valor feminino",
+              onSaved: (value) {
+                if (value != null && value.isNotEmpty) {
+                  _formData['femalePriceDiscount'] = value.parseDouble();
+                }
+              }),
+        ),
+      ],
+    );
+  }
 
-    ];
+  List<Widget> _getInputVipHourList() {
+    return [];
   }
 
   mask({String initValue = "0"}) {
@@ -438,7 +501,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
     _formKey.currentState!.save();
     _formData['ownerId'] = userModel.id;
     _formData['createDate'] = Timestamp.now();
-    _formData['hasVip']= _vipList;
+    _formData['listType'] = _listType.name;
 
     onLoading(context);
     EventModel eventModel = EventModel.fromJson(_formData);

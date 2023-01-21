@@ -40,19 +40,19 @@ FutureBuilder futureBuilderList<T>(
         );
       } else {
         return Consumer<T>(
-          builder: (context, teacherRepository, child) => RefreshIndicator(
+          builder: (context, Repository, child) => RefreshIndicator(
             onRefresh: refreshData,
             child: ListView.builder(
                 controller: controller,
                 shrinkWrap: false,
                 itemCount:
-                    (teacherRepository as BaseRepository).listData.length,
+                    (Repository as BaseRepository).listData.length,
                 itemBuilder: (BuildContext context, int index) {
-                  if (teacherRepository.listData.isEmpty) {
+                  if (Repository.listData.isEmpty) {
                     return DataNotFoundComponent();
                   }
 
-                  return itemBuild(teacherRepository.listData[index]);
+                  return itemBuild(Repository.listData[index]);
                 }),
           ),
         );

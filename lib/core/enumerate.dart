@@ -24,7 +24,6 @@ enum RoutesPages {
   contentGroup,
   contentGroupList,
   contentGroupDetail,
-
 }
 
 enum AccountStatus with Identify { disable, enable, pending }
@@ -35,33 +34,43 @@ enum ContentGroupType { workshop, intensivo, aulao, grupo, regular }
 
 enum LoginProvider { google, email, apple, facebook, instagran }
 
-enum FollowStatusStatus{ follow,unFollow  }
+enum FollowStatusStatus { follow, unFollow }
 
 enum DataTypeQuery { string, date }
 
 enum EventRegisterStatus { subscribe, unsubscribe }
 
-enum EventStatus{ published,canceled,postponed,hidden }
+enum EventStatus { published, canceled, postponed, hidden }
 
-enum NotifyMessageType {  event,teacher,contentGroup  }
+enum NotifyMessageType { event, teacher, contentGroup }
+
+enum GenderType { male, female, notbinary, other }
+
+enum EventListType { vip, discount, none }
 
 
-Map<ContentGroupType, DropdownItem> contentGroupdescriptions = {
-  ContentGroupType.workshop: const DropdownItem(text: "Workshop", icon: FontAwesomeIcons.usersSlash,id: ContentGroupType.workshop),
-  ContentGroupType.intensivo:const DropdownItem(text: "Curso intensivo",icon: FontAwesomeIcons.gaugeHigh,id: ContentGroupType.intensivo),
-  ContentGroupType.aulao: const DropdownItem(text: "Aulão",icon: FontAwesomeIcons.screenpal, id: ContentGroupType.aulao),
-  ContentGroupType.grupo:const  DropdownItem(text: "Grupo de estudos",icon: FontAwesomeIcons.peopleGroup,id: ContentGroupType.grupo),
-  ContentGroupType.regular:const DropdownItem(text: "Turma regular", icon: FontAwesomeIcons.peoplePulling, id: ContentGroupType.regular)
-};
 
+extension EventTypeExtension on EventListType {
+  String get label {
+    switch (this) {
+      case EventListType.none :
+        return "Não";
+      case EventListType.vip :
+        return "Vip";
+      case EventListType.discount :
+        return "Desconto";
+      default:
+        throw "Tipo de lista invalido!";
+    }
+  }
+}
 
 extension ContentGroupExtension on ContentGroupType {
-  DropdownItem  get item{
-   return contentGroupdescriptions[this]!;
-
+  DropdownItem get item {
+    return contentGroupdescriptions[this]!;
   }
 
-static Map<ContentGroupType, DropdownItem> get items {
+  static Map<ContentGroupType, DropdownItem> get items {
     return contentGroupdescriptions;
   }
 }
@@ -71,3 +80,28 @@ mixin Identify {
     return toString().split('.').last;
   }
 }
+
+
+
+Map<ContentGroupType, DropdownItem> contentGroupdescriptions = {
+  ContentGroupType.workshop: const DropdownItem(
+      text: "Workshop",
+      icon: FontAwesomeIcons.usersSlash,
+      id: ContentGroupType.workshop),
+  ContentGroupType.intensivo: const DropdownItem(
+      text: "Curso intensivo",
+      icon: FontAwesomeIcons.gaugeHigh,
+      id: ContentGroupType.intensivo),
+  ContentGroupType.aulao: const DropdownItem(
+      text: "Aulão",
+      icon: FontAwesomeIcons.screenpal,
+      id: ContentGroupType.aulao),
+  ContentGroupType.grupo: const DropdownItem(
+      text: "Grupo de estudos",
+      icon: FontAwesomeIcons.peopleGroup,
+      id: ContentGroupType.grupo),
+  ContentGroupType.regular: const DropdownItem(
+      text: "Turma regular",
+      icon: FontAwesomeIcons.peoplePulling,
+      id: ContentGroupType.regular)
+};

@@ -21,6 +21,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:upgrader/upgrader.dart';
 
+import 'package:link_dance/features/event/components/event_list_card_component.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -32,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> pages = [
     _homeContent(),
     TeacherListComponent(),
-    EventListComponent(),
+    EventListCardComponent(),
     ContentGroupListComponent(),
     MovieListComponent()
   ];
@@ -78,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
           key: _scaffoldKey,
           bottomNavigationBar: bottomNavigationComponent,
           appBar: AppBar(
-            title: const Text("Inicio"),
+            title: const Text("Linkdance"),
             automaticallyImplyLeading: true,
             actions: [
               if (_pageIndexSelected == 0)

@@ -8,9 +8,10 @@ class CurrencyInputField extends StatelessWidget {
   String? hint;
   String? initialValue;
   bool required;
+  bool hideIcon;
   FormFieldSetter<String>? onSaved;
 
-  CurrencyInputField({Key? key, required this.label, this.initialValue, this.hint, this.onSaved, this.required=true}) : super(key: key);
+  CurrencyInputField({Key? key, this.label="", this.initialValue, this.hint, this.onSaved, this.required=true, this.hideIcon=false}) : super(key: key);
   @override
   Widget build(BuildContext context) {
  
@@ -22,8 +23,8 @@ class CurrencyInputField extends StatelessWidget {
 
       keyboardType: TextInputType.number,
       decoration:  InputDecoration(
-        icon: const Icon(Icons.monetization_on_outlined),
-        hintText: hint ?? label,
+        icon:hideIcon ?null: const Icon(Icons.monetization_on_outlined),
+        hintText: hint  ,
         label: labelRequired(required: required, label: label)
       ),
     );

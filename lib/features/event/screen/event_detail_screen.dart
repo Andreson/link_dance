@@ -1,3 +1,4 @@
+import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/features/event/components/event_list_tile_detail_.dart';
 import 'package:link_dance/core/cache/movie_cache_helper.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
@@ -41,12 +42,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         <String, dynamic>{}) as Map;
     eventRepository = Provider.of<EventRepository>(context, listen: false);
     event = mapParam['event'];
-    print("userEvent state in build method $userEvent");
     userEvent ??= mapParam['userEvent'];
     late Image banner;
-
     buildButtons();
-    print("userEvent param received $userEvent");
 
     return Scaffold(
       appBar: AppBar(
@@ -66,88 +64,93 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
     return SingleChildScrollView(
       child: Center(
-        child: Container(
-          child: Column(children: [
-            Stack(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    showImageViewer(context, imageProviderCache,
-                        onViewerDismissed: () {});
-                  },
-                  child: event.uriBanner == null || event.uriBanner!.isEmpty
-                      ? _getImageDefault()
-                      : cachedManager.getImage(
-                          url: event.uriBanner!,
-                          width: width,
-                          fit: BoxFit.cover,
-                          height: height / 2.7,
-                          onCache: (img) => {imageProviderCache = img}),
-                ),
-              ],
-            ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 10, left: 10),
-                child: Text(
-                  "Sobre o evento",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+        child: Column(children: [
+          Stack(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  showImageViewer(context, imageProviderCache,
+                      onViewerDismissed: () {});
+                },
+                child: event.uriBanner == null || event.uriBanner!.isEmpty
+                    ? _getImageDefault()
+                    : cachedManager.getImage(
+                        url: event.uriBanner!,
+                        width: width,
+                        fit: BoxFit.cover,
+                        height: height / 2.7,
+                        onCache: (img) => {imageProviderCache = img}),
+              ),
+            ],
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 10, left: 10),
+              child: Text(
+                "Sobre o evento",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              Container(
-                  margin: EdgeInsets.only(right: 10), child: buttonSubscribe),
-            ]),
-            _detail(),
+            ),
+            Container(
+                margin: EdgeInsets.only(right: 10), child: buttonSubscribe),
+          ]),
+          _detail(),
+          EventListTileItem(
+              title: event.place.capitalizePhrase(),
+              subtitle: Text(event.address),
+              icon: FontAwesomeIcons.mapLocation,
+              iconTrailing: Icons.copy,
+              onPressedTrailing: () {
+                copyClipboardData(event.contact, context,
+                    mensage: "Endereço copiado.");
+              }),
+          EventListTileItem(
+              title: "Data",
+              subtitle: Text(event.eventDate.showString()),
+              icon: FontAwesomeIcons.calendarCheck),
+          EventListTileItem(
+              title: "Entrada",
+              subtitle: Column(children: [
+                getPrice(),
+              ]),
+              icon: Icons.monetization_on),
+          if (event.hasList())
             EventListTileItem(
-                title: event.place ?? "Endereço",
-                subtitle: Text(event.address),
-                icon: FontAwesomeIcons.mapLocation,
-                iconTrailing: Icons.copy,
-                onPressedTrailing: () {
-                  copyClipboardData(event.contact, context,
-                      mensage: "Endereço copiado.");
-                }),
-            EventListTileItem(
-                title: "Data",
-                subtitle: Text(event.eventDate.showString()),
-                icon: FontAwesomeIcons.calendarCheck),
-            EventListTileItem(
-                title: "Valor",
+                title: event.listData!.listType.label,
                 subtitle: Column(
                   children: [
                     getPrice(),
-                    if ( event.hasVip)
-                    getTimeVip()],
+                    if (event.listData != null) getTimeVip()
+                  ],
                 ),
-                icon: Icons.monetization_on),
-            if (event.paymentData != null && event.paymentData!.isNotEmpty)
-              EventListTileItem(
-                title: "Pix",
-                subtitle: Text(event.paymentData!),
-                icon: Icons.payments_outlined,
-                iconTrailing: Icons.copy,
-                onPressedTrailing: () {
-                  copyClipboardData(event.paymentData!, context,
-                      mensage: "Contato copiado.");
-                },
-              ),
-            if (event.contact != null && event.contact!.isNotEmpty)
-              EventListTileItem(
-                title: "Contato",
-                subtitle: Text(event.contact),
-                icon: Icons.perm_contact_cal,
-                iconTrailing: Icons.copy,
-                onPressedTrailing: () {
-                  copyClipboardData(event.contact, context,
-                      mensage: "Contato copiado.");
-                },
-              ),
-            sizedBox50()
-          ]),
-        ),
+                icon: FontAwesomeIcons.ticket),
+          if (event.paymentData != null && event.paymentData!.isNotEmpty)
+            EventListTileItem(
+              title: "Pix",
+              subtitle: Text(event.paymentData!),
+              icon: Icons.payments_outlined,
+              iconTrailing: Icons.copy,
+              onPressedTrailing: () {
+                copyClipboardData(event.paymentData!, context,
+                    mensage: "Contato copiado.");
+              },
+            ),
+          if (event.contact!.isNotEmpty)
+            EventListTileItem(
+              title: "Contato",
+              subtitle: Text(event.contact),
+              icon: Icons.perm_contact_cal,
+              iconTrailing: Icons.copy,
+              onPressedTrailing: () {
+                copyClipboardData(event.contact, context,
+                    mensage: "Contato copiado.");
+              },
+            ),
+          sizedBox50()
+        ]),
       ),
     );
   }
@@ -155,13 +158,13 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   Row getPrice() {
     return Row(
       children: [
-        Icon(FontAwesomeIcons.person),
+        const Icon(FontAwesomeIcons.person),
         Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: event.malePrice != null
-                  ? Text("R\$ ${event.malePrice}")
+              child: event.listData!.malePrice > 0
+                  ? Text("R\$ ${event.listData!.malePrice}")
                   : Text("Free"),
             ),
           ],
@@ -170,8 +173,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         const Icon(FontAwesomeIcons.personDress),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: event.femalePrice != null
-              ? Text("R\$ ${event.femalePrice}")
+          child: event.listData!.femalePrice > 0
+              ? Text("R\$ ${event.listData!.femalePrice}")
               : Text("Free"),
         ),
       ],
@@ -234,15 +237,18 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
     if (userEvent != null &&
         userEvent!.status == EventRegisterStatus.subscribe) {
-      if (event.hasVip) {
-        titleButton = "vip";
+      if (event.hasList()) {
+        titleButton = event.listData!.listType.label;
       } else {
         titleButton = "Inscrito";
       }
-      buttonSubscribe = eventHelper.buttonUnsubscription(hasTicket:event.hasVip ,
-          context: context, text: titleButton, onPressed: unSubscribe);
+      buttonSubscribe = eventHelper.buttonUnsubscription(
+          hasTicket: event.hasList(),
+          context: context,
+          text: titleButton,
+          onPressed: unSubscribe);
     } else {
-      if (event.hasVip) {
+      if (event.hasList()) {
         titleButton = "Pegar meu vip";
       } else {
         titleButton = "Inscrever-se";

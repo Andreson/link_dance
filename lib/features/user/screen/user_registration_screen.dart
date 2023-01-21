@@ -2,8 +2,8 @@ import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/model/teacher_model.dart';
 import 'package:link_dance/model/user_model.dart';
 import 'package:flutter/material.dart';
-import '../components/user_register_form.dart';
-import '../core/decorators/box_decorator.dart';
+import 'user_register_form.dart';
+import '../../../core/decorators/box_decorator.dart';
 
 class UserRegistrationScreen extends StatelessWidget {
    UserRegistrationScreen();

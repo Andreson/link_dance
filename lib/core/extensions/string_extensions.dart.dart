@@ -44,8 +44,8 @@ extension StringExtension on String {
     return DateFormat(format).parse(this);
   }
 
-  String emptyIfNull() {
-    return this=="null" ? "":this;
+  String emptyIfNull({String value=""}) {
+    return this=="null" ? value:this;
   }
   Timestamp toTimestamp({String format = "dd/MM/yyyy"}) {
     return Timestamp.fromDate(DateFormat(format).parse(this));

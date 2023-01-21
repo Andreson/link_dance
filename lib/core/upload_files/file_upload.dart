@@ -94,7 +94,7 @@ class FileUpload {
         await FlutterNativeImage.getImageProperties(path);
     File imgBanner;
     File imgThumb = await FlutterNativeImage.compressImage(path,
-        quality: 80, targetWidth: 100, targetHeight: 100);
+        quality: 80, targetWidth: 300, targetHeight: 300);
 
     if (properties.width! > 2000) {
       imgBanner = await FlutterNativeImage.compressImage(path,percentage: 70,

@@ -55,10 +55,11 @@ class LoginHelper {
       }
     }).onError((error, stackTrace) {
       Navigator.of(context).pop();
-
+      print("trace error $stackTrace");
       _loginCatchError(error, context, loginProvider);
-    }).catchError((onError) {
+    }).catchError((onError,trace) {
       Navigator.of(context).pop();
+      print("trace error $trace");
       _loginCatchError(onError, context, loginProvider);
     });
   }

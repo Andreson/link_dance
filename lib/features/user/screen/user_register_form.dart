@@ -11,6 +11,7 @@ import 'package:link_dance/core/exception/exceptions.dart';
 import 'package:link_dance/core/rest/address_rest_client.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/core/theme/theme_data.dart';
 import 'package:link_dance/core/upload_files/file_upload.dart';
 import 'package:link_dance/model/address_model.dart';
 import 'package:link_dance/model/imagem_model.dart';
@@ -23,10 +24,10 @@ import 'package:link_dance/repository/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import '../core/decorators/box_decorator.dart';
-import '../core/theme/fontStyles.dart';
+import '../../../core/decorators/box_decorator.dart';
+import '../../../core/theme/fontStyles.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../core/factory_widget.dart';
+import '../../../core/factory_widget.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -55,7 +56,7 @@ class RegistrationUserFormState extends State<RegisterUserFormComponent> {
   Color linkColor = const Color(0xff0000ff);
   late ImageAvatarComponent imageAvatar;
   bool imageChange = false;
-
+  GenderType gender = GenderType.female;
   FileUpload fileUpload = FileUpload();
 
   final FocusNode _nameFocus = FocusNode();
@@ -98,12 +99,13 @@ class RegistrationUserFormState extends State<RegisterUserFormComponent> {
       showError(context,
           content: "Ocorreu um erro nao esperado, por favor, tente novamente.");
       print("Erro ao fazer upload de imagem $err");
-      throw err;
+      rethrow;
     }
   }
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     widget.userModel = widget.userModel ?? UserModel.New();
     imageAvatar = _getImageProfile(imageUrl: widget.userModel!.photoUrl);
     authentication = Provider.of<AuthenticationFacate>(context, listen: false);
@@ -310,6 +312,52 @@ class RegistrationUserFormState extends State<RegisterUserFormComponent> {
                       onSaved: (value) {
                         widget.userModel!.phone = value!;
                       }),
+                  Row(children: [
+                    Icon(Icons.transgender_outlined),
+                    sizedBoxH15(),
+                    Text("Genero: ", style: TextStyle(color: inputField)),
+                  ]),
+                  Row(
+
+                    children: [
+
+                      sizedBoxH40(),
+                      const Text("Feminino", style: TextStyle(color: inputField)),
+                      Radio(
+                        groupValue: gender,
+                        value: GenderType.female,
+                        onChanged: (GenderType? value) {
+                          gender = value!;
+                          widget.userModel!.gender = value;
+                        },
+                      ),
+                      const Text(
+                        "Masculino",
+                        style: TextStyle(color: inputField),
+                      ),
+                      Radio(
+                        groupValue: gender,
+                        value: GenderType.male,
+                        onChanged: (GenderType? value) {
+                          gender = value!;
+                          widget.userModel!.gender = value;
+                        },
+                      ),
+                      const Text(
+                        "Não Binário",
+                        style: TextStyle(color: inputField),
+                      ),
+                      Radio(
+                        groupValue: gender,
+                        value: GenderType.notbinary,
+                        onChanged: (GenderType? value) {
+                          gender = value!;
+                          widget.userModel!.gender = value;
+                        },
+                      ),
+
+                    ],
+                  ),
                   DateInputField(
                       readOnly: true,
                       isDatePicker: true,
@@ -341,18 +389,20 @@ class RegistrationUserFormState extends State<RegisterUserFormComponent> {
                           onPressed: () {
                             _launchSiteCorreios();
                           }),
-                      label: "CEP do seu endereço",
+                      label: "CEP/Bairro",
                       icon: const Icon(Icons.home)),
                   Row(
                     children: [
                       Flexible(
                           child: InkWell(
-                              onTap: () => launchUrl(Uri.parse("https://drive.google.com/file/d/17sqKBswiK1pz8NMlszDxa-Mad2tXT14G/view?usp=share_link")),
+                              onTap: () => launchUrl(Uri.parse(
+                                  "https://drive.google.com/file/d/17sqKBswiK1pz8NMlszDxa-Mad2tXT14G/view?usp=share_link")),
                               child: const Padding(
                                 padding: EdgeInsets.only(left: 25),
                                 child: Text(
                                   "Li e concordo com os termos de uso e política de privacidade",
-                                  style: TextStyle(color: Colors.blue,fontSize: 12),
+                                  style: TextStyle(
+                                      color: Colors.blue, fontSize: 12),
                                 ),
                               ))),
                       Checkbox(

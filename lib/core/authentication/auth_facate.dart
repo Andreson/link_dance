@@ -71,8 +71,8 @@ class AuthenticationFacate with ChangeNotifier {
     authentication = _buildAuthType(loginProvider);
 
     user =
-        await authentication.login(username, password).catchError((onError) {
-      print("onError in _logar facate ${onError}");
+        await authentication.login(username, password).catchError((onError, trrace) {
+      print("onError in _logar facate ${onError} | trace $trrace");
       throw AuthenticationRuntimException(onError.code);
     });
 
