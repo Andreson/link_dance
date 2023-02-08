@@ -21,7 +21,7 @@ class PhoneInputField extends StatelessWidget {
       inputFormatters: [phoneMask(initValue: initialValue)],
       keyboardType: TextInputType.phone,
       decoration:  InputDecoration(
-        icon: const Icon(Icons.whatsapp_rounded),
+
         hintText: hint ?? label,
         labelText: label,
       ),

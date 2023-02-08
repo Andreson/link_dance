@@ -1,13 +1,13 @@
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/features/cache/movie_cache_helper.dart';
+import 'package:link_dance/core/helpers/movie_cache_helper.dart';
 
 import 'package:link_dance/model/teacher_model.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/theme/fontStyles.dart';
-import '../../core/theme/theme_data.dart';
-import '../../core/decorators/box_decorator.dart';
+import 'package:link_dance/core/theme/fontStyles.dart';
+import 'package:link_dance/core/theme/theme_data.dart';
+import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 
 
@@ -59,8 +59,8 @@ class TeacherCardItemList extends StatelessWidget {
             ),
           ),
           Container(
-
-            margin: EdgeInsets.fromLTRB(0, 230, 0, 0),
+            alignment: Alignment.center,
+            margin: const EdgeInsets.fromLTRB(0, 230, 0, 0),
             child: const Text(
               "Ritmos",
             ),

@@ -14,7 +14,7 @@ class UserModel extends AbastractModel {
   String? birthDate;
   String? postalCode;
   String? photoUrl;
-  UserType? userType;
+  UserType userType;
   LoginModel? login;
   ImagemModel? imagemModel;
   GenderType? gender;
@@ -26,7 +26,7 @@ class UserModel extends AbastractModel {
   }
 
   String userTypeLabel() {
-    if (userType == UserType.aluno) {
+    if (userType == UserType.student) {
       return "Dançudis";
     } else {
       return userType!.name().toString();
@@ -44,7 +44,7 @@ class UserModel extends AbastractModel {
       this.phone,
       this.birthDate,
       this.postalCode,
-      this.userType,
+      required this.userType,
       this.photoUrl});
 
   Widget get photo {
@@ -55,9 +55,9 @@ class UserModel extends AbastractModel {
     }
   }
 
-  factory UserModel.New({LoginModel? login}) {
+  factory UserModel.Mock({LoginModel? login}) {
     return UserModel(
-      userType: UserType.aluno,
+      userType: UserType.student,
       login: LoginModel.New(),
     );
   }

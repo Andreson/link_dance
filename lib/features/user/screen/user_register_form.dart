@@ -5,7 +5,7 @@ import 'package:link_dance/components/input_fields/phone_field.dart';
 import 'package:link_dance/components/input_fields/text_buton.dart';
 import 'package:link_dance/components/input_fields/text_field.dart';
 import 'package:link_dance/components/widgets/imagem_avatar_component.dart';
-import 'package:link_dance/core/constants.dart';
+import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/exception/exceptions.dart';
 import 'package:link_dance/core/rest/address_rest_client.dart';
@@ -106,7 +106,7 @@ class RegistrationUserFormState extends State<RegisterUserFormComponent> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    widget.userModel = widget.userModel ?? UserModel.New();
+    widget.userModel = widget.userModel ?? UserModel.Mock();
     imageAvatar = _getImageProfile(imageUrl: widget.userModel!.photoUrl);
     authentication = Provider.of<AuthenticationFacate>(context, listen: false);
     authenticationFacate =
@@ -120,13 +120,13 @@ class RegistrationUserFormState extends State<RegisterUserFormComponent> {
   submitForm() async {
     if (!_formKey.currentState!.validate()) {
       setState(() {
-        widget.userModel!.userType = UserType.aluno;
-        _radioGroupValues = UserType.aluno;
+        widget.userModel!.userType = UserType.student;
+        _radioGroupValues = UserType.student;
       });
       return;
     }
     _formKey.currentState?.save();
-    if (widget.userModel!.userType == UserType.professor && !isUpdate) {
+    if (widget.userModel!.userType == UserType.teacher && !isUpdate) {
       await showInfo(
           context: context,
           content: "Por padrão todos os usuarios são cadastrados como alunos."
@@ -211,7 +211,7 @@ class RegistrationUserFormState extends State<RegisterUserFormComponent> {
       throw onError;
     });
 
-    if (widget.userModel!.userType == UserType.professor) {
+    if (widget.userModel!.userType == UserType.teacher) {
       var t = TeacherModel(
           description: "",
           name: widget.userModel!.name!,
@@ -234,7 +234,7 @@ class RegistrationUserFormState extends State<RegisterUserFormComponent> {
 
   @override
   Widget build(BuildContext context) {
-    widget.userModel = widget.userModel ?? UserModel.New();
+    widget.userModel = widget.userModel ?? UserModel.Mock();
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(10),
@@ -486,7 +486,7 @@ class RegistrationUserFormState extends State<RegisterUserFormComponent> {
   }
 
   Future<void> _launchSiteCorreios() async {
-    if (!await launchUrl(Uri.parse(Constants.searchPostalCodeUrl))) {
+    if (!await launchUrl(Uri.parse(ConstantsAPI.searchPostalCodeUrl))) {
       CustomAlertComponent(
           title: "Ocorreu um erro nao esperado",
           content: "Não foi possivel abrir site para pesquisa de CEP.");

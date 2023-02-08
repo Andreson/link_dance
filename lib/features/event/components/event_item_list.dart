@@ -1,7 +1,7 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/core/cache/movie_cache_helper.dart';
+import 'package:link_dance/core/helpers/movie_cache_helper.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:flutter/material.dart';

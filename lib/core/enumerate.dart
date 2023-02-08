@@ -24,11 +24,12 @@ enum RoutesPages {
   contentGroup,
   contentGroupList,
   contentGroupDetail,
+  qrCodeScan,
 }
 
 enum AccountStatus with Identify { disable, enable, pending }
 
-enum UserType with Identify { aluno, professor }
+enum UserType with Identify { student, teacher,promoter,operator,admin,school }
 
 enum ContentGroupType { workshop, intensivo, aulao, grupo, regular }
 

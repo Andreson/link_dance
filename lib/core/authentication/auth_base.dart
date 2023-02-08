@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:link_dance/core/constants.dart';
+import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/exception/exceptions.dart';
 import 'package:link_dance/core/rest/rest_template.dart';
@@ -22,6 +22,7 @@ abstract class BaseAuthentication with ChangeNotifier {
   Future<void> logout() async {
     _cleanAuthData();
   }
+
   Future<UserModel> signup(UserModel user);
 
   Future<UserModel> login(String? login, String? password);
@@ -34,16 +35,15 @@ abstract class BaseAuthentication with ChangeNotifier {
     _expiryDate = DateTime.now();
   }
 
-
   Future<TokenRefresh?> refreshTokenIfExpired(
-      {required String token,required String tokenRefresh}) async {
-
-    if ( tokenRefresh.isEmpty) {
+      {required String token, required String tokenRefresh}) async {
+    if (tokenRefresh.isEmpty) {
       throw AuthenticationRuntimException("REFRESH_TOKEN_ERROR");
     }
 
-    if ( tokenExpired(jtwToken: token) ) {
-      debugPrint("Token expirado, tentando renovar token ------------------------------");
+    if (tokenExpired(jtwToken: token)) {
+      debugPrint(
+          "Token expirado, tentando renovar token ------------------------------");
       return refreshToken(tokenRefresh);
     }
     return null;
@@ -53,7 +53,6 @@ abstract class BaseAuthentication with ChangeNotifier {
     return JwtDecoder.isExpired(jtwToken);
   }
 
-
   Future<TokenRefresh> refreshToken(String refreshToken) async {
     var bodyRequest = {
       "grant_type": "refresh_token",
@@ -61,14 +60,13 @@ abstract class BaseAuthentication with ChangeNotifier {
     };
 
     final dio = Dio();
-    final res =await dio.post(
-
-      Constants.refreshToken,
+    final res = await dio.post(
+      ConstantsAPI.refreshToken,
       data: bodyRequest,
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
 
-    if ( res.statusCode!>300) {
+    if (res.statusCode! > 300) {
       throw HttpException(res.data);
     }
     var response = res.data;
@@ -91,6 +89,7 @@ abstract class BaseAuthentication with ChangeNotifier {
         expiryDate: token.expirationTime,
         email: userCredential.user!.email ?? "");
     return UserModel(
+        userType: UserType.student,
         email: userCredential.user!.email,
         name: userCredential.user!.displayName,
         phone: userCredential.user!.phoneNumber ?? "",
@@ -112,7 +111,6 @@ abstract class BaseAuthentication with ChangeNotifier {
   @deprecated
   Future<LoginModel> authenticate(
       String email, String password, String url) async {
-
     final response = await http.post(
       Uri.parse(url),
       body: jsonEncode({

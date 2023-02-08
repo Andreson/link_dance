@@ -1,6 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:link_dance/core/helpers/constantes_images.dart';
 import 'package:link_dance/features/event/components/event_item_list.dart';
 import 'package:link_dance/components/input_fields/text_buton.dart';
 import 'package:link_dance/components/not_found_card.dart';
@@ -16,7 +17,7 @@ import 'package:provider/provider.dart';
 import '../components/widgets/imagem_avatar_component.dart';
 import '../core/theme/fontStyles.dart';
 import '../core/theme/theme_data.dart';
-import 'constants.dart';
+import 'helpers/constants_api.dart';
 
 typedef ItemBuild = Widget Function(Object data);
 
@@ -427,7 +428,7 @@ Widget leadingToBackScaffold({required void Function() onPressed}) {
 ImageAvatarComponent getImageProfile(
     {String? imageUrl, String? imageLocal,required Function(String path) changeImage}) {
   return ImageAvatarComponent(
-    imageLocal: imageLocal ?? Constants.defaultAvatar,
+    imageLocal: imageLocal ?? ConstantsImagens.defaultAvatar,
     imageUrl: imageUrl,
     selectImage: changeImage,
   );

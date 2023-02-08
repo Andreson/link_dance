@@ -45,7 +45,7 @@ class _LoginFormComponentState extends State<LoginFormComponent> {
       children: [
         SizedBox(
           width: 260,
-          height: 50,
+          height: 65,
           child: TextField(
             controller: _loginController,
             decoration: const InputDecoration(
@@ -62,7 +62,7 @@ class _LoginFormComponentState extends State<LoginFormComponent> {
         sizedBox30(),
         SizedBox(
           width: 260,
-          height: 50,
+          height: 65,
           child: TextFormField(
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (value) {
@@ -91,7 +91,7 @@ class _LoginFormComponentState extends State<LoginFormComponent> {
                 )),
           ),
         ),
-        sizedBox30(),
+        sizedBox20(),
         CustomTextButton(
             onPressed: () {
               loginHelper.login(loginProvider: LoginProvider.email,password:  _passwordController.text,

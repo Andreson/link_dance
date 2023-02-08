@@ -3,7 +3,7 @@ import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/core/factory_widget.dart';
 
-import 'package:link_dance/repository/movie_repository.dart';
+import 'package:link_dance/features/movie/repository/movie_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';

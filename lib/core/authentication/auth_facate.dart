@@ -1,4 +1,5 @@
-import 'package:link_dance/core/constants.dart';
+import 'package:link_dance/core/helpers/constantes_config.dart';
+import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/exception/exceptions.dart';
 import 'package:link_dance/core/rest/rest_template.dart';
@@ -36,7 +37,7 @@ class AuthenticationFacate with ChangeNotifier {
     if (username != null) {
       //impede a tentativa de renovar o token caso seja um novo login
       var userModel = await _logar(loginProvider, username, password);
-      if (userModel?.userType == UserType.professor) {
+      if (userModel?.userType == UserType.teacher) {
         var teacherProfile = await _getTeacherProfile(userId: userModel!.id);
         userModel.teacherProfile = teacherProfile;
       }
@@ -46,7 +47,7 @@ class AuthenticationFacate with ChangeNotifier {
     return retrieveUserAuthData().then((userModel) async {
       if (userModel == null) {
         userModel = await _logar(loginProvider, username, password);
-        if (userModel?.userType == UserType.professor) {
+        if (userModel?.userType == UserType.teacher) {
           userModel?.teacherProfile =
               await _getTeacherProfile(userId: userModel.id);
         }
@@ -65,6 +66,10 @@ class AuthenticationFacate with ChangeNotifier {
   LoginModel? getLogin() {
     return user?.login;
   }
+  String? getToken() {
+    return user?.login?.token;
+  }
+
 
   Future<UserModel?> _logar(
       LoginProvider loginProvider, String? username, String? password) async {
@@ -81,7 +86,7 @@ class AuthenticationFacate with ChangeNotifier {
     }
     var dataUserApp = await userRepository.findUserByEmail(user!);
     if(dataUserApp==null) {
-      user!.userType = UserType.aluno;
+      user!.userType = UserType.student;
       await userRepository.createUser(user!);
     }else {
       user = user!.enrich(dataUserApp);
@@ -96,7 +101,7 @@ class AuthenticationFacate with ChangeNotifier {
     print(
         " dataUserLogin.login?.loginProvider.name ${dataUserLogin.login?.loginProvider.name}");
 
-    LocalStoreRepository.saveMap(Constants.userAuthData, {
+    LocalStoreRepository.saveMap(ConstantsConfig.userAuthData, {
       "email": dataUserLogin.email,
       "id": dataUserLogin.id,
       "token": dataUserLogin.login?.token,
@@ -115,19 +120,19 @@ class AuthenticationFacate with ChangeNotifier {
   }
 
   void _clearUserAuthData() {
-    LocalStoreRepository.remove(Constants.userAuthData);
+    LocalStoreRepository.remove(ConstantsConfig.userAuthData);
   }
 
   /**
    * Retorna os dados gravados do ultimo login realizado, sem que tenha sido efetuado o logout
    */
   Future<UserModel?> retrieveUserAuthData() async {
-    return await LocalStoreRepository.getMap(Constants.userAuthData)
+    return await LocalStoreRepository.getMap(ConstantsConfig.userAuthData)
         .then((data) async {
       if (data.isNotEmpty) {
         user = UserModel.build(data, data['id']);
 
-        if (user?.userType == UserType.professor) {
+        if (user?.userType == UserType.teacher) {
           user?.teacherProfile =await _getTeacherProfile(userId: user!.id);
         }
         authentication = _buildAuthType(user!.login!.loginProvider);

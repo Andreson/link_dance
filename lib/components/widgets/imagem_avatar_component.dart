@@ -1,7 +1,8 @@
 import 'dart:io';
 
-import 'package:link_dance/core/constants.dart';
-import 'package:link_dance/core/cache/movie_cache_helper.dart';
+import 'package:link_dance/core/helpers/constantes_images.dart';
+import 'package:link_dance/core/helpers/constants_api.dart';
+import 'package:link_dance/core/helpers/movie_cache_helper.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ class ImageAvatarComponent extends StatefulWidget {
       this.imageUrl,
         this.readOnly=false,
       this.selectImage,
-      this.imageLocal = Constants.defaultAvatar})
+      this.imageLocal = ConstantsImagens.defaultAvatar})
       : super(key: key);
 
   @override
@@ -77,7 +78,7 @@ class _ImageAvatarState extends State<ImageAvatarComponent> {
 
     return Stack(
       children: [
-        boxImage ?? CircularProgressIndicator(),
+        boxImage ?? const CircularProgressIndicator(),
         if(!widget.readOnly)
         Positioned(
             top: 115,
@@ -133,7 +134,7 @@ class _ImageAvatarState extends State<ImageAvatarComponent> {
   Future<ImageProvider> _getImage() async{
     ImageProvider image;
 
-    var imageLocal = widget.imageLocal ?? Constants.defaultAvatar;
+    var imageLocal = widget.imageLocal ?? ConstantsImagens.defaultAvatar;
 
 
     if (imageLocal.contains("assets")) {

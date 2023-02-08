@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:link_dance/core/constants.dart';
+import 'package:link_dance/core/helpers/constantes_config.dart';
+import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/rest/rest_template.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
 
 
   @protected
-  int currentRegistryPagination = Constants.pageSize;
+  int currentRegistryPagination = ConstantsConfig.pageSize;
   @protected
   late RestTemplate restTemplate;
 
@@ -28,7 +29,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
 
   Future<List<T>?> nextPageBase({int? nextRegistry}) {
     var tempNextRegistry =
-        nextRegistry ?? currentRegistryPagination + Constants.pageSize;
+        nextRegistry ?? currentRegistryPagination + ConstantsConfig.pageSize;
     currentRegistryPagination = tempNextRegistry;
     var response = listBase(
         nextPage: true,
@@ -96,7 +97,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
 
   @protected
   Future<List<T>?> likeSearchBase(
-      {int limit = Constants.pageSize,
+      {int limit = ConstantsConfig.pageSize,
       bool nextPage = false,
       bool orderDesc = false,
       required QueryCondition condition,
@@ -128,7 +129,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
 
 
   Future<List<T>?> listBase(
-      {int limit = Constants.pageSize,
+      {int limit = ConstantsConfig.pageSize,
       bool nextPage = false,
       List<QueryCondition>? conditions,
       bool orderDesc = true,
@@ -155,7 +156,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
   }
 
   Future<List<T>?> _executeGenericQuery(
-      {int limit = Constants.pageSize,
+      {int limit = ConstantsConfig.pageSize,
       bool nextPage = false,
       List<QueryCondition>? conditions,
       String orderBy = "createDate",
@@ -165,7 +166,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
     if (nextPage) {
       query = query.startAfterDocument(paginationPointer);
     } else {
-      currentRegistryPagination = Constants.pageSize;
+      currentRegistryPagination = ConstantsConfig.pageSize;
       clear();
     }
 

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:link_dance/core/constants.dart';
+import 'package:link_dance/core/helpers/constantes_config.dart';
+import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/model/content_group_model.dart';
 import 'package:link_dance/model/content_user_acess_model.dart';
@@ -12,12 +13,12 @@ class ContentGroupRepository extends BaseRepository<ContentGroupModel> {
   AuthenticationFacate? auth;
 
   Future<List<ContentGroupModel>?> getAllPagination(
-       { int limit = Constants.pageSize, bool nextPage = false,List<QueryCondition>? conditions})  async{
+       { int limit = ConstantsConfig.pageSize, bool nextPage = false,List<QueryCondition>? conditions})  async{
     print("Realizando query :  $conditions");
 
     return listBase( limit: limit,conditions:  conditions,orderDesc: true,orderBy: "startClassDate");
   }
-  Future<List<ContentGroupModel>?> like( {int limit = Constants.pageSize,
+  Future<List<ContentGroupModel>?> like( {int limit = ConstantsConfig.pageSize,
     bool nextPage = false,
     required QueryCondition condition,
     required String orderBy})  async{

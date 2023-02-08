@@ -1,16 +1,15 @@
-import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:link_dance/components/qrcode.dart';
+
+import 'package:link_dance/components/qr_code/qrcode_build.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/core/authentication/auth_facate.dart';
+
 import 'package:link_dance/core/types.dart';
 import 'package:link_dance/core/upload_files/file_upload.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 
 import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_image/flutter_native_image.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EventHelper {
@@ -24,6 +23,7 @@ class EventHelper {
       {required String text, required Function() onPressed}) {
     var t =
         Text(text, style: const TextStyle(color: Colors.blue, fontSize: 14));
+
     return _buildButton(
       onPressed: onPressed,
       text: t,
@@ -61,8 +61,7 @@ class EventHelper {
   Widget buttonUnsubscription(
       {required Function() onPressed,
       required String text,
-      required BuildContext context,
-      bool hasTicket = false}) {
+       Function()? showQrCode}) {
     var t =
         Text(text, style: const TextStyle(color: Colors.white, fontSize: 14));
     var button = _buildButton(
@@ -78,13 +77,11 @@ class EventHelper {
           padding: const EdgeInsets.only(left: 15),
           child: button,
         ),
-        if (hasTicket)
+        if (showQrCode!=null)
           Row(
             children: [
               TextButton.icon(
-                onPressed: () {
-                  showQrCode(context);
-                },
+                onPressed: showQrCode,
                 icon: const Icon(FontAwesomeIcons.qrcode),
                 label: const Text("Ingresso"),
               ),
@@ -94,7 +91,7 @@ class EventHelper {
     );
   }
 
-  void showQrCode(BuildContext context) {
+  void showQrCode({required BuildContext context, required String content}) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -107,9 +104,8 @@ class EventHelper {
               content: SizedBox(
                   width: 350,
                   height: 350,
-                  child: QrCodeComponent(
-                      content:
-                          "https://firebasestorage.googleapis.com/v0/b/linkdance-691ad.appspot.com/o/pictures%2Fpicture-12181671396354326.jpg?alt=media&token=1b2a2813-e011-48da-aff9-c0fd7a8860f8")),
+                  child: QrCodeBuildComponent(
+                      content:content)),
             ),
           );
         });

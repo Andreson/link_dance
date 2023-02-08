@@ -3,7 +3,7 @@ import 'package:link_dance/repository/content_group_respository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../repository/movie_repository.dart';
+import '../../../features/movie/repository/movie_repository.dart';
 
 class AutoCompleteContentGroupComponent extends StatefulWidget {
 

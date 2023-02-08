@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:link_dance/core/constants.dart';
+import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/exception/exceptions.dart';
 import 'package:link_dance/model/login_model.dart';
@@ -16,14 +16,14 @@ class FacebookAuthentication extends BaseAuthentication {
   @override
   Future<UserModel> signup(UserModel user) async {
 
-    return  UserModel.New();
+    return  UserModel.Mock();
 
 
   }
 
   @override
   Future<UserModel> login(String? login, String? password) async {
-    return UserModel.New();
+    return UserModel.Mock();
 
   }
 

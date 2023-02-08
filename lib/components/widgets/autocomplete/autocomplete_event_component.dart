@@ -6,7 +6,7 @@ import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../repository/movie_repository.dart';
+import '../../../features/movie/repository/movie_repository.dart';
 
 class AutoCompleteEventComponent extends StatefulWidget {
 

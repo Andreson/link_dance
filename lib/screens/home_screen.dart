@@ -1,14 +1,17 @@
+import 'dart:async';
+
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:link_dance/components/bottom_navigation_component.dart';
-import 'package:link_dance/components/widgets/imagem_avatar_component.dart';
-import 'package:link_dance/core/constants.dart';
+
+import 'package:link_dance/core/dynamic_links/dynamic_links_helper.dart';
 import 'package:link_dance/core/filter/content_group_wrapper_filter.dart';
 import 'package:link_dance/core/filter/event_wrapper_filter.dart';
 import 'package:link_dance/core/filter/teacher_wrapper_filter.dart';
 import 'package:link_dance/components/widgets/filter_component.dart';
-import 'package:link_dance/components/contentGroup/content_group_list_component.dart';
-import 'package:link_dance/features/event/components/event_list_component.dart';
-import 'package:link_dance/components/menu_drawer.dart';
-import 'package:link_dance/components/movie/movie_list.dart';
+import 'package:link_dance/features/content_group/components/content_group_list_component.dart';
+
+import 'package:link_dance/components/menu/menu_drawer.dart';
+import 'package:link_dance/features/movie/components/movie_list.dart';
 import 'package:link_dance/features/teacher/components/teacher_list_component.dart';
 import 'package:link_dance/model/user_model.dart';
 
@@ -28,7 +31,39 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
+
+  late Timer _timerLink;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    FirebaseDynamicLinks.instance.onLink.listen((PendingDynamicLinkData event) {
+      DynamicLinkHelper.retrieveDynamicLink(context :context, linkEvent : event);
+    });
+  }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _timerLink = Timer(
+        const Duration(milliseconds: 1000),
+            () {
+
+        },
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    if (_timerLink != null) {
+      _timerLink.cancel();
+    }
+    super.dispose();
+  }
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<Widget> pages = [
@@ -116,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           drawer: ClipPath(
               clipper: _DrawerClipper(),
-              child: MenuOptionsComponent(user: authentication.user ?? UserModel.New())),
+              child: MenuOptionsComponent(user: authentication.user ?? UserModel.Mock())),
           body: pages[_pageIndexSelected]),
     );
   }

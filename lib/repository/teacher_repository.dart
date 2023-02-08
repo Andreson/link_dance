@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:link_dance/core/constants.dart';
+import 'package:link_dance/core/helpers/constantes_config.dart';
+import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/rest/rest_template.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
@@ -19,7 +20,7 @@ class TeacherRepository extends BaseRepository<TeacherModel> {
 
   @override
   Future<List<TeacherModel>?> listBase(
-      {int limit = Constants.pageSize,
+      {int limit = ConstantsConfig.pageSize,
         bool nextPage = false,
         List<QueryCondition>? conditions,
         bool orderDesc = true,
@@ -45,7 +46,7 @@ class TeacherRepository extends BaseRepository<TeacherModel> {
 
 
   Future<List<TeacherModel>?> _executeGenericQuery(
-      {int limit = Constants.pageSize,
+      {int limit = ConstantsConfig.pageSize,
         bool nextPage = false,
         List<QueryCondition>? conditions,
         String orderBy = "createDate",
@@ -55,7 +56,7 @@ class TeacherRepository extends BaseRepository<TeacherModel> {
     if (nextPage) {
       query = query.startAfterDocument(paginationPointer);
     } else {
-      currentRegistryPagination = Constants.pageSize;
+      currentRegistryPagination = ConstantsConfig.pageSize;
       clear();
     }
 

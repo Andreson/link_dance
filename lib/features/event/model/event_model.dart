@@ -1,5 +1,8 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:link_dance/core/enumerate.dart';
+import 'package:link_dance/core/extensions/datetime_extensions.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/model/abastract_model.dart';
 
@@ -31,6 +34,14 @@ class EventModel extends AbastractModel {
   //Caminho dos arquivos no firebase para que eles possam ser deletados caso o registro seja removido
   List<String>? storageRef;
   List<String>? tags;
+
+  String shareLabel({required String link}) {
+
+    final urlPreview=link;
+    var date = eventDate.showString();
+    var title = this.title.capitalizePhrase();
+    return "$title\n$date\n$place\n $urlPreview";
+  }
 
   EventModel(
       {required this.ownerId,
@@ -135,6 +146,7 @@ class EventListModel {
   EventListModel(
       {required this.vipTimeFemale,
       required this.vipTimeMale,
+       required this.entriesUntil,
       this.maleVip = 0,
       this.femaleVip = 0,
       this.malePrice = 0,
@@ -151,6 +163,7 @@ class EventListModel {
   double femalePrice;
   double? malePriceDiscount;
   double? femalePriceDiscount;
+  DateTime entriesUntil;
   late EventListType listType;
 
   Map<String, dynamic> body() {
@@ -162,7 +175,8 @@ class EventListModel {
       "malePrice": malePrice,
       "femalePrice": femalePrice,
       "malePriceDiscount": malePriceDiscount,
-      "listType": listType.name
+      "listType": listType.name,
+      "entriesUntil":entriesUntil
     };
   }
 
@@ -181,6 +195,7 @@ class EventListModel {
           femalePriceDiscount: json['femalePriceDiscount'] ?? 0,
           femaleVip: json['femaleVip'] ?? 0,
           malePrice: json['malePrice'] ?? 0,
+          entriesUntil:  (json['entriesUntil'] as Timestamp).toDate(),
           malePriceDiscount: json['malePriceDiscount']);
     }
     catch(err, trace) {

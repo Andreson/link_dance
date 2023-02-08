@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:link_dance/core/constants.dart';
+import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/enumerate.dart';
 
 import 'package:link_dance/model/user_model.dart';

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:link_dance/core/cache/movie_cache_helper.dart';
-import 'package:link_dance/core/constants.dart';
+import 'package:link_dance/core/helpers/constantes_images.dart';
+import 'package:link_dance/core/helpers/movie_cache_helper.dart';
+import 'package:link_dance/core/helpers/constants_api.dart';
 
 class ImagemCardComponent extends StatelessWidget {
   ImagemCardComponent({
     Key? key,
     required this.imagemURL,
-    this.imagemAsset = Constants.defaultAvatar,
+    this.imagemAsset = ConstantsImagens.defaultAvatar
   }) : super(key: key);
   CachedManagerHelper cachedManager = CachedManagerHelper();
 

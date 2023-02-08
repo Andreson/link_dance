@@ -3,7 +3,6 @@ import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/factory_widget.dart';
 import 'package:flutter/material.dart';
 
-
 class EventListScreen extends StatelessWidget {
 
   EventListScreen();
@@ -21,7 +20,6 @@ class EventListScreen extends StatelessWidget {
           buttonNewRegistry(onPressed:() {
             Navigator.pushNamed(context, RoutesPages.eventRegister.name);
           })
-
         ],
         title: const Text("Eventos cadastrados"),
       ),

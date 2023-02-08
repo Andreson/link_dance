@@ -1,19 +1,18 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:link_dance/components/widgets/image_card.dart';
+import 'package:link_dance/core/dynamic_links/dynamic_links_helper.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/extensions/datetime_extensions.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
-import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/core/cache/movie_cache_helper.dart';
+import 'package:link_dance/core/helpers/util_helper.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
-
-import 'package:link_dance/model/teacher_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/theme/fontStyles.dart';
-import '../../../core/theme/theme_data.dart';
-import '../../../core/decorators/box_decorator.dart';
+import 'package:link_dance/core/theme/fontStyles.dart';
+import 'package:link_dance/core/theme/theme_data.dart';
+import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 
 class EventCardItemList extends StatelessWidget {
@@ -49,6 +48,7 @@ class EventCardItemList extends StatelessWidget {
               ),
             ),
           ),
+
           Center(
               child: Container(
                   padding: const EdgeInsets.fromLTRB(15, 25, 15, 15),
@@ -72,26 +72,44 @@ class EventCardItemList extends StatelessWidget {
           Center(
             child: Container(
               alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(0, 240, 0, 0),
-              width: 230,
+              margin: EdgeInsets.fromLTRB(0, 235, 0, 0),
+              width: 250,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 15),
                 child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Text(event.eventDate.showString()),
                     const Text(" - "),
                     Text(event.place!.capitalizePhrase()),
-                    if(event.hasList())
-                        Text(" - ${event.listData!.listType.label}")
+                    if (event.hasList())
+                      Text(" - ${event.listData!.listType.label}"),
 
                   ],
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
+  }
+
+  IconButton getButtonShare(BuildContext context) {
+    var options = DynamicLinkOptions(
+      router: RoutesPages.eventDetail,
+      params: {"eventId": event.id},
+      imageUrl: event.uriBannerThumb!,
+      title: event.shareLabel(link: ""),
+    );
+    return IconButton(
+        onPressed: () {
+          shareContent(context: context, options: options);
+        },
+        icon: const Icon(
+          Icons.share,
+
+        ));
   }
 
   Widget buildTags(List<String> tagsData) {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../repository/movie_repository.dart';
+import '../../../features/movie/repository/movie_repository.dart';
 
 class AutoCompleteRhythmComponent extends StatefulWidget {
 

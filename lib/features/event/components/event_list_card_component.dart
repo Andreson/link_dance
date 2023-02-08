@@ -17,9 +17,11 @@ import '../repository/event_repository.dart';
 class EventListCardComponent extends StatelessWidget {
 
   late EventRepository repository;
-  var condition = QueryCondition(fieldName: "eventDate",isGreaterThanOrEqualTo: DateTime.now());
+
+  var condition = QueryCondition(fieldName: "eventDate",isGreaterThan: DateTime.now().subtract(const Duration(days: 1) ));
   @override
   Widget build(BuildContext context) {
+
     repository = Provider.of<EventRepository>(context, listen: false);
     Future.delayed(Duration.zero, () async {
       await repository.listBase(conditions: [condition]);

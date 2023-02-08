@@ -1,25 +1,25 @@
 import 'dart:ui';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:link_dance/components/movie/video_play.dart';
+import 'package:link_dance/components/qr_code/qr_code_helper.dart';
+
 import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/core/dynamic_links/dynamic_link_router.dart';
 import 'package:link_dance/features/login/login_screen.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:link_dance/repository/follow_repository.dart';
-import 'package:link_dance/repository/movie_repository.dart';
+import 'package:link_dance/features/movie/repository/movie_repository.dart';
 import 'package:link_dance/repository/notify_repository.dart';
 import 'package:link_dance/repository/teacher_repository.dart';
 import 'package:link_dance/repository/content_group_respository.dart';
 import 'package:link_dance/repository/user_repository.dart';
 
-import 'package:link_dance/screens/movie_play_screen.dart';
-import 'package:link_dance/screens/movie_upload_screen.dart';
-
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+
 import 'package:provider/provider.dart';
 
 import './core/routes.dart';
@@ -37,6 +37,8 @@ void main() async {
         // ),
         );
   }
+  // Get any initial links
+  final PendingDynamicLinkData? initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
 
   bool weWantFatalErrorRecording = true;
   FlutterError.onError = (errorDetails) {
@@ -50,23 +52,25 @@ void main() async {
   };
 
   runApp(DevicePreview(
-    builder: (_) => MyApp(),
+    builder: (_) => MyApp( initialLink: initialLink, ),
     enabled: false,
   ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  PendingDynamicLinkData? initialLink;
+    MyApp({Key? key, this.initialLink}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var titleAppBar = const Text("LinkDance");
     var authentication = AuthenticationFacate();
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (_) => authentication,
         ),
+
         ChangeNotifierProxyProvider<AuthenticationFacate, TeacherRepository?>(
             create: (_) => TeacherRepository.New(),
             update: (ctx, authProvider, previusRepository) {

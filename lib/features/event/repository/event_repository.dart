@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:link_dance/core/constants.dart';
+import 'package:link_dance/core/helpers/constantes_config.dart';
+import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
@@ -17,7 +18,7 @@ class EventRepository extends BaseRepository<EventModel> {
     collectionName="event";
   }
   Future<List<EventModel>?> likeSearch(
-      {int limit = Constants.pageSize,
+      {int limit = ConstantsConfig.pageSize,
         bool nextPage = false,
         required QueryCondition condition,
         required String orderBy}) async {
@@ -26,10 +27,10 @@ class EventRepository extends BaseRepository<EventModel> {
 
   @override
   Future<List<EventModel>?> listBase(
-      {int limit = Constants.pageSize,
+      {int limit = ConstantsConfig.pageSize,
         bool nextPage = false,
         List<QueryCondition>? conditions,
-        bool orderDesc = true,
+        bool orderDesc = false,
         bool notifyListen = true,
         String orderBy = "eventDate"}) async {
 
@@ -75,7 +76,6 @@ class EventRepository extends BaseRepository<EventModel> {
       {String? userId, required String eventId}) async {
     var userIdTemp = userId ?? auth!.user!.id;
 
-    print("event quer parameters :   $userIdTemp and $eventId");
 
     var response = await FirebaseFirestore.instance
         .collection('usersEventRegistered')

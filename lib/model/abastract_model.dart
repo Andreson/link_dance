@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:link_dance/core/exception/exceptions.dart';
 import 'package:link_dance/model/content_group_model.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
-import 'package:link_dance/model/movie_model.dart';
+import 'package:link_dance/features/movie/model/movie_model.dart';
 import 'package:link_dance/model/notify_message_model.dart';
 import 'package:link_dance/model/teacher_model.dart';
 

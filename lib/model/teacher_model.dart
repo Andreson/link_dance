@@ -1,4 +1,5 @@
-import 'package:link_dance/core/constants.dart';
+import 'package:link_dance/core/helpers/constantes_images.dart';
+import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/model/abastract_model.dart';
@@ -38,7 +39,7 @@ class TeacherModel extends AbastractModel  {
     if (photo != null && photo!.isNotEmpty) {
       return Image.network(photo!);
     } else {
-      return Image.asset(Constants.defaultAvatar);
+      return Image.asset(ConstantsImagens.defaultAvatar);
     }
   }
 
