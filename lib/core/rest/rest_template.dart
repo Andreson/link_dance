@@ -18,7 +18,7 @@ class RestTemplate {
   RestTemplate({required this.auth});
 
 
-  Future<Map<String, dynamic>> Patch({required Object body,required String url, Map<String, String>? headers,Encoding? encoding}) async {
+  Future<Map<String, dynamic>> patch({required Object body,required String url, Map<String, String>? headers,Encoding? encoding}) async {
     String token=auth.user!.login!.token;
     url = "$url&auth=$token";
     final response = await http.patch(
@@ -39,7 +39,7 @@ class RestTemplate {
   }
 
 
-  Future<Map<String, dynamic>> Post({required Object body,required String url, Map<String, String>? headers,Encoding? encoding}) async {
+  Future<Map<String, dynamic>> post({required Object body,required String url, Map<String, String>? headers,Encoding? encoding}) async {
     debugPrint("Body request ${jsonEncode(body)}");
     String token=auth.user!.login!.token;
     url = "$url&auth=$token";
@@ -61,7 +61,7 @@ class RestTemplate {
     return jsonDecode(response.body);
   }
 
-  Future<Map<String, dynamic>> Get({required String url, Map<String, String>? headers,Encoding? encoding}) async {
+  Future<Map<String, dynamic>> get({required String url, Map<String, String>? headers,Encoding? encoding}) async {
 
     // if ( auth.user!=null) {
     //   url = await refresthToken(url: url);

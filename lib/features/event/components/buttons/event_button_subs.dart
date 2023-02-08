@@ -1,26 +1,34 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/core/factory_widget.dart';
+import 'package:link_dance/features/event/event_helper.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
+import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
+import 'package:link_dance/model/user_model.dart';
 import 'package:provider/provider.dart';
 
 class EventButtonSubscription extends StatelessWidget {
 
-  Function(Object onError)? onPressed;
+  Function({Object? onError})? onPressed;
   EventModel event;
-  late BuildContext context;
-  late EventRepository eventRepository;
-  late String title;
+  late BuildContext _context;
+
+  late UserModel _user;
+  late EventHelper _eventHelper;
+
   EventButtonSubscription(
       { this.onPressed, required this.event});
 
   @override
   Widget build(BuildContext context) {
-    this.context = context;
-    eventRepository = Provider.of<EventRepository>(context, listen: false);
+    _context = context;
+    _user = Provider.of<AuthenticationFacate>(context, listen: false).user!;
+    _eventHelper = EventHelper.ctx(context: context);
 
+    String  title="";
     if (event.hasList()) {
       title = "Pegar meu vip";
     } else {
@@ -38,14 +46,13 @@ class EventButtonSubscription extends StatelessWidget {
 
   void subscribe() async {
     //TODO, ALTERAR ESSA CHAMADA PARA CHAMAR A API DE CRIAÇÃO DE EVENTO
-    var userEvent = await eventRepository
-        .subscribeEvent(event: event)
-        .catchError((onError) {
-      print("Ocorreu um erro ao atualizar status inscrição no evento $onError");
-      showError(context);
-      if (onPressed != null) onPressed!(onError);
-    });
 
+    _eventHelper.unSubscribeEvent(eventTicketData: EventTicketDTO()).catchError((onError){
+      print("Ocorreu um erro ao atualizar status inscrição no evento $onError");
+      showError(_context);
+      if (onPressed != null) onPressed!(onError: onError);
+    });
+    if (onPressed != null) onPressed!( );
   }
 
   Widget _buildButton(

@@ -2,29 +2,33 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/factory_widget.dart';
+import 'package:link_dance/features/event/event_helper.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
+import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
 import 'package:link_dance/model/user_event_model.dart';
+import 'package:link_dance/model/user_model.dart';
 import 'package:provider/provider.dart';
 
 class EventButtonUnSubscription extends StatelessWidget {
-
-  Function(Object onError)? onPressed;
+  Function({Object? onError})? onPressed;
   EventModel event;
-  late BuildContext context;
-  late EventRepository eventRepository;
+  late BuildContext _context;
   Function()? showQrCode;
+  late UserModel _user;
+  late EventHelper _eventHelper;
 
-  EventButtonUnSubscription({ this.onPressed, this.showQrCode, required this.event});
+  EventButtonUnSubscription(
+      {this.onPressed, this.showQrCode, required this.event});
 
   @override
   Widget build(BuildContext context) {
-    this.context = context;
-    eventRepository = Provider.of<EventRepository>(context, listen: false);
-
-
+    _context = context;
+   _user = Provider.of<AuthenticationFacate>(context, listen: false).user!;
+    _eventHelper = EventHelper.ctx(context: context);
 
     return Column(
       children: [
@@ -32,7 +36,7 @@ class EventButtonUnSubscription extends StatelessWidget {
           padding: const EdgeInsets.only(left: 15),
           child: _buildButton(),
         ),
-        if (showQrCode!=null)
+        if (showQrCode != null)
           Row(
             children: [
               TextButton.icon(
@@ -47,26 +51,21 @@ class EventButtonUnSubscription extends StatelessWidget {
   }
 
   void unSubscribe() async {
-    //TODO, ALTERAR ESSA CHAMADA PARA CHAMAR A API DE CRIAÇÃO DE EVENTO
 
-    await eventRepository
-        .unsubscribeEvent(userEvent: UserEventModel(userId: "userId", eventId: "eventId", userPhone: "", userEmail: "", status: EventRegisterStatus.subscribe, createDate: Timestamp.now() )!)
-        .catchError((onError) {
+    _eventHelper.unSubscribeEvent(eventTicketData: EventTicketDTO()).catchError((onError){
       print("Ocorreu um erro ao atualizar status inscrição no evento $onError");
-      showError(context);
-      if (onPressed != null) onPressed!(onError);
+      showError(_context);
+      if (onPressed != null) onPressed!(onError: onError);
     });
-
-
-
+    if (onPressed != null) onPressed!( );
   }
 
   Widget _buildButton() {
-    Text text = const Text(
-        "Inscrito", style: TextStyle(color: Colors.white, fontSize: 14));
+    Text text = const Text("Inscrito",
+        style: TextStyle(color: Colors.white, fontSize: 14));
     Color buttonBackgroud = Colors.blue;
-    Icon icon = const Icon(
-        FontAwesomeIcons.checkDouble, color: Colors.white, size: 14);
+    Icon icon =
+        const Icon(FontAwesomeIcons.checkDouble, color: Colors.white, size: 14);
 
     return SizedBox(
       width: 150,
@@ -82,7 +81,7 @@ class EventButtonUnSubscription extends StatelessWidget {
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0),
-                      side: BorderSide(color: Colors.white30))),
+                      side: const BorderSide(color: Colors.white30))),
               backgroundColor: MaterialStateProperty.all(buttonBackgroud)),
           onPressed: unSubscribe,
           label: text),

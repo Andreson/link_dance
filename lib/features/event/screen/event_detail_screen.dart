@@ -1,9 +1,8 @@
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
 import 'package:link_dance/core/dynamic_links/dynamic_links_helper.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
-import 'package:link_dance/features/event/components/event_button_subs.dart';
-import 'package:link_dance/features/event/components/event_button_unSubs.dart';
+import 'package:link_dance/features/event/components/buttons/event_button_subs.dart';
+
 import 'package:link_dance/features/event/components/event_list_tile_detail_.dart';
 import 'package:link_dance/core/helpers/movie_cache_helper.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
@@ -21,9 +20,10 @@ import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
+
+import 'package:link_dance/features/event/components/buttons/event_button_subs.dart';
+import 'package:link_dance/features/event/components/buttons/event_button_unSubs.dart';
 
 class EventDetailScreen extends StatefulWidget {
   @override
@@ -38,35 +38,42 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   UserEventModel? userEvent;
   late ImageProvider imageProviderCache;
   final ScrollController controllerOne = ScrollController();
+  bool showSubscribe = true;
 
-  late Widget buttonSubscribe;
+  ValueNotifier<bool> buttonSubscribeNotifier = ValueNotifier(false);
+  Function()? showQrCode;
   CachedManagerHelper cachedManager = CachedManagerHelper();
 
   late EventHelper eventHelper;
 
   @override
   Widget build(BuildContext context) {
+
+    eventHelper = EventHelper.ctx(context:context);
+
     var mapParam = (ModalRoute.of(context)?.settings.arguments ??
         <String, dynamic>{}) as Map;
     eventRepository = Provider.of<EventRepository>(context, listen: false);
     event = mapParam['event']!;
-    userEvent ??= mapParam['userEvent'] ;
-    late Image banner;
-    buildButtons();
-    eventTicketDTO =EventTicketDTO( eventId:event.id , userId: eventRepository.auth!.user!.id);
+    userEvent ??= mapParam['userEvent'];
+
+    eventTicketDTO = EventTicketDTO(
+        eventId: event.id, userId: eventRepository.auth!.user!.id);
+    showQrCode = () {
+      eventHelper.showQrCode(
+          context: context, content: eventTicketDTO.rawBase64());
+    };
 
     return Scaffold(
       appBar: AppBar(
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(FontAwesomeIcons.ellipsisVertical),
-
             onSelected: (value) {},
             itemBuilder: (BuildContext context) {
               return [
                 PopupMenuItem<String>(
                   padding: EdgeInsets.only(left: 10),
-
                   value: "share",
                   onTap: () {
                     var options = DynamicLinkOptions(
@@ -77,12 +84,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     );
                     shareContent(context: context, options: options);
                   },
-                  child: Text("Compartilhar"),
+                  child: const Text("Compartilhar"),
                 )
               ];
             },
           ),
-
         ],
         title: Text(event.title, overflow: TextOverflow.ellipsis),
       ),
@@ -93,7 +99,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   Image _getImageDefault() {
     return Image.asset(fit: BoxFit.cover, "assets/images/danca.jpg");
   }
-
 
   Widget _body(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -131,8 +136,22 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 ),
               ),
             ),
-            //EventButtonSubscription(event: event),
-            EventButtonUnSubscription(event: event,showQrCode: (){},)
+
+            ValueListenableBuilder<bool>(
+                valueListenable: buttonSubscribeNotifier,
+                builder: (BuildContext context, bool value, Widget? child) {
+                  if (value) {
+                    return EventButtonSubscription(
+                        event: event, onPressed: subscribe);
+                  } else {
+                    return EventButtonUnSubscription(
+                      event: event,
+                      showQrCode: showQrCode,
+                      onPressed: unSubscribe,
+                    );
+                  }
+                }),
+
             // Container(
             //     margin: EdgeInsets.only(right: 10), child: buttonSubscribe),
           ]),
@@ -204,7 +223,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               padding: const EdgeInsets.all(8.0),
               child: event.listData!.malePrice > 0
                   ? Text("R\$ ${event.listData!.malePrice}")
-                  : Text("Free"),
+                  : const Text("Free"),
             ),
           ],
         ),
@@ -214,7 +233,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           padding: const EdgeInsets.all(8.0),
           child: event.listData!.femalePrice > 0
               ? Text("R\$ ${event.listData!.femalePrice}")
-              : Text("Free"),
+              : const Text("Free"),
         ),
       ],
     );
@@ -249,7 +268,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     return Row(
       children: [
         Expanded(
-          child: Container(
+          child: SizedBox(
             height: 60,
             child: Scrollbar(
               child: SingleChildScrollView(
@@ -270,63 +289,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     );
   }
 
-  buildButtons() {
-    eventHelper = EventHelper(event: event, eventRepository: eventRepository);
-    var titleButton = "";
-
-    if (userEvent != null &&
-        userEvent!.status == EventRegisterStatus.subscribe) {
-      if (event.hasList()) {
-        titleButton = event.listData!.listType.label;
-      } else {
-        titleButton = "Inscrito";
-      }
-      buttonSubscribe = eventHelper.buttonUnsubscription(
-          showQrCode:event.hasList()? () {
-
-
-          }:null  ,
-          text: titleButton,
-          onPressed: unSubscribe);
-    } else {
-      if (event.hasList()) {
-        titleButton = "Pegar meu vip";
-      } else {
-        titleButton = "Inscrever-se";
-      }
-
-      buttonSubscribe = eventHelper.buttonSubscription(
-          text: titleButton, onPressed: subscribe);
-    }
+  void subscribe({Object? onError}) async {
+    buttonSubscribeNotifier.value=false;
   }
 
-  void subscribe() async {
-    //TODO, ALTERAR ESSA CHAMADA PARA CHAMAR A API DE CRIAÇÃO DE EVENTO
-    userEvent = await eventRepository
-        .subscribeEvent(event: event)
-        .catchError((onError) {
-      print("Ocorreu um erro ao atualizar status inscrição no evento $onError");
-      showError(context);
-    });
-    setState(() {
-      buttonSubscribe = eventHelper.buttonUnsubscription(
-          showQrCode: () {eventHelper.showQrCode(context: context, content: eventTicketDTO.rawBase64());}
-          , text: "Vip", onPressed: unSubscribe);
-    });
-  }
-
-  void unSubscribe() async {
-    await eventRepository
-        .unsubscribeEvent(userEvent: userEvent!)
-        .catchError((onError) {
-      print("Ocorreu um erro ao atualizar status inscrição no evento $onError");
-      showError(context);
-    });
-
-    setState(() {
-      buttonSubscribe = eventHelper.buttonSubscription(
-          text: "Garantir meu Vip", onPressed: subscribe);
-      userEvent!.status = EventRegisterStatus.unsubscribe;
-    });
+  void unSubscribe({Object? onError}) async {
+    buttonSubscribeNotifier.value=true;
   }
 }

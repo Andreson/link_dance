@@ -16,7 +16,7 @@ class EventTicketRepository {
 
   Future<EventTicketModel> getEventTicket(
       {required EventTicketDTO requestParam}) async {
-    var document = await _client.Get(
+    var document = await _client.get(
         url: "${ConstantsAPI.eventApi}/event/ticket",
         headers: {"Authorization": _auth.getToken()!});
     return EventTicketModel.fromJson(document);
@@ -24,7 +24,7 @@ class EventTicketRepository {
 
   Future<EventTicketModel> deleteEventTicket(
       {required EventTicketDTO requestParam}) async {
-    var document = await _client.Get(
+    var document = await _client.get(
         url: "${ConstantsAPI.eventApi}/event/ticket",
         headers: {"Authorization": _auth.getToken()!});
     return EventTicketModel.fromJson(document);

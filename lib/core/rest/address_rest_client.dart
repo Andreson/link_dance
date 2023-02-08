@@ -7,7 +7,7 @@ class AddressRestClient {
   final RestTemplate _restTemplate = RestTemplate(auth: AuthenticationFacate());
 
   Future<AddressModel?>? findAddressByPostalCode(String postalCode) async {
-    return await _restTemplate.Get(url:  ConstantsAPI.findPostalCodeUri(postalCode))
+    return await _restTemplate.get(url:  ConstantsAPI.findPostalCodeUri(postalCode))
         .then((data) {
       return AddressModel.fromJson(data);
     });

@@ -18,7 +18,7 @@ class UserRepository extends BaseRepository<UserModel> {
   }
 
   Future<UserModel?> createUser(UserModel user) async {
-    var response = await restTemplate.Post(
+    var response = await restTemplate.post(
         body: user.body(), url: "${ConstantsAPI.userDbUrl}.json?");
 
     user.id = response['name']; //recupera ID gerado pelo realtime database
@@ -27,7 +27,7 @@ class UserRepository extends BaseRepository<UserModel> {
   }
 
   Future<UserModel?> update(UserModel user) async {
-    var response = await restTemplate.Patch(
+    var response = await restTemplate.patch(
       body: user.deserialize(),
       url: "${ConstantsAPI.userDbUrl}/${user.id}.json?",
     );
@@ -39,7 +39,7 @@ class UserRepository extends BaseRepository<UserModel> {
 
   Future<UserModel?> findUserByEmail(UserModel user) async {
 
-    return restTemplate.Get(
+    return restTemplate.get(
             url:
                 "${ConstantsAPI.userDbUrl}.json?orderBy=\"email\"&equalTo=\"${user.email}\"")
         .then((response) {
