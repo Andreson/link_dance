@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:link_dance/components/qr_code/qr_code_helper.dart';
 import 'package:link_dance/components/qr_code/ticket_detail_componente.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
 import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
@@ -76,6 +77,7 @@ class _QrCodeScannerState extends State<QrCodeScannerComponent> {
                 return;
               }
               bockPopUp = true;
+              print("barcode.rawValue  is ${barcode.rawValue!}");
               EventTicketDTO eventTicket =
                   EventTicketDTO.parseToModel(queryParam: barcode.rawValue!);
               var ticketData = QrCodeEventTicketHelper(auth: auth)

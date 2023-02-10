@@ -29,13 +29,8 @@ class EventCardItemList extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => {
-        eventRepository
-            .getSubscriptionEvent(eventId: event.id)
-            .then((userEvent) {
-          Navigator.pushNamed(context, RoutesPages.eventDetail.name,
-              arguments: {"event": event, "userEvent": userEvent});
-        })
-      },
+      Navigator.pushNamed(context, RoutesPages.eventDetail.name, arguments: {"event": event})
+    },
       child: Stack(
         children: [
           Padding(
@@ -77,7 +72,7 @@ class EventCardItemList extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 15),
                 child: Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Text(event.eventDate.showString()),
                     const Text(" - "),

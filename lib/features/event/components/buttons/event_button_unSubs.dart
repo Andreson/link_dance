@@ -1,15 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
-import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/features/event/event_helper.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
-import 'package:link_dance/features/event/repository/event_repository.dart';
+import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
 import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
-import 'package:link_dance/model/user_event_model.dart';
 import 'package:link_dance/model/user_model.dart';
 import 'package:provider/provider.dart';
 
@@ -52,7 +50,7 @@ class EventButtonUnSubscription extends StatelessWidget {
 
   void unSubscribe() async {
 
-    _eventHelper.unSubscribeEvent(eventTicketData: EventTicketDTO()).catchError((onError){
+    _eventHelper.unSubscribeEvent(ticketId: "",userEvent: "").catchError((onError){
       print("Ocorreu um erro ao atualizar status inscrição no evento $onError");
       showError(_context);
       if (onPressed != null) onPressed!(onError: onError);
@@ -67,7 +65,8 @@ class EventButtonUnSubscription extends StatelessWidget {
     Icon icon =
         const Icon(FontAwesomeIcons.checkDouble, color: Colors.white, size: 14);
 
-    return SizedBox(
+    return Container(
+      padding: const EdgeInsets.only(right: 20),
       width: 150,
       child: TextButton.icon(
           icon: icon,

@@ -18,7 +18,7 @@ class UserRepository extends BaseRepository<UserModel> {
   }
 
   Future<UserModel?> createUser(UserModel user) async {
-    var response = await restTemplate.post(
+    var response = await restTemplate.post(targetFiresbase: true,
         body: user.body(), url: "${ConstantsAPI.userDbUrl}.json?");
 
     user.id = response['name']; //recupera ID gerado pelo realtime database

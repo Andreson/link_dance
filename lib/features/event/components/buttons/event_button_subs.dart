@@ -6,6 +6,7 @@ import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/features/event/event_helper.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
+import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
 import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
 import 'package:link_dance/model/user_model.dart';
 import 'package:provider/provider.dart';
@@ -45,10 +46,9 @@ class EventButtonSubscription extends StatelessWidget {
   }
 
   void subscribe() async {
-    //TODO, ALTERAR ESSA CHAMADA PARA CHAMAR A API DE CRIAÇÃO DE EVENTO
 
-    _eventHelper.unSubscribeEvent(eventTicketData: EventTicketDTO()).catchError((onError){
-      print("Ocorreu um erro ao atualizar status inscrição no evento $onError");
+    _eventHelper.subscribeEvent(eventTicketParam: EventTicketDTO(eventId: event.id, userId: _user.id)).catchError((onError){
+      print("Ocorreu um erro ao se inscrever no evento $onError");
       showError(_context);
       if (onPressed != null) onPressed!(onError: onError);
     });
@@ -60,7 +60,8 @@ class EventButtonSubscription extends StatelessWidget {
       required Text text,
       required Color buttonBackgroud,
       required Icon icon}) {
-    return SizedBox(
+    return Container(
+      padding: const EdgeInsets.only(right: 20),
       width: 150,
       child: TextButton.icon(
           icon: icon,

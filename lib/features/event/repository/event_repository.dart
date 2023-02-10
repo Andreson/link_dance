@@ -15,26 +15,35 @@ class EventRepository extends BaseRepository<EventModel> {
 
   EventRepository({this.auth, List<EventModel>? data}) {
     listData = data ?? [];
-    collectionName="event";
+    collectionName = "event";
   }
+
   Future<List<EventModel>?> likeSearch(
       {int limit = ConstantsConfig.pageSize,
-        bool nextPage = false,
-        required QueryCondition condition,
-        required String orderBy}) async {
-    return likeSearchBase(condition: condition, orderBy: orderBy,nextPage: nextPage,limit: limit);
+      bool nextPage = false,
+      required QueryCondition condition,
+      required String orderBy}) async {
+    return likeSearchBase(
+        condition: condition,
+        orderBy: orderBy,
+        nextPage: nextPage,
+        limit: limit);
   }
 
   @override
   Future<List<EventModel>?> listBase(
       {int limit = ConstantsConfig.pageSize,
-        bool nextPage = false,
-        List<QueryCondition>? conditions,
-        bool orderDesc = false,
-        bool notifyListen = true,
-        String orderBy = "eventDate"}) async {
-
-    return super.listBase(orderBy: orderBy,orderDesc: orderDesc,notifyListen: notifyListen,nextPage: nextPage,conditions: conditions);
+      bool nextPage = false,
+      List<QueryCondition>? conditions,
+      bool orderDesc = false,
+      bool notifyListen = true,
+      String orderBy = "eventDate"}) async {
+    return super.listBase(
+        orderBy: orderBy,
+        orderDesc: orderDesc,
+        notifyListen: notifyListen,
+        nextPage: nextPage,
+        conditions: conditions);
   }
 
   Future<UserEventModel?> subscribeEvent(
@@ -58,10 +67,13 @@ class EventRepository extends BaseRepository<EventModel> {
         status: EventRegisterStatus.subscribe,
         createDate: Timestamp.now());
     var response = await (await FirebaseFirestore.instance
-            .collection('usersEventRegistered')
+            .collection('userEvent')
             .withConverter<UserEventModel>(
-              fromFirestore: (snapshot, _) =>
-                  UserEventModel.fromJson(snapshot.data()!, snapshot.id),
+              fromFirestore: (snapshot, _) {
+                var temp = snapshot.data()!;
+                temp['id'] = snapshot.id;
+                return UserEventModel.fromJson(snapshot.data()!);
+              },
               toFirestore: (userEvent, _) => userEvent.body(),
             )
             .add(ue))
@@ -76,14 +88,16 @@ class EventRepository extends BaseRepository<EventModel> {
       {String? userId, required String eventId}) async {
     var userIdTemp = userId ?? auth!.user!.id;
 
-
     var response = await FirebaseFirestore.instance
-        .collection('usersEventRegistered')
+        .collection('userEvent')
         .where("userId", isEqualTo: userIdTemp)
         .where("eventId", isEqualTo: eventId)
         .withConverter<UserEventModel>(
-          fromFirestore: (snapshot, _) =>
-              UserEventModel.fromJson(snapshot.data()!, snapshot.id),
+          fromFirestore: (snapshot, _) {
+            var temp = snapshot.data()!;
+            temp['id'] = snapshot.id;
+            return UserEventModel.fromJson(snapshot.data()!);
+          },
           toFirestore: (userEvent, _) => userEvent.body(),
         )
         .get();
@@ -100,7 +114,7 @@ class EventRepository extends BaseRepository<EventModel> {
       required EventRegisterStatus status}) {
     var user = auth!.user!;
     return FirebaseFirestore.instance
-        .collection('usersEventRegistered')
+        .collection('userEvent')
         .doc(userEvent.id)
         .update({
       "status": status.name,
@@ -121,15 +135,15 @@ class EventRepository extends BaseRepository<EventModel> {
       response.startAfterDocument(paginationPointer);
     }
 
-    var eventDocs  =await response.limit(limit)
+    var eventDocs = await response
+        .limit(limit)
         .orderBy("createDate", descending: true)
         .queryBy(EventQuery.userId, [userId]).get();
 
-    if ( eventDocs.docs.isNotEmpty) {
+    if (eventDocs.docs.isNotEmpty) {
       paginationPointer = await eventDocs.docs.last.reference.get();
-      listData.addAll( (eventDocs.docs.map((item) => item.data()).toList()) ) ;
+      listData.addAll((eventDocs.docs.map((item) => item.data()).toList()));
       print("listData size ${listData.length}");
-
     }
     notifyListeners();
     return listData;

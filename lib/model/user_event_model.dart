@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:link_dance/core/enumerate.dart';
+import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/model/abastract_model.dart';
 
 
@@ -34,15 +35,15 @@ class UserEventModel extends AbastractModel {
   }
 
 
-  static UserEventModel fromJson(Map<String, dynamic> json, String id) {
+  static UserEventModel fromJson(Map<String, dynamic> json) {
     return UserEventModel(
-        id: id,
+        id: json['id'] ?? "",
         userId: json['userId'],
         eventId: json['eventId'],
         userEmail: json['userEmail'],
         userPhone: json['userPhone'],
-        status: EventRegisterStatus.values.byName(json['status']),
-        createDate: json['createDate']);
+        status: EventRegisterStatus.values.byName(json['status'] ?? "unsubscribe"),
+        createDate: json['createDate'].toString().toTimestamp() );
   }
 
   @override

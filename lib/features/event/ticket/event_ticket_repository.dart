@@ -3,6 +3,7 @@
 import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/rest/rest_template.dart';
+import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
 import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
 
 class EventTicketRepository {

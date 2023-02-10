@@ -2,7 +2,7 @@ abstract class ConstantsAPI {
   static String env="dev";
   static const String fakeUrl = "https://endpoints.linkdance.com.br/";
 
-  static const String eventApiDev = "http://localhost:8080";
+  static const String eventApiDev = "http://192.168.15.7:8080";
   static const String eventApiProd = "https://endpoints.linkdance.com.br";
 
   static String get eventApi =>env=="dev"?eventApiDev : eventApiProd;

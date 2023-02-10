@@ -82,12 +82,19 @@ class DynamicLinkHelper {
 
   static Map<String, dynamic> queryToMap({required String params}) {
     var index = params.indexOf("?") + 1;
-    if (index > 1) {
+    if (index > 0) {
+      var tempStr = params.substring(1,2);
+      if ( tempStr=="&"){
+        index++;
+      }
       params = params.substring(index, params.length);
     }
     params = params.split("&").map((param) {
-      var keyValue = param.split("=").join(":");
-      return keyValue;
+      var index = param.indexOf("=");
+      var key = param.substring(0, index);
+      var value=param.substring(index+1, param.length);
+      var temp =  "\"$key\":\"$value\"";
+      return temp;
     }).join(",");
     return jsonDecode("{$params}");
   }

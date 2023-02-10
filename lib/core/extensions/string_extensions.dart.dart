@@ -48,8 +48,9 @@ extension StringExtension on String {
     return this=="null" ? value:this;
   }
   Timestamp toTimestamp({String format = "dd/MM/yyyy"}) {
-    return Timestamp.fromDate(DateFormat(format).parse(this));
+    return Timestamp.fromDate(DateTime.parse(this));
   }
+
 
   double parseDouble() {
     var temp = replaceAll("R\$", "").replaceFirst(",", ".");

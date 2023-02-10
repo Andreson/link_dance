@@ -1,4 +1,3 @@
-
 import 'package:link_dance/core/dynamic_links/dynamic_links_helper.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/features/event/components/buttons/event_button_subs.dart';
@@ -13,6 +12,7 @@ import 'package:link_dance/core/factory_widget.dart';
 
 import 'package:link_dance/features/event/event_helper.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
+import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
 import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
 import 'package:link_dance/model/user_event_model.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
@@ -36,11 +36,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   late EventRepository eventRepository;
   late EventTicketDTO eventTicketDTO;
   UserEventModel? userEvent;
+  late EventTicketModel? eventTicket;
   late ImageProvider imageProviderCache;
   final ScrollController controllerOne = ScrollController();
-  bool showSubscribe = true;
 
-  ValueNotifier<bool> buttonSubscribeNotifier = ValueNotifier(false);
+  ValueNotifier<bool> buttonSubscribeNotifier = ValueNotifier(true);
   Function()? showQrCode;
   CachedManagerHelper cachedManager = CachedManagerHelper();
 
@@ -48,21 +48,28 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    eventHelper = EventHelper.ctx(context:context);
+    eventHelper = EventHelper.ctx(context: context);
 
     var mapParam = (ModalRoute.of(context)?.settings.arguments ??
         <String, dynamic>{}) as Map;
     eventRepository = Provider.of<EventRepository>(context, listen: false);
     event = mapParam['event']!;
-    userEvent ??= mapParam['userEvent'];
+    eventHelper.getEventTicket(eventId: event.id).then((value) {
+      userEvent = value.userEvent;
+      eventTicket = value.eventTicket;
+
+      if (eventTicket != null) {
+        buttonSubscribeNotifier.value=false;
+        showQrCode = () {
+          eventHelper.showQrCode(
+              context: context, content: eventTicketDTO.rawBase64());
+        };
+      }
+    });
+    //userEvent ??= mapParam['userEvent'];
 
     eventTicketDTO = EventTicketDTO(
         eventId: event.id, userId: eventRepository.auth!.user!.id);
-    showQrCode = () {
-      eventHelper.showQrCode(
-          context: context, content: eventTicketDTO.rawBase64());
-    };
 
     return Scaffold(
       appBar: AppBar(
@@ -290,10 +297,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   }
 
   void subscribe({Object? onError}) async {
-    buttonSubscribeNotifier.value=false;
+    buttonSubscribeNotifier.value = false;
   }
 
   void unSubscribe({Object? onError}) async {
-    buttonSubscribeNotifier.value=true;
+    buttonSubscribeNotifier.value = true;
   }
 }

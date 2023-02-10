@@ -5,10 +5,12 @@ import 'package:link_dance/core/helpers/constants_api.dart';
 
 import 'package:link_dance/core/types.dart';
 import 'package:link_dance/core/upload_files/file_upload.dart';
+import 'package:link_dance/features/event/dto/user_event_ticket_dto.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 
 import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
 import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
 
 import 'package:link_dance/model/user_model.dart';
@@ -28,33 +30,44 @@ class EventHelper {
       : _event = event,
         _eventRepository = eventRepository;
 
-
-  EventHelper.ctx({required this.context}){
+  EventHelper.ctx({required this.context}) {
     _eventRepository = Provider.of<EventRepository>(context, listen: false);
     auth = Provider.of<AuthenticationFacate>(context, listen: false);
     _restTemplate = RestTemplate(auth: auth);
   }
 
-  Future subscribeEvent(
-      {required EventTicketDTO eventTicketData}) async {
-
-   // var respose = await _restTemplate.post(body: eventTicketData, url: ConstantsAPI.eventApi);
-
-    print("Response call event API ticket  ");
-
-
+  Future<UserEventTickeResponseDTO> getEventTicket(
+      {required String eventId}) async {
+    var respose = await _restTemplate.get(targetFirebase: false,
+        url: "${ConstantsAPI.eventApi}/event/ticket?eventId=$eventId&userId=${auth.user!.id}");
+    return UserEventTickeResponseDTO.map(data: respose);
   }
 
-  Future unSubscribeEvent(
-      {required EventTicketDTO eventTicketData}) async {
+  Future<EventTicketResponseDTO> subscribeEvent(
+      {required EventTicketDTO eventTicketParam}) async {
+    var request = EventTicketRequestDTO.ticket(
+            eventId: eventTicketParam.eventId, userId: eventTicketParam.userId)
+        .body();
+    var respose = await _restTemplate.post(
+        body: request, url: "${ConstantsAPI.eventApi}/event/ticket");
 
-    //var respose = await _restTemplate.post(body: eventTicketData, url: ConstantsAPI.eventApi);
+    var temp = EventTicketResponseDTO.map(data: respose);
+    print("Response call event API ticket  ${temp.toString()}");
 
-    print("Response call event API ticket   ");
-
-
+    return temp;
   }
 
+  Future<EventTicketResponseDTO> unSubscribeEvent(
+      {required String userEvent,required String ticketId}) async {
+    var respose = await _restTemplate.delete(
+        url: "${ConstantsAPI.eventApi}/event/ticket?userEvent=$userEvent&ticketId=$ticketId");
+
+    return EventTicketResponseDTO.map(data: respose);
+  }
+
+  Map<String, dynamic> parseDto(EventTicketDTO eventTicket) {
+    return EventTicketRequestDTO(eventTicket).body();
+  }
 
   void showQrCode({required BuildContext context, required String content}) {
     showDialog(
