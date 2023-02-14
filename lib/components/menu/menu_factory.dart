@@ -220,12 +220,12 @@ class MenuFactory {
     menusMap[MenusCode.newEventMenu] = MenuItemBuilder(
         code: MenusCode.newEventMenu,
         label: "Novo Evento",
-        destination: RoutesPages.notificationRegistry);
+        destination: RoutesPages.eventRegister);
 
     menusMap[MenusCode.managerEventMenu] = MenuItemBuilder(
         code: MenusCode.managerEventMenu,
         label: "Meus eventos",
-        destination: RoutesPages.notificationAdmin);
+        destination: RoutesPages.eventList);
 
     menusMap[MenusCode.listTicketEvents] = MenuItemBuilder(
         code: MenusCode.listTicketEvents,

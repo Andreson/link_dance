@@ -68,27 +68,24 @@ class MovieUploadFormState extends State<MenssageRegistryPage> {
     );
     _isEdit = true;
     _initWidgets();
-
   }
 
   void _initWidgets() {
     repository = Provider.of<NotifyMessageRepository>(context, listen: false);
 
     _notifyMessage =
-    ModalRoute.of(context)?.settings.arguments as NotifyMessageModel?;
+        ModalRoute.of(context)?.settings.arguments as NotifyMessageModel?;
     if (_notifyMessage != null) {
       _formData = _notifyMessage!.deserialize();
     } else {
       user = _authentication.user!;
-      _formData =  NotifyMessageModel.defaultData(typeId:user!.id);
-      _formData['bannerUrl'] =user.teacherProfile!.photo ?? "";
+      _formData = NotifyMessageModel.defaultData(typeId: user!.id);
+      _formData['bannerUrl'] = user.teacherProfile!.photo ?? "";
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       appBar: AppBar(actions: [
         buttonSaveRegistry(onPressed: () {
@@ -203,34 +200,32 @@ class MovieUploadFormState extends State<MenssageRegistryPage> {
                       Stack(children: [autoCompleteEventComponent]),
                     if (_radioButtonValue == 3)
                       Stack(children: [autoCompleteContentGroupComponent]),
-                      Row(
-                        children: [
-                          Checkbox(
-                              activeColor: Colors.white54,
-                              value: _attachBanner,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  _attachBanner = !_attachBanner;
-                                });
-                              }),
-                          TextButton(
-                            child:
-                                Text("Anexar banner", style: formInputsStyles),
-                            onPressed: () {
+                    Row(
+                      children: [
+                        Checkbox(
+                            activeColor: Colors.white54,
+                            value: _attachBanner,
+                            onChanged: (newValue) {
                               setState(() {
                                 _attachBanner = !_attachBanner;
-                                _formData['sendBanner'] = _attachBanner;
                               });
+                            }),
+                        TextButton(
+                          child: Text("Anexar banner", style: formInputsStyles),
+                          onPressed: () {
+                            setState(() {
+                              _attachBanner = !_attachBanner;
+                              _formData['sendBanner'] = _attachBanner;
+                            });
+                          },
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              _infoAttachBanner();
                             },
-                          ),
-                          IconButton(
-                              onPressed: () {
-                                _infoAttachBanner();
-                              },
-                              icon: Icon(FontAwesomeIcons.question))
-                        ],
-
-                      ),
+                            icon: Icon(FontAwesomeIcons.question))
+                      ],
+                    ),
                     if (_formData['isProcessed'] == true)
                       const Divider(
                         height: 3,
@@ -317,42 +312,43 @@ class MovieUploadFormState extends State<MenssageRegistryPage> {
   }
 
   _saveRegistry() async {
-    var forIsvalid=false;
+    var forIsvalid = false;
 
-      forIsvalid = _formKey.currentState!.validate();
+    forIsvalid = _formKey.currentState!.validate();
 
-    if ( !forIsvalid ){
+    if (!forIsvalid) {
       return;
     }
     onLoading(context, actionMesage: "Salvando registro");
     _formKey.currentState!.save();
-    if (_attachBanner  && autoCompleteData!=null) {
+    if (_attachBanner && autoCompleteData != null) {
       _formData['bannerUrl'] = autoCompleteData!.metaData;
     } else if (!_attachBanner) {
       _formData['bannerUrl'] = null;
     }
-    _formData['ownerId']= user.id;
+    _formData['ownerId'] = user.id;
     await repository.saveOrUpdateBase(data: _formData).then((value) {
       //oculta onloading
       Navigator.of(context).pop();
-        cleanForm();
+      cleanForm();
       showInfo(
           context: context,
           content: "Mensagem cadastrada som sucesso",
           title: "Aêêêêêêêêê");
-    }).catchError((onError,stacktrance) {
+    }).catchError((onError, stacktrance) {
       Navigator.of(context).pop();
       showError(context, content: "Erro ao salvar mensagem");
       print("erro ao salvar mensagem ${stacktrance}");
     }).whenComplete(() {});
   }
 
-  void cleanForm(){
+  void cleanForm() {
     _formKey.currentState!.reset();
 
-    autoCompleteContentGroupComponent.textEdit.text="";
-    autoCompleteEventComponent.textEdit.text="";
+    autoCompleteContentGroupComponent.textEdit.text = "";
+    autoCompleteEventComponent.textEdit.text = "";
   }
+
   DateInputField buildSendDate() {
     return DateInputField(
         required: true,

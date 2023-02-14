@@ -1,6 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/helpers/constantes_images.dart';
 import 'package:link_dance/features/event/components/event_item_list.dart';
 import 'package:link_dance/components/input_fields/text_buton.dart';
@@ -46,8 +47,7 @@ FutureBuilder futureBuilderList<T>(
             child: ListView.builder(
                 controller: controller,
                 shrinkWrap: false,
-                itemCount:
-                    (Repository as BaseRepository).listData.length,
+                itemCount: (Repository as BaseRepository).listData.length,
                 itemBuilder: (BuildContext context, int index) {
                   if (Repository.listData.isEmpty) {
                     return DataNotFoundComponent();
@@ -221,14 +221,32 @@ TextStyle _animadedTextStyle() {
   return const TextStyle(fontSize: 18, color: Colors.black);
 }
 
+void showWarning(BuildContext context,
+    {String content = "Ocorreu um erro nao esperado ao realizar operação!",
+    VoidCallback? onPressed}) {
+  onPressed = onPressed ?? () => {Navigator.of(context).pop()};
+  var titleWidget = Row(
+    children:   [
+      const Icon(FontAwesomeIcons.triangleExclamation, color: Colors.yellow),
+      sizedBoxH10(),
+      const Text("Algo de errado não está certo", style: kTitleText)
+    ],
+  );
+  return dialog(context, titleWidget, content, "Ok", onPressed);
+}
+
 void showError(BuildContext context,
     {String content = "Ocorreu um erro nao esperado ao realizar operação!",
-      VoidCallback? onPressed}) {
-
-  onPressed = onPressed ?? () =>{Navigator.of(context).pop()};
-
-  return dialog(context, "Ocorreu um erro!", content, "Ok",
-      onPressed);
+    VoidCallback? onPressed}) {
+  onPressed = onPressed ?? () => {Navigator.of(context).pop()};
+  var titleWidget = Row(
+    children: [
+      const Icon(FontAwesomeIcons.bug, color: Colors.red,),
+      sizedBoxH10(),
+      const Text("Vish, deu ruim", style: kTitleText)
+    ],
+  );
+  return dialog(context, titleWidget, content, "Ok", onPressed);
 }
 
 Future<void> showInfo(
@@ -238,17 +256,22 @@ Future<void> showInfo(
     String labelButton = "Ok",
     VoidCallback? onPressed}) async {
   onPressed ??= () => Navigator.of(context).pop();
-
-  return dialog(context, title, content, labelButton, onPressed);
+  var titleWidget = Row(
+    children: [
+      const Icon(FontAwesomeIcons.info),
+      Text(title, style: kTitleText)
+    ],
+  );
+  return dialog(context, titleWidget, content, labelButton, onPressed);
 }
 
-void dialog(BuildContext context, String title, String content,
+void dialog(BuildContext context, Widget title, String content,
     String labelButton, VoidCallback onPressed) {
   showDialog<void>(
     context: context,
     builder: (ctx) => AlertDialog(
       elevation: 2,
-      title: Text(title, style: kTitleText),
+      title: title,
       content: Text(content, style: kInfoText),
       actions: [
         CustomTextButton(
@@ -319,8 +342,6 @@ SnackBar snackBar({String mensage = "Operação realizada com sucesso!"}) {
 }
 
 Widget imageNetwork({required String url}) {
-
-
   return Image.network(
     url,
     fit: BoxFit.cover,
@@ -426,7 +447,9 @@ Widget leadingToBackScaffold({required void Function() onPressed}) {
 }
 
 ImageAvatarComponent getImageProfile(
-    {String? imageUrl, String? imageLocal,required Function(String path) changeImage}) {
+    {String? imageUrl,
+    String? imageLocal,
+    required Function(String path) changeImage}) {
   return ImageAvatarComponent(
     imageLocal: imageLocal ?? ConstantsImagens.defaultAvatar,
     imageUrl: imageUrl,

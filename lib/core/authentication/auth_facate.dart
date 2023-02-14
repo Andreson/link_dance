@@ -37,7 +37,7 @@ class AuthenticationFacate with ChangeNotifier {
     if (username != null) {
       //impede a tentativa de renovar o token caso seja um novo login
       var userModel = await _logar(loginProvider, username, password);
-      if (userModel?.userType == UserType.teacher) {
+      if (userModel?.userType == UserType.teacher || userModel?.userType == UserType.admin  ){
         var teacherProfile = await _getTeacherProfile(userId: userModel!.id);
         userModel.teacherProfile = teacherProfile;
       }
@@ -47,7 +47,7 @@ class AuthenticationFacate with ChangeNotifier {
     return retrieveUserAuthData().then((userModel) async {
       if (userModel == null) {
         userModel = await _logar(loginProvider, username, password);
-        if (userModel?.userType == UserType.teacher) {
+        if (userModel?.userType == UserType.teacher || userModel?.userType == UserType.admin  ) {
           userModel?.teacherProfile =
               await _getTeacherProfile(userId: userModel.id);
         }
@@ -98,8 +98,6 @@ class AuthenticationFacate with ChangeNotifier {
   }
 
   void _writeUserAuthData(UserModel dataUserLogin) {
-    print(
-        " dataUserLogin.login?.loginProvider.name ${dataUserLogin.login?.loginProvider.name}");
 
     LocalStoreRepository.saveMap(ConstantsConfig.userAuthData, {
       "email": dataUserLogin.email,
@@ -130,25 +128,15 @@ class AuthenticationFacate with ChangeNotifier {
     return await LocalStoreRepository.getMap(ConstantsConfig.userAuthData)
         .then((data) async {
       if (data.isNotEmpty) {
+        String? tokenStr =
+        await FirebaseAuth.instance.currentUser?.getIdToken(true);
+        data['token'] =tokenStr;
         user = UserModel.build(data, data['id']);
 
         if (user?.userType == UserType.teacher) {
           user?.teacherProfile =await _getTeacherProfile(userId: user!.id);
         }
         authentication = _buildAuthType(user!.login!.loginProvider);
-        var login = user?.login;
-        // if (login?.loginProvider == LoginProvider.email) {
-        //   TokenRefresh token =
-        //       await authentication.refreshToken(login!.refreshtoken!);
-        //   String? tokenStr =
-        //       await FirebaseAuth.instance.currentUser?.getIdToken(true);
-        //   user?.login?.setToken(token);
-        // } else {
-        // erro login google aconteceu uma vez aqui
-          String? token =
-              await FirebaseAuth.instance.currentUser?.getIdToken(true);
-          user?.login?.token = token!;
-        //}
         //  notifyListeners();
         return user;
       } else {

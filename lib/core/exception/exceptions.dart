@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 class AuthenticationFailException implements Exception{
   String cause;
@@ -39,8 +41,21 @@ class UserNotFoundException implements Exception{
 
 class HttpException implements Exception {
   http.Response cause;
-  HttpException(this.cause);
+  late int statusCode;
+  HttpException(this.cause):statusCode = cause.statusCode;
 }
+
+class HttpBussinessException implements Exception {
+  http.Response cause;
+  late int statusCode;
+  late String message;
+  HttpBussinessException({required this.cause}){
+    var mapData = jsonDecode( utf8.decode(cause.bodyBytes));
+    message =mapData['message'] ??"Ocorreu um erro nao esperado.";
+    statusCode = cause.statusCode;
+  }
+}
+
 
 
 /**

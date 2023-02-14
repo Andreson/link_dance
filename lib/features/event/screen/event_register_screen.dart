@@ -204,13 +204,13 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
                             label: "Preço Homem",
                             onSaved: (value) {
                               if (value != null && value.isNotEmpty) {
-                                _formData['malePrice'] = value.parseDouble();
+                                _formData['priceMale'] = value.parseDouble();
                               }
                             }),
                       ),
                       Flexible(
                         child: CurrencyInputField(
-                            initialValue: _formData['femalePrice']
+                            initialValue: _formData['priceFemale']
                                 .toString()
                                 .emptyIfNull(),
                             required: false,

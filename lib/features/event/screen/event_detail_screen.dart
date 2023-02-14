@@ -1,4 +1,5 @@
 import 'package:link_dance/core/dynamic_links/dynamic_links_helper.dart';
+import 'package:link_dance/core/exception/exceptions.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/features/event/components/buttons/event_button_subs.dart';
 
@@ -36,18 +37,18 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   late EventRepository eventRepository;
   late EventTicketDTO eventTicketDTO;
   UserEventModel? userEvent;
-  late EventTicketModel? eventTicket;
+    EventTicketModel? eventTicket;
   late ImageProvider imageProviderCache;
   final ScrollController controllerOne = ScrollController();
 
   ValueNotifier<bool> buttonSubscribeNotifier = ValueNotifier(true);
   Function()? showQrCode;
   CachedManagerHelper cachedManager = CachedManagerHelper();
-
+  bool isLoading=true;
   late EventHelper eventHelper;
 
   @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() {
     eventHelper = EventHelper.ctx(context: context);
 
     var mapParam = (ModalRoute.of(context)?.settings.arguments ??
@@ -55,9 +56,12 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     eventRepository = Provider.of<EventRepository>(context, listen: false);
     event = mapParam['event']!;
     eventHelper.getEventTicket(eventId: event.id).then((value) {
-      userEvent = value.userEvent;
-      eventTicket = value.eventTicket;
-
+      if ( value.userEvent!=null) {
+        userEvent ??= value.userEvent;
+      }
+      if ( value.eventTicket!=null) {
+        eventTicket ??= value.eventTicket;
+      }
       if (eventTicket != null) {
         buttonSubscribeNotifier.value=false;
         showQrCode = () {
@@ -65,12 +69,25 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               context: context, content: eventTicketDTO.rawBase64());
         };
       }
+    }).catchError((onError, trace){
+      print("Erro ao carregar dados do ticket $onError | \n $trace");
+      showError(context, content: "Ocorreu um erro não esperado ao carregar os dados da lista do evento. ");
+      buttonSubscribeNotifier.value=true;
+    }).whenComplete(() {
+      setState(() {
+        isLoading = false;
+      });
     });
-    //userEvent ??= mapParam['userEvent'];
+
 
     eventTicketDTO = EventTicketDTO(
         eventId: event.id, userId: eventRepository.auth!.user!.id);
+    super.didChangeDependencies();
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    //userEvent ??= mapParam['userEvent'];
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -143,18 +160,29 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 ),
               ),
             ),
-
+            if(isLoading)
+              const Padding(
+                padding: EdgeInsets.only(right: 40, top: 5),
+                child: CircularProgressIndicator(),
+              ),
+            if(!isLoading)
             ValueListenableBuilder<bool>(
                 valueListenable: buttonSubscribeNotifier,
                 builder: (BuildContext context, bool value, Widget? child) {
+                  if ( !event.hasList() && !event.allowsToSubscribe()){
+                    return sizedBox10();
+                  }
                   if (value) {
                     return EventButtonSubscription(
                         event: event, onPressed: subscribe);
                   } else {
+                    if ( eventTicket==null) {
+                      return sizedBox10();
+                    }
                     return EventButtonUnSubscription(
-                      event: event,
+                      eventTicket: eventTicket!,
                       showQrCode: showQrCode,
-                      onPressed: unSubscribe,
+                      onPressed: unSubscribe, userEvent: userEvent!,
                     );
                   }
                 }),
@@ -179,7 +207,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           EventListTileItem(
               title: "Entrada",
               subtitle: Column(children: [
-                getPrice(),
+                getPrice(malePrice: event.priceMale, femalePrice: event.priceFemale ),
               ]),
               icon: Icons.monetization_on),
           if (event.hasList())
@@ -187,7 +215,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 title: event.listData!.listType.label,
                 subtitle: Column(
                   children: [
-                    getPrice(),
+                    getPrice(femalePrice: event.listData!.femalePrice, malePrice: event.listData!.malePrice ),
                     if (event.listData != null) getTimeVip()
                   ],
                 ),
@@ -220,7 +248,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     );
   }
 
-  Row getPrice() {
+  Row getPrice({required double malePrice, required double femalePrice}) {
     return Row(
       children: [
         const Icon(FontAwesomeIcons.person),
@@ -228,8 +256,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: event.listData!.malePrice > 0
-                  ? Text("R\$ ${event.listData!.malePrice}")
+              child: malePrice> 0
+                  ? Text("R\$ $malePrice")
                   : const Text("Free"),
             ),
           ],
@@ -238,8 +266,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         const Icon(FontAwesomeIcons.personDress),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: event.listData!.femalePrice > 0
-              ? Text("R\$ ${event.listData!.femalePrice}")
+          child: femalePrice > 0
+              ? Text("R\$ ${femalePrice}")
               : const Text("Free"),
         ),
       ],
@@ -296,8 +324,25 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     );
   }
 
-  void subscribe({Object? onError}) async {
-    buttonSubscribeNotifier.value = false;
+  void subscribe({Object? onError, EventTicketResponseDTO? data}) async {
+
+    if ( data!=null){
+      eventTicket = data!.ticket;
+    }
+
+    if ( onError==null) {
+      buttonSubscribeNotifier.value = false;
+    }else {
+      if (onError is HttpBussinessException) {
+        HttpBussinessException error =  onError  ;
+        showWarning(context,content:error.message );
+      }
+      else {
+        showError(context,
+            content:
+                "Ocorreu um erro ao se inscrever no evento. Por favor tente novamente mais tarde!");
+      }
+    }
   }
 
   void unSubscribe({Object? onError}) async {

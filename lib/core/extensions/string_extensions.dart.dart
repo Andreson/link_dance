@@ -48,7 +48,7 @@ extension StringExtension on String {
     return this=="null" ? value:this;
   }
   Timestamp toTimestamp({String format = "dd/MM/yyyy"}) {
-    return Timestamp.fromDate(DateTime.parse(this));
+    return Timestamp.fromDate( DateTime.parse( this));
   }
 
 

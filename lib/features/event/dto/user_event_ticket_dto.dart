@@ -1,24 +1,23 @@
-
-
 import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
 import 'package:link_dance/model/user_event_model.dart';
 
-class UserEventTickeResponseDTO {
+class UserEventTicketResponseDTO {
 
-  late EventTicketModel eventTicket;
-  late UserEventModel userEvent;
+    EventTicketModel? eventTicket;
+   UserEventModel? userEvent;
 
-  UserEventTickeResponseDTO({required this.eventTicket,required this.userEvent});
-
-  UserEventTickeResponseDTO.map({required Map<String,dynamic> data}){
+  UserEventTicketResponseDTO({required this.eventTicket,required this.userEvent});
+  UserEventTicketResponseDTO.map({required Map<String,dynamic> data}){
     _build(data:data);
   }
 
   void _build({required Map<String, dynamic> data}) {
-    eventTicket=  EventTicketModel.fromJson(data['data']['ticket']);
-    userEvent =  UserEventModel.fromJson(data['data']['userEvent']);
+
+    if ( data['data'] !=null) {
+      eventTicket=  EventTicketModel.fromJson(data['data']['ticket']);
+    }
+    if ( data['data']!=null) {
+      userEvent =  UserEventModel.fromJson(data['data']['userEvent']);
+    }
   }
-
-
-
 }

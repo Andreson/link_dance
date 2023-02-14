@@ -18,7 +18,7 @@ class UserRepository extends BaseRepository<UserModel> {
   }
 
   Future<UserModel?> createUser(UserModel user) async {
-    var response = await restTemplate.post(targetFiresbase: true,
+    var response = await restTemplate.post(targetFirebase: true,
         body: user.body(), url: "${ConstantsAPI.userDbUrl}.json?");
 
     user.id = response['name']; //recupera ID gerado pelo realtime database
@@ -39,7 +39,7 @@ class UserRepository extends BaseRepository<UserModel> {
 
   Future<UserModel?> findUserByEmail(UserModel user) async {
 
-    return restTemplate.get(
+    return restTemplate.get(targetFirebase: true,
             url:
                 "${ConstantsAPI.userDbUrl}.json?orderBy=\"email\"&equalTo=\"${user.email}\"")
         .then((response) {

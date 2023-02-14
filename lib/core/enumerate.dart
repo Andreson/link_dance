@@ -49,8 +49,6 @@ enum GenderType { male, female, notbinary, other }
 
 enum EventListType { vip, discount, none }
 
-
-
 extension EventTypeExtension on EventListType {
   String get label {
     switch (this) {

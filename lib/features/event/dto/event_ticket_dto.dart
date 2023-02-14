@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:link_dance/core/dynamic_links/dynamic_links_helper.dart';
 import 'package:link_dance/core/helpers/constants_api.dart';
+import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
 
 class EventTicketDTO {
   String ticketId;
@@ -27,7 +28,7 @@ class EventTicketDTO {
     var temp = DynamicLinkHelper.queryToMap(params: queryParam)['ticket'];
     print("key base64 decode $temp");
     var decodeStr = utf8.decode(base64.decode(temp));
-    var mapParam = DynamicLinkHelper.queryToMap(params: decodeStr) ;
+    var mapParam = DynamicLinkHelper.queryToMap(params: decodeStr);
 
     return EventTicketDTO(
         eventId: mapParam[_eventName],
@@ -38,7 +39,7 @@ class EventTicketDTO {
 
   String rawBase64() {
     var temp = DynamicLinkHelper.mapToQuery(params: _shuffle());
-     temp = base64.encode(utf8.encode(temp));
+    temp = base64.encode(utf8.encode(temp));
     var urlStr = "${ConstantsAPI.fakeUrl}?ticket=$temp";
     return urlStr;
   }
@@ -68,37 +69,42 @@ class EventTicketDTO {
 }
 
 class EventTicketRequestDTO {
-
   EventTicketDTO ticket;
-  EventTicketRequestDTO(this.ticket);
-  EventTicketRequestDTO.ticket({required String eventId, required String userId}):ticket = EventTicketDTO(userId: userId, eventId: eventId);
 
+  EventTicketRequestDTO(this.ticket);
+
+  EventTicketRequestDTO.ticket(
+      {required String eventId, required String userId})
+      : ticket = EventTicketDTO(userId: userId, eventId: eventId);
 
   Map<String, dynamic> body() {
-    return {
-      "ticket": ticket.body()
-    };
+    return {"ticket": ticket.body()};
   }
 }
+
 class EventTicketResponseDTO {
- late String message;
-   bool? hasTicket;
- late int httpStatus;
+  late String message;
+  bool? hasTicket;
+  late int httpStatus;
+  EventTicketModel? ticket;
 
   EventTicketResponseDTO(
       {required this.message,
       required this.hasTicket,
+      this.ticket,
       required this.httpStatus});
 
-  EventTicketResponseDTO.map(
-      {required Map<String,dynamic> data}){
+  EventTicketResponseDTO.map({required Map<String, dynamic> data}) {
     message = data['message'];
-    hasTicket = data['data']!=null ?data['data']['hasTicket']:null;
+    hasTicket = data['data'] != null ? data['data']['hasTicket'] : null;
     httpStatus = data['httpStatus'];
+    if (data['data'] != null && data['data']['ticket']!=null) {
+      ticket = EventTicketModel.fromJson(data['data']['ticket']);
+    }
   }
 
- @override
+  @override
   String toString() {
     return 'EventTicketResponseDTO{message: $message, hasTicket: $hasTicket, httpStatus: $httpStatus}';
- }
+  }
 }

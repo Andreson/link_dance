@@ -34,6 +34,7 @@ class EmailAuthentication extends BaseAuthentication {
         email: login!,
         password: password!
     );
+
     return parseFireBaseUserToUserModel(loginProvider: LoginProvider.email, userCredential: userCredential);
   }
 
