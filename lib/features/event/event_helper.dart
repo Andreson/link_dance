@@ -25,10 +25,6 @@ class EventHelper {
   late AuthenticationFacate auth;
   late BuildContext context;
 
-  @deprecated
-  EventHelper({EventRepository? eventRepository, EventModel? event})
-      : _event = event,
-        _eventRepository = eventRepository;
 
   EventHelper.ctx({required this.context}) {
     _eventRepository = Provider.of<EventRepository>(context, listen: false);

@@ -70,5 +70,10 @@ class EventTicketModel extends AbastractModel {
         isValid: json['isValid'],
         type: EventListType.values.byName(json['type']));
   }
+
+  @override
+  String toString() {
+    return 'EventTicketModel{_id: $_id, eventId: $eventId, eventTitle: $eventTitle, eventDate: $eventDate, linkerId: $linkerId, linkerName: $linkerName, userId: $userId, userName: $userName, userGender: $userGender, type: $type, wasUse: $wasUse, isValid: $isValid}';
+  }
 }
 

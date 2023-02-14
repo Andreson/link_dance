@@ -15,12 +15,14 @@ class EventTicketRepository {
       : _auth = auth,
         _client = RestTemplate(auth: auth);
 
-  Future<EventTicketModel> getEventTicket(
+  Future<EventTicketResponseDTO> getEventTicket(
       {required EventTicketDTO requestParam}) async {
+
+
     var document = await _client.get(
         url: "${ConstantsAPI.eventApi}/event/ticket",
         headers: {"Authorization": _auth.getToken()!});
-    return EventTicketModel.fromJson(document);
+    return EventTicketResponseDTO.map(data: document);
   }
 
   Future<EventTicketModel> deleteEventTicket(

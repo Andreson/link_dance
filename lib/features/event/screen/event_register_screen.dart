@@ -43,7 +43,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
   Text showImageName = const Text("");
   late UserModel userModel;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final EventHelper eventHelper = EventHelper();
+  late  EventHelper eventHelper;
   late AutoCompleteRhythmComponent autoCompleteRhythmComponent;
   EventListType _listType = EventListType.none;
   bool _hasList = false;
@@ -55,6 +55,7 @@ class _RegisterEventFormState extends State<EventRegisterScreen> {
 
   @override
   void didChangeDependencies() {
+    eventHelper = EventHelper.ctx(context: context);
     var event = ModalRoute.of(context)!.settings.arguments as EventModel?;
     if (event != null) {
       _formData = event.deserialize();

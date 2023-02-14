@@ -20,4 +20,9 @@ class UserEventTicketResponseDTO {
       userEvent =  UserEventModel.fromJson(data['data']['userEvent']);
     }
   }
+
+    @override
+  String toString() {
+    return 'UserEventTicketResponseDTO{eventTicket: $eventTicket, userEvent: $userEvent}';
+  }
 }

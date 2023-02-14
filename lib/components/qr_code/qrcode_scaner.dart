@@ -9,6 +9,8 @@ import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 
+import '../../features/event/dto/user_event_ticket_dto.dart';
+
 class QrCodeScannerComponent extends StatefulWidget {
   @override
   State<QrCodeScannerComponent> createState() => _QrCodeScannerState();
@@ -80,23 +82,25 @@ class _QrCodeScannerState extends State<QrCodeScannerComponent> {
               print("barcode.rawValue  is ${barcode.rawValue!}");
               EventTicketDTO eventTicket =
                   EventTicketDTO.parseToModel(queryParam: barcode.rawValue!);
-              var ticketData = QrCodeEventTicketHelper(auth: auth)
+              var ticketData = QrCodeEventTicketHelper(context: context)
                   .getEventTicket(requestParam: eventTicket);
 
-              print("ticketData is ${ticketData.toString()}");
+                 cameraController.stop();
+              ticketData.then<UserEventTicketResponseDTO?>((value) {
+                print("dados de ticket retornados da API ${value.toString()}");
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return TicketDetailComponent(
+                        onClose: () {
+                          bockPopUp = false;
+                          cameraController.start();
+                        },
+                      );
+                    });
 
-              cameraController.stop();
+              });
 
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return TicketDetailComponent(
-                      onClose: () {
-                        bockPopUp = false;
-                        cameraController.start();
-                      },
-                    );
-                  });
             }));
   }
 
