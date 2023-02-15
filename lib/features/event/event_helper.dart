@@ -32,6 +32,13 @@ class EventHelper {
     _restTemplate = RestTemplate(auth: auth);
   }
 
+  Future<UserEventTicketResponseDTO> reportEntry(
+      {required String ticketId}) async {
+    var respose = await _restTemplate.get(targetFirebase: false,
+        url: "${ConstantsAPI.eventApi}/event/ticket/entry?ticketId=$ticketId");
+    return UserEventTicketResponseDTO.map(data: respose);
+  }
+
   Future<UserEventTicketResponseDTO> getEventTicket(
       {required String eventId}) async {
     var respose = await _restTemplate.get(targetFirebase: false,
@@ -53,7 +60,7 @@ class EventHelper {
   }
 
   Future<EventTicketResponseDTO> unSubscribeEvent(
-      {required String userEvent,required String ticketId}) async {
+      {required String userEvent,String? ticketId}) async {
     var respose = await _restTemplate.delete(
         url: "${ConstantsAPI.eventApi}/event/ticket?userEvent=$userEvent&ticketId=$ticketId");
 

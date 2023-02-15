@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:link_dance/components/qr_code/qr_code_helper.dart';
 import 'package:link_dance/components/qr_code/ticket_detail_componente.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
 import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -39,6 +40,9 @@ class _QrCodeScannerState extends State<QrCodeScannerComponent> {
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return Scaffold(
         appBar: AppBar(
           title: const Text("Validar QRCode"),
@@ -66,42 +70,20 @@ class _QrCodeScannerState extends State<QrCodeScannerComponent> {
             ),
           ],
         ),
-        body: MobileScanner(
-            allowDuplicates: true,
-            controller: cameraController,
-            fit: BoxFit.cover,
-            onDetect: (barcode, args) {
-              if (barcode.rawValue == null) {
-                debugPrint('Failed to scan Barcode');
-                return;
-              }
-              if (bockPopUp) {
-                return;
-              }
-              bockPopUp = true;
-              print("barcode.rawValue  is ${barcode.rawValue!}");
-              EventTicketDTO eventTicket =
-                  EventTicketDTO.parseToModel(queryParam: barcode.rawValue!);
-              var ticketData = QrCodeEventTicketHelper(context: context)
-                  .getEventTicket(requestParam: eventTicket);
+        body: Container(child: TextButton(onPressed: () {
 
-                 cameraController.stop();
-              ticketData.then<UserEventTicketResponseDTO?>((value) {
-                print("dados de ticket retornados da API ${value.toString()}");
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return TicketDetailComponent(
-                        onClose: () {
-                          bockPopUp = false;
-                          cameraController.start();
-                        },
-                      );
-                    });
-
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return TicketDetailComponent(
+                  onClose: () {
+                    bockPopUp = false;
+                    cameraController.start();
+                  },
+                );
               });
-
-            }));
+        },
+        child: Text("card "), ),));
   }
 
   @override

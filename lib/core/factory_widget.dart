@@ -221,7 +221,7 @@ TextStyle _animadedTextStyle() {
   return const TextStyle(fontSize: 18, color: Colors.black);
 }
 
-void showWarning(BuildContext context,
+Future<void> showWarning(BuildContext context,
     {String content = "Ocorreu um erro nao esperado ao realizar operação!",
     VoidCallback? onPressed}) {
   onPressed = onPressed ?? () => {Navigator.of(context).pop()};
@@ -235,7 +235,7 @@ void showWarning(BuildContext context,
   return dialog(context, titleWidget, content, "Ok", onPressed);
 }
 
-void showError(BuildContext context,
+Future<void> showError(BuildContext context,
     {String content = "Ocorreu um erro nao esperado ao realizar operação!",
     VoidCallback? onPressed}) {
   onPressed = onPressed ?? () => {Navigator.of(context).pop()};
@@ -244,6 +244,20 @@ void showError(BuildContext context,
       const Icon(FontAwesomeIcons.bug, color: Colors.red,),
       sizedBoxH10(),
       const Text("Vish, deu ruim", style: kTitleText)
+    ],
+  );
+  return dialog(context, titleWidget, content, "Ok", onPressed);
+}
+
+Future showSuccess(BuildContext context,
+    {String content = "Operação realizada com sucesso!",
+      VoidCallback? onPressed}) {
+  onPressed = onPressed ?? () => {Navigator.of(context).pop()};
+  var titleWidget = Row(
+    children: [
+      const Icon(Icons.check_circle_outline, color: Colors.lightGreen,),
+      sizedBoxH10(),
+      const Text("Aêêêêêêêêêêê", style: kTitleText)
     ],
   );
   return dialog(context, titleWidget, content, "Ok", onPressed);
@@ -258,16 +272,16 @@ Future<void> showInfo(
   onPressed ??= () => Navigator.of(context).pop();
   var titleWidget = Row(
     children: [
-      const Icon(FontAwesomeIcons.info),
+      const Icon(FontAwesomeIcons.info, color: Colors.blueAccent,),
       Text(title, style: kTitleText)
     ],
   );
   return dialog(context, titleWidget, content, labelButton, onPressed);
 }
 
-void dialog(BuildContext context, Widget title, String content,
+Future<void> dialog(BuildContext context, Widget title, String content,
     String labelButton, VoidCallback onPressed) {
-  showDialog<void>(
+  return showDialog<void>(
     context: context,
     builder: (ctx) => AlertDialog(
       elevation: 2,

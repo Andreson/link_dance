@@ -37,14 +37,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   late EventRepository eventRepository;
   late EventTicketDTO eventTicketDTO;
   UserEventModel? userEvent;
-    EventTicketModel? eventTicket;
+  EventTicketModel? eventTicket;
   late ImageProvider imageProviderCache;
   final ScrollController controllerOne = ScrollController();
 
   ValueNotifier<bool> buttonSubscribeNotifier = ValueNotifier(true);
   Function()? showQrCode;
   CachedManagerHelper cachedManager = CachedManagerHelper();
-  bool isLoading=true;
+  bool isLoading = true;
   late EventHelper eventHelper;
 
   @override
@@ -56,29 +56,30 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     eventRepository = Provider.of<EventRepository>(context, listen: false);
     event = mapParam['event']!;
     eventHelper.getEventTicket(eventId: event.id).then((value) {
-      if ( value.userEvent!=null) {
+      if (value.userEvent != null) {
         userEvent ??= value.userEvent;
       }
-      if ( value.eventTicket!=null) {
+      if (value.eventTicket != null) {
         eventTicket ??= value.eventTicket;
       }
       if (eventTicket != null) {
-        buttonSubscribeNotifier.value=false;
+        buttonSubscribeNotifier.value = false;
         showQrCode = () {
           eventHelper.showQrCode(
               context: context, content: eventTicketDTO.rawBase64());
         };
       }
-    }).catchError((onError, trace){
+    }).catchError((onError, trace) {
       print("Erro ao carregar dados do ticket $onError | \n $trace");
-      showError(context, content: "Ocorreu um erro não esperado ao carregar os dados da lista do evento. ");
-      buttonSubscribeNotifier.value=true;
+      showError(context,
+          content:
+              "Ocorreu um erro não esperado ao carregar os dados da lista do evento. ");
+      buttonSubscribeNotifier.value = true;
     }).whenComplete(() {
       setState(() {
         isLoading = false;
       });
     });
-
 
     eventTicketDTO = EventTicketDTO(
         eventId: event.id, userId: eventRepository.auth!.user!.id);
@@ -160,32 +161,33 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 ),
               ),
             ),
-            if(isLoading)
+            if (isLoading)
               const Padding(
                 padding: EdgeInsets.only(right: 40, top: 5),
                 child: CircularProgressIndicator(),
               ),
-            if(!isLoading)
-            ValueListenableBuilder<bool>(
-                valueListenable: buttonSubscribeNotifier,
-                builder: (BuildContext context, bool value, Widget? child) {
-                  if ( !event.hasList() && !event.allowsToSubscribe()){
-                    return sizedBox10();
-                  }
-                  if (value) {
-                    return EventButtonSubscription(
-                        event: event, onPressed: subscribe);
-                  } else {
-                    if ( eventTicket==null) {
+            if (!isLoading)
+              ValueListenableBuilder<bool>(
+                  valueListenable: buttonSubscribeNotifier,
+                  builder: (BuildContext context, bool value, Widget? child) {
+                    if (!event.hasList() && !event.allowsToSubscribe()) {
                       return sizedBox10();
                     }
-                    return EventButtonUnSubscription(
-                      eventTicket: eventTicket!,
-                      showQrCode: showQrCode,
-                      onPressed: unSubscribe, userEvent: userEvent!,
-                    );
-                  }
-                }),
+                    if (value) {
+                      return EventButtonSubscription(
+                          event: event, onPressed: subscribe);
+                    } else {
+                      if (eventTicket == null && event.hasList()) {
+                        return sizedBox10();
+                      }
+                      return EventButtonUnSubscription(
+                        eventTicket: eventTicket,
+                        showQrCode: showQrCode,
+                        onPressed: unSubscribe,
+                        userEvent: userEvent!,
+                      );
+                    }
+                  }),
 
             // Container(
             //     margin: EdgeInsets.only(right: 10), child: buttonSubscribe),
@@ -207,7 +209,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           EventListTileItem(
               title: "Entrada",
               subtitle: Column(children: [
-                getPrice(malePrice: event.priceMale, femalePrice: event.priceFemale ),
+                getPrice(
+                    malePrice: event.priceMale, femalePrice: event.priceFemale),
               ]),
               icon: Icons.monetization_on),
           if (event.hasList())
@@ -215,7 +218,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 title: event.listData!.listType.label,
                 subtitle: Column(
                   children: [
-                    getPrice(femalePrice: event.listData!.femalePrice, malePrice: event.listData!.malePrice ),
+                    getPrice(
+                        femalePrice: event.listData!.femalePrice,
+                        malePrice: event.listData!.malePrice),
                     if (event.listData != null) getTimeVip()
                   ],
                 ),
@@ -256,9 +261,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: malePrice> 0
-                  ? Text("R\$ $malePrice")
-                  : const Text("Free"),
+              child:
+                  malePrice > 0 ? Text("R\$ $malePrice") : const Text("Free"),
             ),
           ],
         ),
@@ -266,9 +270,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         const Icon(FontAwesomeIcons.personDress),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: femalePrice > 0
-              ? Text("R\$ ${femalePrice}")
-              : const Text("Free"),
+          child:
+              femalePrice > 0 ? Text("R\$ ${femalePrice}") : const Text("Free"),
         ),
       ],
     );
@@ -325,19 +328,18 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   }
 
   void subscribe({Object? onError, EventTicketResponseDTO? data}) async {
-
-    if ( data!=null){
-      eventTicket = data!.ticket;
+    if (data != null) {
+      eventTicket = data.ticket;
+      userEvent = data.userEvent;
     }
 
-    if ( onError==null) {
+    if (onError == null) {
       buttonSubscribeNotifier.value = false;
-    }else {
+    } else {
       if (onError is HttpBussinessException) {
-        HttpBussinessException error =  onError  ;
-        showWarning(context,content:error.message );
-      }
-      else {
+        HttpBussinessException error = onError;
+        showWarning(context, content: error.message);
+      } else {
         showError(context,
             content:
                 "Ocorreu um erro ao se inscrever no evento. Por favor tente novamente mais tarde!");

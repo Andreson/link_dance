@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:link_dance/core/dynamic_links/dynamic_links_helper.dart';
 import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
+import 'package:link_dance/model/user_event_model.dart';
 
 class EventTicketDTO {
   String ticketId;
@@ -87,6 +88,7 @@ class EventTicketResponseDTO {
   bool? hasTicket;
   late int httpStatus;
   EventTicketModel? ticket;
+  UserEventModel? userEvent;
 
   EventTicketResponseDTO(
       {required this.message,
@@ -100,6 +102,9 @@ class EventTicketResponseDTO {
     httpStatus = data['httpStatus'];
     if (data['data'] != null && data['data']['ticket']!=null) {
       ticket = EventTicketModel.fromJson(data['data']['ticket']);
+    }
+    if (data['data'] != null && data['data']['userEvent']!=null) {
+      userEvent = UserEventModel.fromJson(data['data']['userEvent']);
     }
   }
 

@@ -17,10 +17,10 @@ class EventButtonUnSubscription extends StatelessWidget {
   Function()? showQrCode;
   late UserModel _user;
   late EventHelper _eventHelper;
-  EventTicketModel eventTicket;
+  EventTicketModel? eventTicket;
   UserEventModel userEvent;
   EventButtonUnSubscription(
-      {this.onPressed, this.showQrCode, required this.eventTicket, required this.userEvent});
+      {this.onPressed, this.showQrCode,   this.eventTicket, required this.userEvent});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class EventButtonUnSubscription extends StatelessWidget {
 
   void unSubscribe(BuildContext context) async {
     onLoading(context);
-    _eventHelper.unSubscribeEvent(ticketId: eventTicket.id,userEvent: userEvent.id).catchError((onError){
+    _eventHelper.unSubscribeEvent(ticketId: eventTicket?.id,userEvent: userEvent.id).catchError((onError){
       print("Ocorreu um erro ao atualizar status inscrição no evento $onError");
       showError(_context);
       if (onPressed != null) onPressed!(onError: onError);
