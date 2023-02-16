@@ -7,7 +7,7 @@ import 'package:link_dance/components/input_fields/text_field.dart';
 import 'package:link_dance/components/widgets/autocomplete/autocomplete_rhythm_component.dart';
 import 'package:link_dance/components/widgets/imagem_avatar_component.dart';
 import 'package:link_dance/core/helpers/constantes_images.dart';
-import 'package:link_dance/core/helpers/constants_api.dart';
+import 'package:link_dance/core/functions/dialog_functions.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/core/upload_files/file_upload.dart';

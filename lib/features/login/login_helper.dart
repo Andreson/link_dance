@@ -5,10 +5,9 @@ import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/exception/exceptions.dart';
 import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
-import 'package:link_dance/repository/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:link_dance/core/functions/dialog_functions.dart';
 class LoginHelper {
 
   BuildContext context;

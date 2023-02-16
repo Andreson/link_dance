@@ -3,7 +3,7 @@ import 'package:link_dance/components/page/detail_simple_component.dart';
 import 'package:link_dance/components/page/header_page_component.dart';
 import 'package:link_dance/core/extensions/datetime_extensions.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
-
+import 'package:link_dance/core/functions/dialog_functions.dart';
 import 'package:link_dance/features/movie/components/movie_item_list.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/enumerate.dart';

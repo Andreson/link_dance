@@ -6,10 +6,10 @@ import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
 import 'package:link_dance/model/user_event_model.dart';
 
 class EventTicketDTO {
-  String ticketId;
-  String eventId;
-  String userId;
-  String promoterId;
+  late String ticketId;
+  late String eventId;
+  late String userId;
+  late String promoterId;
 
   static const String _ticketName = "ditic";
   static const String _eventName = "edi";
@@ -22,6 +22,8 @@ class EventTicketDTO {
     this.userId = "",
     this.promoterId = "",
   });
+  EventTicketDTO.ticket({required EventTicketModel eventTicket}):ticketId = eventTicket.id,eventId=eventTicket.eventId,userId=eventTicket.userId,promoterId=eventTicket.linkerId;
+
 
   //Recebe os dados da URL, transforma e decodifica os parametros para a chamada da API
   //os nomes dos paraemtros foram alterados na geração do code para dificultar chamadas indesejadas

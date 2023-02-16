@@ -7,7 +7,7 @@ import 'package:link_dance/features/movie/components/youtube_play.dart';
 import 'package:link_dance/components/widgets/autocomplete/autocomplete_content_group_component.dart';
 import 'package:link_dance/components/widgets/autocomplete/autocomplete_rhythm_component.dart';
 import 'package:link_dance/core/enumerate.dart';
-
+import 'package:link_dance/core/functions/dialog_functions.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/core/upload_files/file_upload.dart';
 import 'package:link_dance/features/movie/model/movie_model.dart';

@@ -1,8 +1,8 @@
 import 'package:link_dance/components/qr_code/qrcode_build.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
-import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/core/helpers/constants_api.dart';
 
+import 'package:link_dance/core/helpers/constants_api.dart';
+import 'package:link_dance/core/functions/dialog_functions.dart';
 import 'package:link_dance/core/types.dart';
 import 'package:link_dance/core/upload_files/file_upload.dart';
 import 'package:link_dance/features/event/dto/user_event_ticket_dto.dart';
@@ -11,9 +11,7 @@ import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
-import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
 
-import 'package:link_dance/model/user_model.dart';
 import 'package:link_dance/core/rest/rest_template.dart';
 import 'package:provider/provider.dart';
 
@@ -25,17 +23,26 @@ class EventHelper {
   late AuthenticationFacate auth;
   late BuildContext context;
 
-
   EventHelper.ctx({required this.context}) {
     _eventRepository = Provider.of<EventRepository>(context, listen: false);
     auth = Provider.of<AuthenticationFacate>(context, listen: false);
     _restTemplate = RestTemplate(auth: auth);
   }
 
-  Future<UserEventTicketResponseDTO> reportEntry(
+  Future<UserEventTicketResponseDTO> checkInTicket(
       {required String ticketId}) async {
+    var respose = await _restTemplate.patch(targetFirebase: false,
+        url: "${ConstantsAPI.eventApi}/event/ticket/check-in?ticketId=$ticketId&userId=${auth.user!.id}");
+    return UserEventTicketResponseDTO.map(data: respose);
+  }
+  //Valida o ticket e retorna os dados para o checkin
+  Future<UserEventTicketResponseDTO> getEventTicketAvailable(
+      {required String eventId}) async {
     var respose = await _restTemplate.get(targetFirebase: false,
-        url: "${ConstantsAPI.eventApi}/event/ticket/entry?ticketId=$ticketId");
+        url: "${ConstantsAPI.eventApi}/event/ticket/available?eventId=$eventId&userId=${auth.user!.id}").catchError((onError,trace) {
+      print(" ----  Erro getEventTicketAvailable $onError || $trace");
+      throw onError;
+    } );;
     return UserEventTicketResponseDTO.map(data: respose);
   }
 
@@ -53,9 +60,7 @@ class EventHelper {
         .body();
     var respose = await _restTemplate.post(
         body: request, url: "${ConstantsAPI.eventApi}/event/ticket");
-
     var temp = EventTicketResponseDTO.map(data: respose);
-
     return temp;
   }
 

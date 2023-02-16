@@ -22,8 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-
-import 'package:link_dance/features/event/components/buttons/event_button_subs.dart';
+import 'package:link_dance/core/functions/dialog_functions.dart';
 import 'package:link_dance/features/event/components/buttons/event_button_unSubs.dart';
 
 class EventDetailScreen extends StatefulWidget {
@@ -41,7 +40,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   late ImageProvider imageProviderCache;
   final ScrollController controllerOne = ScrollController();
 
-  ValueNotifier<bool> buttonSubscribeNotifier = ValueNotifier(true);
+  ValueNotifier<bool> showSubscribeButton = ValueNotifier(true);
   Function()? showQrCode;
   CachedManagerHelper cachedManager = CachedManagerHelper();
   bool isLoading = true;
@@ -63,7 +62,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         eventTicket ??= value.eventTicket;
       }
       if (eventTicket != null) {
-        buttonSubscribeNotifier.value = false;
+        showSubscribeButton.value = false;
         showQrCode = () {
           eventHelper.showQrCode(
               context: context, content: eventTicketDTO.rawBase64());
@@ -74,7 +73,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       showError(context,
           content:
               "Ocorreu um erro não esperado ao carregar os dados da lista do evento. ");
-      buttonSubscribeNotifier.value = true;
+      showSubscribeButton.value = true;
     }).whenComplete(() {
       setState(() {
         isLoading = false;
@@ -168,7 +167,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               ),
             if (!isLoading)
               ValueListenableBuilder<bool>(
-                  valueListenable: buttonSubscribeNotifier,
+                  valueListenable: showSubscribeButton,
                   builder: (BuildContext context, bool value, Widget? child) {
                     if (!event.hasList() && !event.allowsToSubscribe()) {
                       return sizedBox10();
@@ -312,7 +311,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: Text(
                     style: const TextStyle(fontSize: 12, color: Colors.white),
                     event.description,
@@ -331,11 +330,34 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     if (data != null) {
       eventTicket = data.ticket;
       userEvent = data.userEvent;
+
+      if (eventTicket != null) {
+        showQrCode = () {
+          eventHelper.showQrCode(
+              context: context,
+              content:
+                  EventTicketDTO.ticket(eventTicket: eventTicket!).rawBase64());
+        };
+      }
     }
 
-    if (onError == null) {
-      buttonSubscribeNotifier.value = false;
+    if (onError != null) {
+      _showError(onError: onError);
     } else {
+      showSubscribeButton.value = false;
+    }
+  }
+
+  void unSubscribe({Object? onError}) async {
+    if (onError != null) {
+      _showError(onError: onError);
+    } else {
+      showSubscribeButton.value = true;
+    }
+  }
+
+  void _showError({Object? onError}) {
+    if (onError != null) {
       if (onError is HttpBussinessException) {
         HttpBussinessException error = onError;
         showWarning(context, content: error.message);
@@ -345,9 +367,5 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 "Ocorreu um erro ao se inscrever no evento. Por favor tente novamente mais tarde!");
       }
     }
-  }
-
-  void unSubscribe({Object? onError}) async {
-    buttonSubscribeNotifier.value = true;
   }
 }

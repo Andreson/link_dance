@@ -18,7 +18,7 @@ import 'package:link_dance/repository/content_group_respository.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:link_dance/core/functions/dialog_functions.dart';
 import 'package:provider/provider.dart';
 import '../../../core/decorators/box_decorator.dart';
 import '../../../core/factory_widget.dart';

@@ -10,10 +10,12 @@ class CustomTextButton extends StatelessWidget {
   Icon? icon;
   bool isSelected;
   EdgeInsets? padding;
+   List<Color>? backgroudColor;
 
   CustomTextButton(
       {this.onPressed,
       required this.label,
+        this.backgroudColor,
       this.params,
       this.padding,
       this.icon,
@@ -43,7 +45,9 @@ class CustomTextButton extends StatelessWidget {
   }
 
   List<Color> _backgroudColor() {
-    if (isSelected) {
+    if ( backgroudColor!=null) {
+      return backgroudColor!;
+    } else if (isSelected) {
       return [Colors.blue, Colors.blue];
     } else {
       return [Colors.white, Colors.white, Colors.white];

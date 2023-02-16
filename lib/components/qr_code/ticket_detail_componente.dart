@@ -5,6 +5,7 @@ import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/extensions/datetime_extensions.dart';
 import 'package:link_dance/core/factory_widget.dart';
+import 'package:link_dance/core/functions/dialog_functions.dart';
 
 import 'package:link_dance/core/helpers/constantes_images.dart';
 import 'package:link_dance/features/event/event_helper.dart';
@@ -12,11 +13,12 @@ import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
 import 'package:provider/provider.dart';
 
 class TicketDetailComponent extends StatelessWidget {
-  Function() onClose;
-  late EventTicketModel eventTicket;
+  Function() onCloseCallBack;
+  EventTicketModel eventTicket;
   late EventHelper eventHelper;
 
-  TicketDetailComponent({required this.onClose});
+  TicketDetailComponent(
+      {required this.onCloseCallBack, required this.eventTicket});
 
   Widget bodyTicket() {
     return Card(
@@ -49,21 +51,6 @@ class TicketDetailComponent extends StatelessWidget {
     var user = Provider.of<AuthenticationFacate>(context, listen: false).user!;
     eventHelper = EventHelper.ctx(context: context);
 
-    eventTicket = EventTicketModel(
-        id: "6SfQc4aCJuMH9DsyARwA",
-        eventId: "12312",
-        eventTitle: "Show Jorge e Mateus",
-        eventPlace: "Villa Coutry",
-        eventDate: DateTime.now(),
-        linkerId: "asdfasdf",
-        linkerName: "Maria promo",
-        userId: "-NB-Gt8CnxYp-sHRK0gb",
-        userName: "Joaquina campos",
-        userGender: GenderType.female,
-        type: EventListType.discount,
-        wasUse: false,
-        isValid: true);
-
     return AlertDialog(
       title: Center(child: const Text("Ingresso")),
       content: Column(
@@ -84,7 +71,7 @@ class TicketDetailComponent extends StatelessWidget {
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
-            onClose();
+            onCloseCallBack();
           },
           style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(Colors.white)),
@@ -96,22 +83,22 @@ class TicketDetailComponent extends StatelessWidget {
         sizedBoxH15(),
         ElevatedButton(
           style: ButtonStyle(
-              backgroundColor:
-                  MaterialStateProperty.all<Color>(Colors.green[400]!)),
-          onPressed: () {
-            showSuccess(context);//.whenComplete(() => Navigator.of(context).pop());
-            // eventHelper
-            //     .reportEntry(ticketId: eventTicket.id)
-            //     .then((value) {
-            //
-            //   showSucess(context);
-            // })
-            //     .catchError((onError, trace) {
-            //   showError(context);
-            // }).whenComplete(() => Navigator.of(context).pop());
-
-            onClose();
-          },
+              backgroundColor: MaterialStateProperty.all<Color>(
+                  eventTicket.isValid
+                      ? Colors.green[400]!
+                      : Colors.grey[400]!)),
+          onPressed: eventTicket.isValid
+              ? () {
+                  eventHelper
+                      .checkInTicket(ticketId: eventTicket.id)
+                      .then((value) => showSuccess(context))
+                      .catchError((onError,trace) {
+                        print("Erro ao fazer checkin app $onError | $trace");
+                        showError(context);
+                  });
+                  onCloseCallBack();
+                }
+              : null,
           child: const Text("Confirmar"),
         )
       ],

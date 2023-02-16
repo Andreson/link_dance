@@ -13,10 +13,10 @@ class UserEventTicketResponseDTO {
 
   void _build({required Map<String, dynamic> data}) {
 
-    if ( data['data'] !=null) {
+    if ( data['data'] !=null && data['data']['ticket']!=null) {
       eventTicket=  EventTicketModel.fromJson(data['data']['ticket']);
     }
-    if ( data['data']!=null) {
+    if ( data['data']!=null && data['data']['userEvent']!=null) {
       userEvent =  UserEventModel.fromJson(data['data']['userEvent']);
     }
   }

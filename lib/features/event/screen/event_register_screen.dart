@@ -7,7 +7,7 @@ import 'package:link_dance/core/theme/theme_data.dart';
 import 'package:link_dance/features/event/event_helper.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:flutter/material.dart';
-
+import 'package:link_dance/core/functions/dialog_functions.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';

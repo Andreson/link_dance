@@ -46,13 +46,15 @@ class HttpException implements Exception {
 }
 
 class HttpBussinessException implements Exception {
-  http.Response cause;
+  http.Response response;
   late int statusCode;
   late String message;
-  HttpBussinessException({required this.cause}){
-    var mapData = jsonDecode( utf8.decode(cause.bodyBytes));
+  late Map<String,dynamic> body;
+  HttpBussinessException({required this.response}){
+    var mapData = jsonDecode( utf8.decode(response.bodyBytes));
     message =mapData['message'] ??"Ocorreu um erro nao esperado.";
-    statusCode = cause.statusCode;
+    statusCode = response.statusCode;
+    body = jsonDecode( utf8.decode(response.bodyBytes));
   }
 }
 

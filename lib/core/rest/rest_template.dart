@@ -18,7 +18,7 @@ class RestTemplate {
   RestTemplate({required this.auth});
 
   Future<Map<String, dynamic>> patch(
-      {required Object body,
+      {   Object? body,
       required String url,
       Map<String, String>? headers,
         bool targetFirebase=false,
@@ -30,6 +30,27 @@ class RestTemplate {
     headers = config['header'];
 
     final response = await http.patch(
+      Uri.parse(url),
+      headers: headers,
+      encoding: Encoding.getByName('utf-8'),
+      body: jsonEncode(body),
+    );
+    return postCallConfig(response: response);
+  }
+
+  Future<Map<String, dynamic>> put(
+      {  required Object body,
+        required String url,
+        Map<String, String>? headers,
+        bool targetFirebase=false,
+        Encoding? encoding}) async {
+
+    var config = await preCallConfig(
+        headers: headers, url: url, targetFiresbase: targetFirebase);
+    url = config['url'];
+    headers = config['header'];
+
+    final response = await http.put(
       Uri.parse(url),
       headers: headers,
       encoding: Encoding.getByName('utf-8'),
@@ -134,7 +155,7 @@ class RestTemplate {
   Map<String, dynamic> postCallConfig({required http.Response response}) {
 
     if ( response.statusCode>460 && response.statusCode<499){
-      throw HttpBussinessException(cause: response);
+      throw HttpBussinessException(response: response);
     }
     if (response.statusCode >= 300) {
       throw HttpException(response);

@@ -1,9 +1,10 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/core/factory_widget.dart';
+import 'package:link_dance/core/functions/dialog_functions.dart';
+import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
 import 'package:link_dance/features/event/event_helper.dart';
 import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
 import 'package:link_dance/model/user_event_model.dart';
@@ -19,13 +20,19 @@ class EventButtonUnSubscription extends StatelessWidget {
   late EventHelper _eventHelper;
   EventTicketModel? eventTicket;
   UserEventModel userEvent;
+  bool showConfirmDialog;
+
   EventButtonUnSubscription(
-      {this.onPressed, this.showQrCode,   this.eventTicket, required this.userEvent});
+      {this.onPressed,
+      this.showQrCode,
+      this.showConfirmDialog = true,
+      this.eventTicket,
+      required this.userEvent});
 
   @override
   Widget build(BuildContext context) {
     _context = context;
-   _user = Provider.of<AuthenticationFacate>(context, listen: false).user!;
+    _user = Provider.of<AuthenticationFacate>(context, listen: false).user!;
     _eventHelper = EventHelper.ctx(context: context);
 
     return Column(
@@ -49,13 +56,29 @@ class EventButtonUnSubscription extends StatelessWidget {
   }
 
   void unSubscribe(BuildContext context) async {
+    showConfirm(context,
+        content:
+            "Você esta cancelando a sua inscrição no evento. Isso irá cancelar qualquer VIP ou desconto que você tenha obtido."
+                "\nDeseja prosseguir?",
+        confirmAction: () {
+          Navigator.of(context).pop();
+          _callAPI(context);
+        });
+  }
+
+  Future<void> _callAPI(BuildContext context) async {
     onLoading(context);
-    _eventHelper.unSubscribeEvent(ticketId: eventTicket?.id,userEvent: userEvent.id).catchError((onError){
+    _eventHelper
+        .unSubscribeEvent(ticketId: eventTicket?.id, userEvent: userEvent.id)
+        .catchError((onError) {
+      Navigator.of(context).pop();
       print("Ocorreu um erro ao atualizar status inscrição no evento $onError");
       showError(_context);
       if (onPressed != null) onPressed!(onError: onError);
+    }).then((value) {
+      Navigator.of(context).pop();
+      if (onPressed != null) onPressed!();
     });
-    if (onPressed != null) onPressed!( );
   }
 
   Widget _buildButton(BuildContext context) {
@@ -82,7 +105,7 @@ class EventButtonUnSubscription extends StatelessWidget {
                       borderRadius: BorderRadius.circular(5.0),
                       side: const BorderSide(color: Colors.white30))),
               backgroundColor: MaterialStateProperty.all(buttonBackgroud)),
-          onPressed: ()=> unSubscribe(context),
+          onPressed: () => unSubscribe(context),
           label: text),
     );
   }

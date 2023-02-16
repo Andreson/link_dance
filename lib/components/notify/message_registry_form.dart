@@ -9,7 +9,7 @@ import 'package:link_dance/components/widgets/autocomplete/autocomplete_content_
 import 'package:link_dance/components/widgets/autocomplete/autocomplete_event_component.dart';
 
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/core/exception/exceptions.dart';
+import 'package:link_dance/core/functions/dialog_functions.dart';
 
 import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/model/notify_message_model.dart';

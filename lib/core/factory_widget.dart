@@ -22,6 +22,8 @@ import 'helpers/constants_api.dart';
 
 typedef ItemBuild = Widget Function(Object data);
 
+const double iconDialogSize = 30;
+
 FutureBuilder futureBuilderList<T>(
     {required BuildContext context,
     Future? loadDataFuture,
@@ -219,83 +221,6 @@ Duration _timeTextAnimation() {
 
 TextStyle _animadedTextStyle() {
   return const TextStyle(fontSize: 18, color: Colors.black);
-}
-
-Future<void> showWarning(BuildContext context,
-    {String content = "Ocorreu um erro nao esperado ao realizar operação!",
-    VoidCallback? onPressed}) {
-  onPressed = onPressed ?? () => {Navigator.of(context).pop()};
-  var titleWidget = Row(
-    children:   [
-      const Icon(FontAwesomeIcons.triangleExclamation, color: Colors.yellow),
-      sizedBoxH10(),
-      const Text("Algo de errado não está certo", style: kTitleText)
-    ],
-  );
-  return dialog(context, titleWidget, content, "Ok", onPressed);
-}
-
-Future<void> showError(BuildContext context,
-    {String content = "Ocorreu um erro nao esperado ao realizar operação!",
-    VoidCallback? onPressed}) {
-  onPressed = onPressed ?? () => {Navigator.of(context).pop()};
-  var titleWidget = Row(
-    children: [
-      const Icon(FontAwesomeIcons.bug, color: Colors.red,),
-      sizedBoxH10(),
-      const Text("Vish, deu ruim", style: kTitleText)
-    ],
-  );
-  return dialog(context, titleWidget, content, "Ok", onPressed);
-}
-
-Future showSuccess(BuildContext context,
-    {String content = "Operação realizada com sucesso!",
-      VoidCallback? onPressed}) {
-  onPressed = onPressed ?? () => {Navigator.of(context).pop()};
-  var titleWidget = Row(
-    children: [
-      const Icon(Icons.check_circle_outline, color: Colors.lightGreen,),
-      sizedBoxH10(),
-      const Text("Aêêêêêêêêêêê", style: kTitleText)
-    ],
-  );
-  return dialog(context, titleWidget, content, "Ok", onPressed);
-}
-
-Future<void> showInfo(
-    {required BuildContext context,
-    required String content,
-    String title = "Aviso",
-    String labelButton = "Ok",
-    VoidCallback? onPressed}) async {
-  onPressed ??= () => Navigator.of(context).pop();
-  var titleWidget = Row(
-    children: [
-      const Icon(FontAwesomeIcons.info, color: Colors.blueAccent,),
-      Text(title, style: kTitleText)
-    ],
-  );
-  return dialog(context, titleWidget, content, labelButton, onPressed);
-}
-
-Future<void> dialog(BuildContext context, Widget title, String content,
-    String labelButton, VoidCallback onPressed) {
-  return showDialog<void>(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      elevation: 2,
-      title: title,
-      content: Text(content, style: kInfoText),
-      actions: [
-        CustomTextButton(
-            onPressed: onPressed,
-            label: labelButton,
-            params:
-                CustomTextButtonParams(fontSize: 15, height: 40, width: 100)),
-      ],
-    ),
-  );
 }
 
 Widget progressIndicator({double progress = 1, double width = 150}) {
