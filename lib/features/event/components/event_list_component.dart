@@ -19,7 +19,7 @@ class EventListComponent extends StatelessWidget {
   Widget build(BuildContext context) {
 
     var condition = QueryCondition(fieldName: "eventDate",isGreaterThanOrEqualTo: DateTime.now());
-    readOnly = readOnly ?? true;
+    readOnly = false;
     user = Provider.of<AuthenticationFacate>(context, listen: false).user;
     repository = Provider.of<EventRepository>(context, listen: false);
     return ListViewComponent<EventModel, EventRepository>(

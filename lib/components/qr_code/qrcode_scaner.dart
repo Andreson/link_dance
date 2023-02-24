@@ -5,7 +5,7 @@ import 'package:link_dance/components/qr_code/qr_code_helper.dart';
 import 'package:link_dance/components/qr_code/ticket_detail_componente.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
-import 'package:link_dance/core/exception/exceptions.dart';
+import 'package:link_dance/core/exception/http_exceptions.dart';
 import 'package:link_dance/core/functions/dialog_functions.dart';
 import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
 import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
@@ -26,7 +26,7 @@ class _QrCodeScannerState extends State<QrCodeScannerComponent> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    cameraController = MobileScannerController();
+    cameraController = MobileScannerController( );
   }
 
   late AuthenticationFacate auth;
@@ -70,26 +70,20 @@ class _QrCodeScannerState extends State<QrCodeScannerComponent> {
             ),
           ],
         ),
-        body: MobileScanner(
-            allowDuplicates: true,
-            controller: cameraController,
-            fit: BoxFit.cover,
-            onDetect: (barcode, args) {
-              if (barcode.rawValue == null) {
-                debugPrint('Failed to scan Barcode');
-                return;
-              }
-              if (bockPopUp) {
-                return;
-              }
-              bockPopUp = true;
-              print("barcode.rawValue  is ${barcode.rawValue!}");
-              cameraController.stop();
-              _getTicketData(rawCodeData: barcode.rawValue!)
-                  .then((eventTicket) {
-                if (eventTicket != null) _showTicketDetail(eventTicket!);
-              }).whenComplete(() => cameraController.start());
-            }));
+        body: Center(
+          child: SizedBox(
+            height: 300,
+            width: 300,
+            child: Stack(
+              children: [
+
+                _mobileScanner(),
+                const Center(child: Text("Olha eu aqui, senta e assiste",style: TextStyle(fontSize: 22),)),
+
+              ],
+            ),
+          ),
+        ));
   }
 
   void _showTicketDetail(EventTicketModel eventTicket) {
@@ -120,6 +114,32 @@ class _QrCodeScannerState extends State<QrCodeScannerComponent> {
       }
     });
     return response.eventTicket;
+  }
+
+
+  MobileScanner _mobileScanner() {
+
+    return MobileScanner(
+        allowDuplicates: true,
+
+        controller: cameraController,
+        fit: BoxFit.cover,
+        onDetect: (barcode, args) {
+          if (barcode.rawValue == null) {
+            debugPrint('Failed to scan Barcode');
+            return;
+          }
+          if (bockPopUp) {
+            return;
+          }
+          bockPopUp = true;
+          print("barcode.rawValue  is ${barcode.rawValue!}");
+          cameraController.stop();
+          _getTicketData(rawCodeData: barcode.rawValue!)
+              .then((eventTicket) {
+            if (eventTicket != null) _showTicketDetail(eventTicket!);
+          }).whenComplete(() => cameraController.start());
+        });
   }
 
   @override

@@ -16,7 +16,7 @@ import 'package:link_dance/features/login/login_screen.dart';
 import 'package:link_dance/features/movie/screen/movie_play_screen.dart';
 
 import 'package:link_dance/features/movie/screen/movies_list_screen.dart';
-import 'package:link_dance/features/content_group/content_group_screnn.dart';
+import 'package:link_dance/features/content_group/content_group_registry_screnn.dart';
 import 'package:link_dance/features/user/screen/user_registration_screen.dart';
 import 'package:flutter/material.dart';
 

@@ -1,4 +1,4 @@
-import 'package:link_dance/core/exception/exceptions.dart';
+import 'package:link_dance/core/exception/http_exceptions.dart';
 import 'package:flutter/material.dart';
 import '../../core/factory_widget.dart';
 import 'package:link_dance/core/extensions/datetime_extensions.dart';

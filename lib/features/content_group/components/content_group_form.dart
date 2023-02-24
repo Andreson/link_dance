@@ -57,16 +57,12 @@ class ContentGroupFormState extends State<ContentGroupFormComponent> {
   late ContentGroupModel contentGroup;
   String msgConfirmDialog="";
 
-
   FocusNode _nameFocus = FocusNode();
   FocusNode _teacherNameFocus = FocusNode();
   FocusNode _schoolFocus = FocusNode();
   FocusNode _descriptionFocus = FocusNode();
   FocusNode _timeClassFocus = FocusNode();
   FocusNode _startDateFocus = FocusNode();
-
-
-
 
   submitForm() async {
     if (!validations()) {
@@ -260,7 +256,7 @@ class ContentGroupFormState extends State<ContentGroupFormComponent> {
         else {
           imagem = Image.file(File(path!));
         }
-    return Container(width: 400,height: 400,  padding: EdgeInsets.only(top: 15,bottom: 20), child: imagem);
+    return Container(width: 400,height: 400,  padding: const EdgeInsets.only(top: 15,bottom: 20), child: imagem);
   }
 
   void selectDataAutocomplete(AutoCompleteItem value) {
@@ -383,7 +379,7 @@ class ContentGroupFormState extends State<ContentGroupFormComponent> {
       isPublic = contentGroup.isPublic;
 
       autocompleteTextEdit.text = contentGroup.rhythm;
-      path = contentGroup.photo;
+      path = contentGroup.imageUrl;
       setState(() {
         contentGroupType = contentGroupdescriptions.values
             .where((item) => item.id == contentGroup.type)

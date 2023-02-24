@@ -58,7 +58,7 @@ class _AutoCompleteRhythmState extends State<AutoCompleteContentGroupComponent> 
         AutoCompleteItem(
           id: contentGroup.id,
           subtitle: contentGroup.school,
-          metaData: contentGroup.photo,
+          metaData: contentGroup.imageUrl,
           label: contentGroup.title,
           filterField:
           "${contentGroup.title},${contentGroup.school},${contentGroup

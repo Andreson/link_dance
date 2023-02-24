@@ -9,6 +9,7 @@ class ContentGroupScreen extends StatefulWidget {
 }
 
 class _ContentGroupState extends State<ContentGroupScreen> {
+
   final GlobalKey<ContentGroupFormState> formUploadKey = GlobalKey<ContentGroupFormState>();
 
   @override

@@ -14,10 +14,10 @@ class ContentGroupModel extends AbastractModel{
   String id;
   String ownerId;
   String _title;
-  String? photo;
+  String? imageUrl;
   String? labelTeacher;
   String timeMeeting;
-  String? photoThumb;
+  String? imageThumbUrl;
   List<String>? storageRef;
   String school;
   String? description;
@@ -37,8 +37,8 @@ class ContentGroupModel extends AbastractModel{
 
     required this.ownerId,
     this.labelTeacher,
-    this.photo,
-    this.photoThumb,
+    this.imageUrl,
+    this.imageThumbUrl,
 
     required this.timeMeeting,
     this.storageRef,
@@ -79,8 +79,8 @@ class ContentGroupModel extends AbastractModel{
       timeMeeting: json['timeMeeting'],
       isPublic: json['isPublic'],
       ownerId: json['ownerId'],
-      photo: json['photo'],
-      photoThumb: json['photoThumb'],
+      imageUrl: json['imageUrl'],
+      imageThumbUrl: json['imageThumbUrl'],
       storageRef:json['storageRef']?.cast<String>(),
       school: json['school'],
       title: json['title'],
@@ -98,10 +98,10 @@ class ContentGroupModel extends AbastractModel{
     return {
       "labelTeacher":labelTeacher,
       "timeMeeting":timeMeeting,
-      "photo": photo,
+      "imageUrl": imageUrl,
       "storageRef":storageRef,
       "ownerId":ownerId,
-      "photoThumb": photoThumb,
+      "imageThumbUrl": imageThumbUrl,
       "school":school,
       "description": description,
       "title": title.toLowerCase().trim(),

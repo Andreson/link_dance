@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:link_dance/core/exception/exceptions.dart';
+import 'package:link_dance/core/exception/http_exceptions.dart';
 import 'package:link_dance/model/content_group_model.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/features/movie/model/movie_model.dart';
 import 'package:link_dance/model/notify_message_model.dart';
 import 'package:link_dance/model/teacher_model.dart';
+import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 
 abstract class AbastractModel {
   String get id;
@@ -45,6 +46,17 @@ abstract class AbastractModel {
 
   DateTime parseCreateDate(Map json) {
     return (json['createDate'] as Timestamp).toDate();
+  }
+
+  static DateTime parseDate(dynamic date) {
+    if ( date is Timestamp) {
+      return (date).toDate();
+    } else if ( date is String) {
+    return  date.toString().parse();
+    }
+    else {
+      return date;
+    }
   }
 
   /**

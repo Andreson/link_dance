@@ -50,7 +50,7 @@ class EventCardItemList extends StatelessWidget {
                   width: 275,
                   height: 240,
                   child: ImagemCardComponent(
-                    imagemURL: event.uriBannerThumb,
+                    imagemURL: event.imageThumbUrl,
                   ))),
           Container(
             width: 246,
@@ -94,7 +94,7 @@ class EventCardItemList extends StatelessWidget {
     var options = DynamicLinkOptions(
       router: RoutesPages.eventDetail,
       params: {"eventId": event.id},
-      imageUrl: event.uriBannerThumb!,
+      imageUrl: event.imageThumbUrl!,
       title: event.shareLabel(link: ""),
     );
     return IconButton(

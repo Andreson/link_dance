@@ -1,5 +1,5 @@
 import 'package:link_dance/core/dynamic_links/dynamic_links_helper.dart';
-import 'package:link_dance/core/exception/exceptions.dart';
+import 'package:link_dance/core/exception/http_exceptions.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/features/event/components/buttons/event_button_subs.dart';
 
@@ -103,7 +103,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     var options = DynamicLinkOptions(
                       router: RoutesPages.eventDetail,
                       params: {"eventId": event.id},
-                      imageUrl: event.uriBannerThumb!,
+                      imageUrl: event.imageThumbUrl!,
                       title: event.shareLabel(link: ""),
                     );
                     shareContent(context: context, options: options);
@@ -138,10 +138,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   showImageViewer(context, imageProviderCache,
                       onViewerDismissed: () {});
                 },
-                child: event.uriBanner == null || event.uriBanner!.isEmpty
+                child: event.imageUrl == null || event.imageUrl!.isEmpty
                     ? _getImageDefault()
                     : cachedManager.getImage(
-                        url: event.uriBanner!,
+                        url: event.imageUrl!,
                         width: width,
                         fit: BoxFit.cover,
                         height: height / 2.7,

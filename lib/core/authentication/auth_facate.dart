@@ -1,7 +1,7 @@
 import 'package:link_dance/core/helpers/constantes_config.dart';
 import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/core/exception/exceptions.dart';
+import 'package:link_dance/core/exception/http_exceptions.dart';
 import 'package:link_dance/core/rest/rest_template.dart';
 import 'package:link_dance/core/authentication/auth_base.dart';
 import 'package:link_dance/core/authentication/auth_email.dart';

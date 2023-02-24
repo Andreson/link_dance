@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 
-import '../exception/exceptions.dart';
+import '../exception/http_exceptions.dart';
 
 class RestTemplate {
   AuthenticationFacate auth;

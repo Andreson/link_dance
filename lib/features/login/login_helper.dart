@@ -2,7 +2,7 @@
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/core/exception/exceptions.dart';
+import 'package:link_dance/core/exception/http_exceptions.dart';
 import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:flutter/material.dart';

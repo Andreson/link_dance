@@ -10,12 +10,13 @@ class CurrencyInputField extends StatelessWidget {
   bool required;
   bool hideIcon;
   FormFieldSetter<String>? onSaved;
-
-  CurrencyInputField({Key? key, this.label="", this.initialValue, this.hint, this.onSaved, this.required=true, this.hideIcon=false}) : super(key: key);
+  FocusNode? focus;
+  CurrencyInputField({Key? key, this.label="",this.focus, this.initialValue, this.hint, this.onSaved, this.required=true, this.hideIcon=false}) : super(key: key);
   @override
   Widget build(BuildContext context) {
  
     return TextFormField(
+      focusNode: focus,
       style: formInputsStyles,
       onSaved:onSaved,
       initialValue:initialValue ,

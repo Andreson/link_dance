@@ -17,8 +17,8 @@ class EventModel extends AbastractModel {
   double priceFemale;
   DateTime eventDate;
   DateTime createDate;
-  String? uriBanner;
-  String? uriBannerThumb;
+  String? imageUrl;
+  String? imageThumbUrl;
   String _rhythm;
   EventStatus status;
   EventListModel? listData;
@@ -66,9 +66,9 @@ class EventModel extends AbastractModel {
       required this.description,
       required this.eventDate,
       this.tags,
-      this.uriBannerThumb,
+      this.imageThumbUrl,
       required this.createDate,
-      this.uriBanner})
+      this.imageUrl})
       : _title = title,
         _rhythm = rhythm,
         _id = id;
@@ -94,8 +94,8 @@ class EventModel extends AbastractModel {
       "eventDate": eventDate,
       "contact": contact,
       "address": address,
-      "uriBanner": uriBanner,
-      "uriBannerThumb": uriBannerThumb,
+      "imageUrl": imageUrl,
+      "imageThumbUrl": imageThumbUrl,
       "createDate": createDate,
       "storageRef": storageRef,
       "paymentData": paymentData,
@@ -119,9 +119,13 @@ class EventModel extends AbastractModel {
         description: "",
         eventDate: DateTime.now().add(Duration(days: 60)),
         createDate: DateTime.now(),
-        uriBanner: "");
+        imageUrl: "");
   }
-
+  void setImagensPath(Map<String, dynamic> json) {
+    imageUrl= json['imageUrl'];
+    imageThumbUrl= json['imageThumbUrl'];
+    storageRef= json['storageRef']?.cast<String>();
+  }
   static EventModel fromJson(Map<String, dynamic> json) {
     var price =
         json['price'] == null ? null : double.parse(json['price'].toString());
@@ -132,7 +136,7 @@ class EventModel extends AbastractModel {
           id: json['id'],
           storageRef: json['storageRef']?.cast<String>(),
           address: json['address'],
-          uriBannerThumb: json['uriBannerThumb'],
+          imageThumbUrl: json['imageThumbUrl'],
           title: json['title'],
           paymentData: json["paymentData"],
           place: json['place'],
@@ -141,9 +145,9 @@ class EventModel extends AbastractModel {
           priceMale: json['priceMale'] ?? 0,
           priceFemale: json['priceFemale'] ?? 0,
           description: json['description'],
-          eventDate: (json['eventDate'] as Timestamp).toDate(),
-          uriBanner: json['uriBanner'],
-          createDate: (json['createDate'] as Timestamp).toDate(),
+          eventDate: AbastractModel.parseDate(json['eventDate']),
+          imageUrl: json['imageUrl'],
+          createDate: AbastractModel.parseDate(json['createDate']),
           listData: EventListModel.fromJson(json));
     } catch (error) {
       print("Erro ao carregar event model $error");

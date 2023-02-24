@@ -6,9 +6,6 @@ import 'package:link_dance/core/functions/dialog_functions.dart';
 import 'package:link_dance/core/types.dart';
 import 'package:link_dance/core/upload_files/file_upload.dart';
 import 'package:link_dance/features/event/dto/user_event_ticket_dto.dart';
-import 'package:link_dance/features/event/model/event_model.dart';
-
-import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
 
@@ -16,15 +13,12 @@ import 'package:link_dance/core/rest/rest_template.dart';
 import 'package:provider/provider.dart';
 
 class EventHelper {
-  EventRepository? _eventRepository;
-  EventModel? _event;
   final FileUpload _fileUpload = FileUpload();
   late RestTemplate _restTemplate;
   late AuthenticationFacate auth;
   late BuildContext context;
 
   EventHelper.ctx({required this.context}) {
-    _eventRepository = Provider.of<EventRepository>(context, listen: false);
     auth = Provider.of<AuthenticationFacate>(context, listen: false);
     _restTemplate = RestTemplate(auth: auth);
   }
@@ -112,8 +106,8 @@ class EventHelper {
       await bannerResp.task.then((p0) async {
         var urlPhoto = await bannerResp.ref.getDownloadURL();
         var urlThumb = await thumbnailResp.ref.getDownloadURL();
-        formData['photo'] = urlPhoto;
-        formData['thumbPhoto'] = urlThumb;
+        formData['imageUrl'] = urlPhoto;
+        formData['imageThumbUrl'] = urlThumb;
         formData['storageRef'] = [
           thumbnailResp.storageRef,
           bannerResp.storageRef

@@ -140,7 +140,7 @@ class _ContentGroupDetailScreenState extends State<ContentGroupDetailScreen> {
                   style: const TextStyle(
                       fontSize: 13, fontWeight: FontWeight.normal))
             ],
-            imageBackground: contentGroup.photo!,
+            imageBackground: contentGroup.imageUrl!,
             width: width,
             height: height));
 

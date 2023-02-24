@@ -1,6 +1,6 @@
 import 'package:link_dance/components/input_fields/mail_field.dart';
 import 'package:link_dance/components/input_fields/text_buton.dart';
-import 'package:link_dance/core/exception/exceptions.dart';
+import 'package:link_dance/core/exception/http_exceptions.dart';
 import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/core/functions/dialog_functions.dart';
 

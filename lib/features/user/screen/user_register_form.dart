@@ -7,7 +7,7 @@ import 'package:link_dance/components/input_fields/text_field.dart';
 import 'package:link_dance/components/widgets/imagem_avatar_component.dart';
 import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/core/exception/exceptions.dart';
+import 'package:link_dance/core/exception/http_exceptions.dart';
 import 'package:link_dance/core/rest/address_rest_client.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';

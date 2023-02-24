@@ -51,6 +51,10 @@ extension StringExtension on String {
     return Timestamp.fromDate( DateTime.parse( this));
   }
 
+  Timestamp parseDateTimestamp({String format = "dd/MM/yyyy"}) {
+    return Timestamp.fromDate(DateFormat(format).parse(this));
+  }
+
 
   double parseDouble() {
     var temp = replaceAll("R\$", "").replaceFirst(",", ".");

@@ -1,6 +1,7 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/factory_widget.dart';
+import 'package:link_dance/core/helpers/constantes_images.dart';
 import 'package:link_dance/core/helpers/movie_cache_helper.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
@@ -120,15 +121,15 @@ class EventItemComponent extends StatelessWidget {
   Widget _getImage() {
     double width = 70;
     double height = 70;
-    if (event.uriBanner == null || event.uriBanner!.isEmpty) {
+    if (event.imageUrl == null || event.imageUrl!.isEmpty) {
+
       return Image.asset(
           fit: BoxFit.cover,
           width: width,
           height: height,
-          "assets/images/danca.jpg");
+          ConstantsImagens.defaultEvent);
     } else {
-      String url = event.uriBannerThumb ?? event.uriBanner!;
-
+      String url = event.imageThumbUrl ?? event.imageUrl!;
       return cachedManager.getImage(
           url: url, width: 70, height: 70, fit: BoxFit.cover);
     }

@@ -62,7 +62,7 @@ class _AutoCompleteRhythmState extends State<AutoCompleteEventComponent> {
         AutoCompleteItem(
           id: event.id,
           label: event.title,
-          metaData: event.uriBanner,
+          metaData: event.imageUrl,
           filterField:
           "${event.title},${event.description}"
         ))
