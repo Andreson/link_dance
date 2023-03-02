@@ -21,6 +21,8 @@ enum RoutesPages {
   eventRegister,
   eventList,
   eventDetail,
+  eventTicketManager,
+  eventTicketListRegistry,
   contentGroup,
   contentGroupList,
   contentGroupDetail,
@@ -47,7 +49,39 @@ enum NotifyMessageType { event, teacher, contentGroup }
 
 enum GenderType { male, female, notbinary, other }
 
-enum EventListType { vip, discount, none }
+enum EventListType { vip, discount,mixed, none }
+
+enum EntryListType { promoter, birthday}
+
+enum LevelEnum { info, warn,error }
+
+extension LevelEnumExtension on LevelEnum {
+  Color get color {
+    switch (this) {
+      case LevelEnum.info :
+        return Colors.transparent;
+      case LevelEnum.warn :
+        return Colors.orange[200]!;
+      case LevelEnum.error :
+        return Colors.redAccent[200]!;
+      default:
+        throw "Level invalido!";
+    }
+  }
+  Color get textColor {
+    switch (this) {
+      case LevelEnum.info :
+        return Colors.white;
+      case LevelEnum.warn :
+        return Colors.black!;
+      case LevelEnum.error :
+        return Colors.black!;
+      default:
+        throw "Level invalido!";
+    }
+  }
+
+}
 
 extension EventTypeExtension on EventListType {
   String get label {

@@ -19,6 +19,7 @@ class CurrencyInputField extends StatelessWidget {
       focusNode: focus,
       style: formInputsStyles,
       onSaved:onSaved,
+      validator: required ? defaultInputValidator : null,
       initialValue:initialValue ,
       inputFormatters: [currencyMask()],
 
@@ -29,5 +30,18 @@ class CurrencyInputField extends StatelessWidget {
         label: labelRequired(required: required, label: label)
       ),
     );
+  }
+
+  String? defaultInputValidator(String? value) {
+    if (!required) {
+      return null;
+    }
+    if (value != null && value
+        .toString()
+        .isNotEmpty) {
+      return null;
+    } else {
+      return "Campo obrigatório!";
+    }
   }
 }

@@ -51,6 +51,10 @@ class DateInputField extends StatelessWidget {
       textController = TextEditingController(text: temp);
       initValue=null;
     }
+    if ( isDatePicker){
+      readOnly = true;
+    }
+
     return TextFormField(
       controller: textController,
       focusNode: focusNode,

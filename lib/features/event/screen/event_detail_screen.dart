@@ -14,7 +14,7 @@ import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/features/event/event_helper.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
-import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
+import 'package:link_dance/features/event/model/event_ticket_model.dart';
 import 'package:link_dance/model/user_event_model.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
@@ -212,14 +212,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     malePrice: event.priceMale, femalePrice: event.priceFemale),
               ]),
               icon: Icons.monetization_on),
-          if (event.hasList())
+          if (event.hasListDiscount())
             EventListTileItem(
                 title: event.listData!.listType.label,
                 subtitle: Column(
                   children: [
                     getPrice(
-                        femalePrice: event.listData!.femalePrice,
-                        malePrice: event.listData!.malePrice),
+                        femalePrice: event.listData!.femalePriceDiscount!,
+                        malePrice: event.listData!.malePriceDiscount!),
                     if (event.listData != null) getTimeVip()
                   ],
                 ),
@@ -270,7 +270,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child:
-              femalePrice > 0 ? Text("R\$ ${femalePrice}") : const Text("Free"),
+              femalePrice > 0 ? Text("R\$ $femalePrice") : const Text("Free"),
         ),
       ],
     );

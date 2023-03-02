@@ -13,7 +13,7 @@ class CustomTextField extends StatelessWidget {
   String? Function(String? value)? customValidator;
   IconButton? suffixIcon;
   IconButton? prefixIcon;
-
+  bool readOnly;
   String? initialValue;
   TextInputAction? textInputAction;
   FormFieldSetter<String>? onSaved;
@@ -25,14 +25,19 @@ class CustomTextField extends StatelessWidget {
   FocusNode? focusNode;
   int? maxLines;
    IconData? iconData;
+  TextStyle? textStyle;
+  TextAlign textAlign;
 
   CustomTextField({Key? key,
     this.label="",
+    this.textAlign =TextAlign.left,
     this.hint,
+    this.textStyle,
     this.iconData,
     this.maxLines = 1,
     this.customValidator,
     this.required = true,
+    this.readOnly=false,
     this.icon,
     this.focusNode,
     this.suffixIcon,
@@ -56,8 +61,9 @@ class CustomTextField extends StatelessWidget {
       maxLines: maxLines,
       controller: controller,
       focusNode: focusNode,
-      style: formInputsStyles,
-
+      style:textStyle ?? formInputsStyles,
+      readOnly: readOnly,
+      textAlign: textAlign,
       initialValue: initialValue,
       inputFormatters: inputFormatter,
       textInputAction: textInputAction ?? TextInputAction.next,

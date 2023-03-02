@@ -8,7 +8,7 @@ import 'package:link_dance/features/event/event_helper.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
-import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
+import 'package:link_dance/features/event/model/event_ticket_model.dart';
 import 'package:link_dance/model/user_model.dart';
 import 'package:provider/provider.dart';
 

@@ -35,7 +35,7 @@ class RestTemplate {
       encoding: Encoding.getByName('utf-8'),
       body: jsonEncode(body),
     );
-    return postCallConfig(response: response);
+    return postCallConfig(responseParam: response);
   }
 
   Future<Map<String, dynamic>> put(
@@ -56,7 +56,7 @@ class RestTemplate {
       encoding: Encoding.getByName('utf-8'),
       body: jsonEncode(body),
     );
-    return postCallConfig(response: response);
+    return postCallConfig(responseParam: response);
   }
 
   Future<Map<String, dynamic>> post(
@@ -75,11 +75,11 @@ class RestTemplate {
       encoding: Encoding.getByName('utf-8'),
       body: jsonEncode(body),
     );
-    return postCallConfig(response: response);
+    return postCallConfig(responseParam: response);
   }
 
 
-  Future<Map<String, dynamic>> get(
+  Future<ResponseDTO> get(
       {required String url,
       Map<String, String>? headers,
       Encoding? encoding,
@@ -93,7 +93,10 @@ class RestTemplate {
       Uri.parse(url),
     );
 
-    return postCallConfig(response: response);
+    var temp =postCallConfig(responseParam: response);
+
+    return ResponseDTO(httpStatus: temp['httpStatus'], data: temp['data']);
+
   }
 
   Future<Map<String, dynamic>> delete(
@@ -114,7 +117,7 @@ class RestTemplate {
       body: jsonEncode(body),
     );
 
-    return postCallConfig(response: response);
+    return postCallConfig(responseParam: response);
   }
 
   Future<String> _refreshToken( ) async {
@@ -152,21 +155,34 @@ class RestTemplate {
     return {"url": url, "header": headers};
   }
 
-  Map<String, dynamic> postCallConfig({required http.Response response}) {
-
-    if ( response.statusCode>460 && response.statusCode<499){
-      throw HttpBussinessException(response: response);
+  Map<String, dynamic> postCallConfig({required http.Response responseParam}) {
+    Map<String, dynamic> response = {};
+    if ( responseParam.statusCode>460 && responseParam.statusCode<499){
+      throw HttpBussinessException(response: responseParam);
     }
-    if (response.statusCode >= 300) {
-      throw HttpException(response);
+    if (responseParam.statusCode >= 300) {
+      throw HttpException(responseParam);
     }
-    if (response.body == 'null') return {};
+    var responseData =   jsonDecode( utf8.decode(responseParam.bodyBytes));
+    response['httpStatus']  = responseParam.statusCode;
+    response['data']  = responseData;
 
-    var responseData =   jsonDecode( utf8.decode(response.bodyBytes));
-    responseData['httpStatus']  = response.statusCode;
-    return responseData;
+    return response;
   }
 
 
 
+}
+
+class ResponseDTO {
+  int httpStatus;
+  Map<String, dynamic>? _data ;
+
+  Map<String, dynamic> get data=> _data ??{};
+
+  ResponseDTO({required this.httpStatus,required Map<String, dynamic>? data}):_data = data;
+
+  bool hasData() {
+    return _data!=null && data!.isNotEmpty!;
+  }
 }

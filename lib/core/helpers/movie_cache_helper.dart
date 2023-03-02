@@ -24,56 +24,54 @@ class CachedManagerHelper {
       return VideoPlayerController.file(fileInfo.file);
     }
   }
+
   Future<FileInfo?> getFileInfo(String url) async {
     return await _cacheManager.getFileFromCache(url);
   }
 
-
-
   Widget getImage(
       {required String url,
       double? width,
-       double? height,
-        Function(ImageProvider img)? onCache,
+      double? height,
+      Function(ImageProvider img)? onCache,
       BoxFit? fit = BoxFit.cover}) {
     return FutureBuilder<ImageProvider>(
-        future: getImageFuture(url:url,onCache: onCache),
+        future: getImageFuture(url: url, onCache: onCache),
         builder: (BuildContext context, AsyncSnapshot<ImageProvider> snapshot) {
           if (snapshot.data == null) {
             return const SizedBox();
           }
 
-          if (url.contains("http")){
-          return SizedBox(
-            height: height,
-            width: width,
-            child: Image(fit: fit, image: snapshot.data!),
-          );}
-          else {
+          if (url.contains("http")) {
+            return SizedBox(
+              height: height,
+              width: width,
+              child: Image(fit: fit, image: snapshot.data!),
+            );
+          } else {
             return Image.asset(
-                fit: BoxFit.cover,
-                width: width,
-                height: height,
-                url);
+                fit: BoxFit.cover, width: width, height: height, url);
           }
         });
   }
 
-  Future<ImageProvider> getImageFuture({required String url,Function(ImageProvider img)? onCache,}) async {
+  Future<ImageProvider> getImageFuture({
+    required String url,
+    Function(ImageProvider img)? onCache,
+  }) async {
     final fileInfo = await _cacheManager.getFileFromCache(url);
 
     if (fileInfo == null || fileInfo.file == null) {
       print("------------------------- Fazendo cache da imagem ");
       unawaited(_cacheManager.downloadFile(url));
       var img = Image.network(url).image;
-      if ( onCache!=null) {
+      if (onCache != null) {
         onCache(img);
       }
       return img;
     } else {
-
       var img = Image.file(fileInfo.file).image;
-      if ( onCache!=null) {
+      if (onCache != null) {
         onCache(img);
       }
       return img;

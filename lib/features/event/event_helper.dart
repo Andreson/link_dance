@@ -1,5 +1,6 @@
 import 'package:link_dance/components/qr_code/qrcode_build.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/core/dto/core_dto.dart';
 
 import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/functions/dialog_functions.dart';
@@ -25,26 +26,36 @@ class EventHelper {
 
   Future<UserEventTicketResponseDTO> checkInTicket(
       {required String ticketId}) async {
-    var respose = await _restTemplate.patch(targetFirebase: false,
-        url: "${ConstantsAPI.eventApi}/event/ticket/check-in?ticketId=$ticketId&userId=${auth.user!.id}");
+    var respose = await _restTemplate.patch(
+        targetFirebase: false,
+        url:
+            "${ConstantsAPI.eventApi}/event/ticket/check-in?ticketId=$ticketId&userId=${auth.user!.id}");
     return UserEventTicketResponseDTO.map(data: respose);
   }
+
   //Valida o ticket e retorna os dados para o checkin
   Future<UserEventTicketResponseDTO> getEventTicketAvailable(
       {required String eventId}) async {
-    var respose = await _restTemplate.get(targetFirebase: false,
-        url: "${ConstantsAPI.eventApi}/event/ticket/available?eventId=$eventId&userId=${auth.user!.id}").catchError((onError,trace) {
+    var respose = await _restTemplate
+        .get(
+            targetFirebase: false,
+            url:
+                "${ConstantsAPI.eventApi}/event/ticket/available?eventId=$eventId&userId=${auth.user!.id}")
+        .catchError((onError, trace) {
       print(" ----  Erro getEventTicketAvailable $onError || $trace");
       throw onError;
-    } );;
-    return UserEventTicketResponseDTO.map(data: respose);
+    });
+    ;
+    return UserEventTicketResponseDTO.map(data: respose.data);
   }
 
   Future<UserEventTicketResponseDTO> getEventTicket(
       {required String eventId}) async {
-    var respose = await _restTemplate.get(targetFirebase: false,
-        url: "${ConstantsAPI.eventApi}/event/ticket?eventId=$eventId&userId=${auth.user!.id}");
-    return UserEventTicketResponseDTO.map(data: respose);
+    var respose = await _restTemplate.get(
+        targetFirebase: false,
+        url:
+            "${ConstantsAPI.eventApi}/event/ticket?eventId=$eventId&userId=${auth.user!.id}");
+    return UserEventTicketResponseDTO.map(data: respose.data);
   }
 
   Future<EventTicketResponseDTO> subscribeEvent(
@@ -59,9 +70,10 @@ class EventHelper {
   }
 
   Future<EventTicketResponseDTO> unSubscribeEvent(
-      {required String userEvent,String? ticketId}) async {
+      {required String userEvent, String? ticketId}) async {
     var respose = await _restTemplate.delete(
-        url: "${ConstantsAPI.eventApi}/event/ticket?userEvent=$userEvent&ticketId=$ticketId");
+        url:
+            "${ConstantsAPI.eventApi}/event/ticket?userEvent=$userEvent&ticketId=$ticketId");
 
     return EventTicketResponseDTO.map(data: respose);
   }
@@ -116,6 +128,42 @@ class EventHelper {
       return formData;
     } catch (err) {
       rethrow;
+    }
+  }
+
+  /**
+   * Caso o parametro Range seja informado, ele e comparado com os itens da lista e verificar se existe alguma
+   * intersecção de datas
+   * Caso nao seja informado, são comparados todos os elementos do List entre si
+   */
+  Map<String, dynamic> checkIntersectionDates(
+      {DateRangeDto? range, required List<DateRangeDto> otherDates}) {
+    loppCompare(DateRangeDto date) {
+      for (DateRangeDto compare in otherDates) {
+        bool resp = date.isBetween(range: compare);
+        if (resp) {
+          print("Intersecçao com a data ${compare.toString()}");
+          return {"existIntersection": true, "dateIntersection": compare};
+        }
+      }
+      return {
+        "existIntersection": false,
+      };
+    }
+
+    if (range == null) {
+      Map<String, dynamic> resp;
+      for (DateRangeDto item in otherDates) {
+        resp= loppCompare(item);
+        if ( resp['existIntersection']){
+          return resp;
+        }
+      }
+      return {
+        "existIntersection": false,
+      };
+    } else {
+      return loppCompare(range);
     }
   }
 

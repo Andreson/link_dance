@@ -16,9 +16,9 @@ import 'package:link_dance/features/movie/repository/movie_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import '../../../core/decorators/box_decorator.dart';
-import '../../../core/factory_widget.dart';
-import '../../../core/theme/fontStyles.dart';
+import 'package:link_dance/core/decorators/box_decorator.dart';
+import 'package:link_dance/core/factory_widget.dart';
+import 'package:link_dance/core/theme/fontStyles.dart';
 import 'package:file_picker/file_picker.dart';
 
 class MovieUploadFormComponent extends StatefulWidget {

@@ -28,6 +28,7 @@ const TextStyle kErrorText = TextStyle(
 const TextStyle formInputsStyles = TextStyle(
   fontSize: 14,
   color: inputField,
+
 );
 
 TextStyle formInputsStylesRead = const TextStyle(

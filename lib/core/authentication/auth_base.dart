@@ -90,8 +90,8 @@ abstract class BaseAuthentication with ChangeNotifier {
         email: userCredential.user!.email ?? "");
     return UserModel(
         userType: UserType.student,
-        email: userCredential.user!.email,
-        name: userCredential.user!.displayName,
+        email: userCredential.user!.email!,
+        name: userCredential.user!.displayName ??"",
         phone: userCredential.user!.phoneNumber ?? "",
         photoUrl: userCredential.user!.photoURL,
         login: login);

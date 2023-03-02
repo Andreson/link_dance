@@ -40,8 +40,9 @@ class EventRegisterFormBaseState extends State<EventRegisterFormBase>  with Auto
   final _formKey = GlobalKey<FormState>();
   late AutoCompleteRhythmComponent _autoCompleteRhythmComponent;
   Map<String, dynamic> _formData = {};
-  TextEditingController _eventDateController = TextEditingController();
+  final TextEditingController _eventDateController = TextEditingController();
   bool hasImagem=false;
+  bool imagemChange=false;
   late Center _imagePreview;
 
   final FocusNode _nameFocus = FocusNode();
@@ -148,7 +149,7 @@ class EventRegisterFormBaseState extends State<EventRegisterFormBase>  with Auto
                         child: CurrencyInputField(
                           focus: _malePriceFocus,
                             initialValue:
-                            _formData['malePrice'].toString().emptyIfNull(),
+                            _formData['priceMale'].toString().emptyIfNull(),
                             required: false,
                             label: "Preço Homem",
                             onSaved: (value) {
@@ -167,7 +168,7 @@ class EventRegisterFormBaseState extends State<EventRegisterFormBase>  with Auto
                             label: "Preço Mulher",
                             onSaved: (value) {
                               if (value != null && value.isNotEmpty) {
-                                _formData['femalePrice'] = value.parseDouble();
+                                _formData['priceFemale'] = value.parseDouble();
                               }
                             }),
                       ),
@@ -208,6 +209,7 @@ class EventRegisterFormBaseState extends State<EventRegisterFormBase>  with Auto
                       child: OutlinedButton(onPressed: () {
                         _formData['imagePath'] = null;
                         _formData['imageUrl'] = null;
+                        imagemChange=false;
                         setState(() {
                           hasImagem = false;
                         });
@@ -254,25 +256,26 @@ class EventRegisterFormBaseState extends State<EventRegisterFormBase>  with Auto
     _formData['rhythm'] = value.id;
   }
 
-  bool _validations() {
+  bool _formIsValid() {
     if (!_formKey.currentState!.validate()) {
       return false;
     }
     return true;
   }
 
-  Map<String, dynamic> getData() {
-    // if (_validations()) {
-    //   throw InvalidFormException("Formulario dados básicos inválido");
-    // }
+  EventModel getData() {
+    if (!_formIsValid()) {
+      throw InvalidFormException("Formulario dados básicos inválido");
+    }
     if( _formData['imagePath']!=null) {
       _formData['imageUrl'] = _formData['imagePath'];
     }
-    return _formData;
+    _formKey.currentState!.save();
+    return EventModel.fromJson(_formData);
   }
 
   void cleanForm() {
-
+    _formKey.currentState?.reset();
   }
 
   Center getPreViewImage() {
@@ -300,6 +303,7 @@ class EventRegisterFormBaseState extends State<EventRegisterFormBase>  with Auto
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
+      imagemChange= true;
       return image;
     } else {
       return null;

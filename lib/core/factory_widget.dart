@@ -2,7 +2,9 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
+import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/helpers/constantes_images.dart';
+import 'package:link_dance/core/helpers/movie_cache_helper.dart';
 import 'package:link_dance/features/event/components/event_item_list.dart';
 import 'package:link_dance/components/input_fields/text_buton.dart';
 import 'package:link_dance/components/not_found_card.dart';
@@ -269,10 +271,17 @@ Widget labelRequired({required bool required, required String label}) {
   ]);
 }
 
-SnackBar snackBar({String mensage = "Operação realizada com sucesso!"}) {
+SnackBar snackBar(
+    {String mensage = "Operação realizada com sucesso!",
+    bool showCloseIcon = false,
+    LevelEnum level = LevelEnum.info}) {
   return SnackBar(
-    content: Text(mensage, style: kInfoText),
-    backgroundColor: (Colors.black12),
+    elevation: 2,
+    showCloseIcon: showCloseIcon,
+    content: Text(mensage,
+        style: TextStyle(
+            fontSize: 13, color: level.textColor, fontWeight: FontWeight.bold)),
+    backgroundColor: level.color,
     action: SnackBarAction(
       label: 'Fechar',
       onPressed: () {},
@@ -394,4 +403,19 @@ ImageAvatarComponent getImageProfile(
     imageUrl: imageUrl,
     selectImage: changeImage,
   );
+}
+
+Widget getImageThumb({required String? pathImage}) {
+  double width = 70;
+  double height = 70;
+  if (pathImage == null || pathImage.isEmpty) {
+    return Image.asset(
+        fit: BoxFit.cover,
+        width: width,
+        height: height,
+        ConstantsImagens.defaultEvent);
+  } else {
+    return CachedManagerHelper()
+        .getImage(url: pathImage, width: 70, height: 70, fit: BoxFit.cover);
+  }
 }

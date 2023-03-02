@@ -3,10 +3,9 @@ import 'dart:ui';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:link_dance/components/qr_code/qr_code_helper.dart';
 
 import 'package:link_dance/core/authentication/auth_facate.dart';
-import 'package:link_dance/core/dynamic_links/dynamic_link_router.dart';
+import 'package:link_dance/features/event/repository/event_entry_list_repository.dart';
 import 'package:link_dance/features/login/login_screen.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:link_dance/repository/follow_repository.dart';
@@ -70,7 +69,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => authentication,
         ),
-
+        ChangeNotifierProxyProvider<AuthenticationFacate, EntryListRepository?>(
+            create: (_) => EntryListRepository(),
+            update: (ctx, authProvider, previusRepository) {
+              return EntryListRepository( );
+            }),
         ChangeNotifierProxyProvider<AuthenticationFacate, TeacherRepository?>(
             create: (_) => TeacherRepository.New(),
             update: (ctx, authProvider, previusRepository) {
@@ -119,7 +122,8 @@ class MyApp extends StatelessWidget {
         routes: routes,
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
         ],
         theme: ThemeData.dark().copyWith(
           textTheme: ThemeData.dark().textTheme.apply(

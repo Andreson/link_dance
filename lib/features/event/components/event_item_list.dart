@@ -122,7 +122,6 @@ class EventItemComponent extends StatelessWidget {
     double width = 70;
     double height = 70;
     if (event.imageUrl == null || event.imageUrl!.isEmpty) {
-
       return Image.asset(
           fit: BoxFit.cover,
           width: width,

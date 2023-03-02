@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 class UserModel extends AbastractModel {
   //user ID for authentication
   String id;
-  String? name;
-  String? email;
+  String name;
+  String email;
   String? phone;
   String? birthDate;
   String? postalCode;
@@ -38,8 +38,8 @@ class UserModel extends AbastractModel {
         this.gender,
       this.imagemModel,
       this.login,
-      this.name,
-      this.email,
+    required  this.name,
+        required this.email,
       this.teacherProfile,
       this.phone,
       this.birthDate,
@@ -55,8 +55,10 @@ class UserModel extends AbastractModel {
     }
   }
 
-  factory UserModel.Mock({LoginModel? login}) {
+  factory UserModel.Mock({LoginModel? login, String? email}) {
     return UserModel(
+      email: email ??"",
+      name: "",
       userType: UserType.student,
       login: LoginModel.New(),
     );
@@ -99,10 +101,10 @@ class UserModel extends AbastractModel {
     };
   }
 
-  static UserModel fromJson(Map<String, dynamic> json, String id) {
+  static UserModel fromJson(Map<String, dynamic> json) {
 
     return UserModel(
-        id: id,
+        id: json['id'],
         teacherProfile: json['teacherProfile'],
         name: json['name'],
         email: json['email'],

@@ -4,7 +4,7 @@ import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/rest/rest_template.dart';
 import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
-import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
+import 'package:link_dance/features/event/model/event_ticket_model.dart';
 
 class EventTicketRepository {
 
@@ -19,17 +19,17 @@ class EventTicketRepository {
       {required EventTicketDTO requestParam}) async {
 
 
-    var document = await _client.get(
+    var resp = await _client.get(
         url: "${ConstantsAPI.eventApi}/event/ticket",
         headers: {"Authorization": _auth.getToken()!});
-    return EventTicketResponseDTO.map(data: document);
+    return EventTicketResponseDTO.map(data: resp.data);
   }
 
   Future<EventTicketModel> deleteEventTicket(
       {required EventTicketDTO requestParam}) async {
-    var document = await _client.get(
+    var resp = await _client.get(
         url: "${ConstantsAPI.eventApi}/event/ticket",
         headers: {"Authorization": _auth.getToken()!});
-    return EventTicketModel.fromJson(document);
+    return EventTicketModel.fromJson(resp.data);
   }
 }

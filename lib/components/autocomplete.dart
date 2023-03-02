@@ -90,7 +90,7 @@ class AutocompleteComponent extends StatelessWidget {
           child: Material(
 
             elevation: 4.0,
-            child: Container(
+            child: SizedBox(
 
               height: 120,
               width: 370,
@@ -121,24 +121,27 @@ class AutocompleteComponent extends StatelessWidget {
   Widget _itemView({required AutoCompleteItem item}) {
     return Padding(
       padding: const EdgeInsets.only(top: 10, left: 5),
-      child: Row(
+      child: item.customShowItem ?? Row(
         children: [
-          Text(item.label),
+          Text(item.label!),
           if(item.subtitle!=null)
-          Text(" - ${item.subtitle ??""}" ),
+           item.subtitle! ,
         ],
       ),
     );
   }
 
   void defaultSelect(AutoCompleteItem selection) {
-    selectedItem = selection;
+    if ( selection.id.isNotEmpty) {
+      selectedItem = selection;
+    }
     debugPrint('Item Selecionado $selection');
   }
 
   String? defaultInputValidator(String? value) {
-    if (!required)
+    if (!required) {
       return null;
+    }
     if (value != null && value
         .toString()
         .isNotEmpty) {
@@ -151,22 +154,30 @@ class AutocompleteComponent extends StatelessWidget {
 
 class AutoCompleteItem {
   String id;
-  String label;
-  //campo para dado adicional a ser retornado junto com o ID
-  String? metaData;
-  String? subtitle;
+  String? label;
+  //campo para dado adicional a ser retornado
+  Map<String,dynamic>? data;
+  Widget? subtitle;
+  //Widget customizado para mostrar item do autocomplete
+  Widget? customShowItem;
   //campo usado na clausula where para buscar os resultados
   String filterField;
 
   AutoCompleteItem({required this.id,
     required this.label,
     this.subtitle,
-    this.metaData,
+    this.data,
+    required this.filterField});
+
+  AutoCompleteItem.custom({required this.id,
+    required this.customShowItem,
+    required this.label,
+    this.data,
     required this.filterField});
 
   @override
   String toString() {
-    return label;
+    return label??"";
   }
 
   bool isNotNull() {

@@ -322,9 +322,9 @@ class MovieUploadFormState extends State<MenssageRegistryPage> {
     onLoading(context, actionMesage: "Salvando registro");
     _formKey.currentState!.save();
     if (_attachBanner && autoCompleteData != null) {
-      _formData['bannerUrl'] = autoCompleteData!.metaData;
+      _formData['imageUrl'] = autoCompleteData!.data!['imageUrl'];
     } else if (!_attachBanner) {
-      _formData['bannerUrl'] = null;
+      _formData['imageUrl'] = null;
     }
     _formData['ownerId'] = user.id;
     await repository.saveOrUpdateBase(data: _formData).then((value) {

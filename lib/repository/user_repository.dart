@@ -43,8 +43,8 @@ class UserRepository extends BaseRepository<UserModel> {
             url:
                 "${ConstantsAPI.userDbUrl}.json?orderBy=\"email\"&equalTo=\"${user.email}\"")
         .then((response) {
-      if (response.values.isNotEmpty) {
-        return UserModel.fromJson(response.values.first, response.keys.first);
+      if (response.hasData()) {
+        return UserModel.fromJson(response.data! );
       } else {
         return null;
       }

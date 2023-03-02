@@ -9,7 +9,7 @@ import 'package:link_dance/core/functions/dialog_functions.dart';
 
 import 'package:link_dance/core/helpers/constantes_images.dart';
 import 'package:link_dance/features/event/event_helper.dart';
-import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
+import 'package:link_dance/features/event/model/event_ticket_model.dart';
 import 'package:provider/provider.dart';
 
 class TicketDetailComponent extends StatelessWidget {

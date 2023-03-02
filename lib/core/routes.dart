@@ -1,5 +1,6 @@
 import 'package:link_dance/components/notify/message_registry_form.dart';
 import 'package:link_dance/components/qr_code/qrcode_scaner.dart';
+import 'package:link_dance/features/event/entry_list/entry_list_form_.dart';
 import 'package:link_dance/features/movie/components/movie_list_admin_component.dart';
 import 'package:link_dance/components/notify/notify_list_component.dart';
 import 'package:link_dance/core/enumerate.dart';
@@ -40,6 +41,7 @@ Map<String, Widget Function(BuildContext)> routes = {
   RoutesPages.contentGroupDetail.name: (_) => ContentGroupDetailScreen(),
   RoutesPages.teacherPage.name: (_) => TeacherPageScreen(),
   RoutesPages.teacherForm.name: (_) => TeacherProfileFormComponent(),
-  RoutesPages.qrCodeScan.name: (_) => QrCodeScannerComponent()
+  RoutesPages.qrCodeScan.name: (_) => QrCodeScannerComponent(),
+  RoutesPages.eventTicketListRegistry.name: (_) =>EventEntryListFormComponent( )
 
 };

@@ -11,7 +11,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_svg: ^1.0.3
   lottie: ^2.2.0
-  font_awesome_flutter: ^10.2.1
+  font_awesome_flutter: ^10.4.0
   provider: ^6.0.0
   chips_choice_null_safety: ^2.0.6
   getwidget: ^3.0.1

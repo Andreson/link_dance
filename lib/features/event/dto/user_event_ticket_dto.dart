@@ -1,4 +1,4 @@
-import 'package:link_dance/features/event/ticket/event_ticket_model.dart';
+import 'package:link_dance/features/event/model/event_ticket_model.dart';
 import 'package:link_dance/model/user_event_model.dart';
 
 class UserEventTicketResponseDTO {

@@ -6,15 +6,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/core/theme/fontStyles.dart';
 
-
-
 Future<void> showWarning(BuildContext context,
     {String content = "Ocorreu um erro nao esperado ao realizar operação!",
-      VoidCallback? onPressed}) {
+    VoidCallback? onPressed}) {
   onPressed = onPressed ?? () => {Navigator.of(context).pop()};
   var titleWidget = Row(
     children: [
-      const Icon(FontAwesomeIcons.triangleExclamation, color: Colors.yellow, size: iconDialogSize,),
+      const Icon(
+        FontAwesomeIcons.triangleExclamation,
+        color: Colors.yellow,
+        size: iconDialogSize,
+      ),
       sizedBoxH10(),
       const Text("Algo de errado não está certo", style: kTitleText)
     ],
@@ -24,7 +26,7 @@ Future<void> showWarning(BuildContext context,
 
 Future<void> showError(BuildContext context,
     {String content = "Ocorreu um erro nao esperado ao realizar operação!",
-      VoidCallback? onPressed}) {
+    VoidCallback? onPressed}) {
   onPressed = onPressed ?? () => {Navigator.of(context).pop()};
   var titleWidget = Row(
     children: [
@@ -42,8 +44,8 @@ Future<void> showError(BuildContext context,
 
 Future showConfirm(BuildContext context,
     {required String content,
-      required VoidCallback confirmAction,
-      VoidCallback? cancelAction}) {
+    required VoidCallback confirmAction,
+    VoidCallback? cancelAction}) {
   cancelAction = cancelAction ?? () => {Navigator.of(context).pop()};
   var titleWidget = Row(
     children: [
@@ -68,13 +70,13 @@ Future showConfirm(BuildContext context,
             label: "Sim",
             backgroudColor: [Colors.redAccent[100]!, Colors.redAccent[200]!],
             params:
-            CustomTextButtonParams(fontSize: 15, height: 40, width: 100)),
+                CustomTextButtonParams(fontSize: 15, height: 40, width: 100)),
         CustomTextButton(
             onPressed: cancelAction,
             label: "Cancelar",
-            backgroudColor: [Colors.lightBlue[100]!,Colors.lightBlue[200]!],
+            backgroudColor: [Colors.lightBlue[100]!, Colors.lightBlue[200]!],
             params:
-            CustomTextButtonParams(fontSize: 15, height: 40, width: 100)),
+                CustomTextButtonParams(fontSize: 15, height: 40, width: 100)),
       ],
     ),
   );
@@ -82,7 +84,7 @@ Future showConfirm(BuildContext context,
 
 Future showSuccess(BuildContext context,
     {String content = "Operação realizada com sucesso!",
-      VoidCallback? onPressed}) {
+    VoidCallback? onPressed}) {
   onPressed = onPressed ?? () => {Navigator.of(context).pop()};
   var titleWidget = Row(
     children: [
@@ -99,18 +101,21 @@ Future showSuccess(BuildContext context,
 
 Future<void> showInfo(
     {required BuildContext context,
-      required String content,
-      String title = "Aviso",
-      String labelButton = "Ok",
-      VoidCallback? onPressed}) async {
+    required String content,
+    String title = "Aviso",
+    String labelButton = "Ok",
+    VoidCallback? onPressed}) async {
   onPressed ??= () => Navigator.of(context).pop();
   var titleWidget = Row(
     children: [
-      const Icon(
-        FontAwesomeIcons.info,
-        color: Colors.blueAccent,
+      Icon(
+        FontAwesomeIcons.circleInfo,
+        color: Colors.blueAccent[200],
       ),
-      Text(title, style: kTitleText)
+      Padding(
+        padding: const EdgeInsets.only(left: 15),
+        child: Text(title, style: kTitleText),
+      )
     ],
   );
   return dialog(context, titleWidget, content, labelButton, onPressed);
@@ -129,7 +134,7 @@ Future<void> dialog(BuildContext context, Widget title, String content,
             onPressed: onPressed,
             label: labelButton,
             params:
-            CustomTextButtonParams(fontSize: 15, height: 40, width: 100)),
+                CustomTextButtonParams(fontSize: 15, height: 40, width: 100)),
       ],
     ),
   );

@@ -1,12 +1,13 @@
 import 'package:link_dance/components/autocomplete.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
+import 'package:link_dance/core/extensions/datetime_extensions.dart';
+import 'package:link_dance/core/extensions/string_extensions.dart.dart';
+import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/repository/base_repository.dart';
-import 'package:link_dance/repository/content_group_respository.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../features/movie/repository/movie_repository.dart';
 
 class AutoCompleteEventComponent extends StatefulWidget {
 
@@ -17,7 +18,7 @@ class AutoCompleteEventComponent extends StatefulWidget {
   TextInputAction textInputAction;
   InputDecoration? inputDecoration;
   bool required;
-  //Se for necessario chamar o autocmplete dentro de uma Stack, passar false
+  //Se for necessario chamar o autocomplete dentro de uma Stack, passar false
   bool isExpanded;
 
   AutoCompleteEventComponent({Key? key,
@@ -47,6 +48,7 @@ class _AutoCompleteRhythmState extends State<AutoCompleteEventComponent> {
       isExpanded: widget.isExpanded,
       decoration: widget.inputDecoration,
       loadData: loadDataAutocomplete,
+
       textInputAction: TextInputAction.search,
       onSelected: widget.onSelected,
       textEditing: widget.textEdit,
@@ -59,14 +61,28 @@ class _AutoCompleteRhythmState extends State<AutoCompleteEventComponent> {
     var data = await repository.listBase(conditions: [QueryCondition(fieldName: "ownerId",isEqualTo: userId)]);
     return data!
         .map((event) =>
-        AutoCompleteItem(
-          id: event.id,
+        AutoCompleteItem.custom(
           label: event.title,
-          metaData: event.imageUrl,
+          id: event.id,
+          customShowItem: _customViewItem(event: event),
+          data: {"eventPlace" :event.place,"eventDate":event.eventDate},
           filterField:
           "${event.title},${event.description}"
         ))
         .toList();
+  }
+
+  Column _customViewItem({required EventModel event}) {
+    var subTitleStyle = TextStyle(color: Colors.grey,fontSize: 10);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(event.title),
+        Row(children: [Text(event.eventDate.showString(), style: subTitleStyle),Text(" - ${event.place.capitalizePhrase()}",style: subTitleStyle),],)
+      ],
+
+    );
   }
 
 

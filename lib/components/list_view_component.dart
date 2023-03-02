@@ -42,7 +42,7 @@ class ListViewComponent<Model, Repository> extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.error != null) {
-          print(" Erro ao carregar lista ${snapshot.error}");
+          print(" Erro ao carregar list view componente  ${snapshot.error}");
           return  Center(
             child: Text("Ocorreu um erro! ${snapshot.error.toString()}"),
           );
