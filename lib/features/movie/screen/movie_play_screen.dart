@@ -1,6 +1,6 @@
 import 'package:link_dance/core/dynamic_links/dynamic_links_helper.dart';
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/core/helpers/util_helper.dart';
+import 'package:link_dance/core/utils/util_helper.dart';
 import 'package:link_dance/features/movie/components/video_play.dart';
 import 'package:link_dance/features/movie/components/youtube_play.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
@@ -57,7 +57,7 @@ class MoviePlayScreen extends StatelessWidget {
         ? 'https://img.youtube.com/vi/${movie.getYoutubeCode()!}/0.jpg'
         : movie.thumb!;
     var options = DynamicLinkOptions(
-      shortUrl: false,
+      shortUrl: true,
       router: RoutesPages.moviePlay,
       params: {"movieId": movie.id, "isSourceYoutube": isSourceYoutube},
       imageUrl: imageUrl,

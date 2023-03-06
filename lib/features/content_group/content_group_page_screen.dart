@@ -3,7 +3,7 @@ import 'package:link_dance/components/page/detail_simple_component.dart';
 import 'package:link_dance/components/page/header_page_component.dart';
 import 'package:link_dance/core/extensions/datetime_extensions.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
-import 'package:link_dance/core/functions/dialog_functions.dart';
+import 'package:link_dance/core/utils/dialog_functions.dart';
 import 'package:link_dance/features/movie/components/movie_item_list.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/enumerate.dart';
@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/utils/dialog_functions.dart';
 import '../../repository/base_repository.dart';
 
 class ContentGroupDetailScreen extends StatefulWidget {

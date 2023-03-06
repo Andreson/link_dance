@@ -7,7 +7,7 @@ import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:link_dance/core/functions/dialog_functions.dart';
+import 'package:link_dance/core/utils/dialog_functions.dart';
 class LoginHelper {
 
   BuildContext context;

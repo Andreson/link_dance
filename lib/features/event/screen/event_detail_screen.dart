@@ -7,7 +7,7 @@ import 'package:link_dance/features/event/components/event_list_tile_detail_.dar
 import 'package:link_dance/core/helpers/movie_cache_helper.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/core/helpers/util_helper.dart';
+import 'package:link_dance/core/utils/util_helper.dart';
 import 'package:link_dance/core/extensions/datetime_extensions.dart';
 import 'package:link_dance/core/factory_widget.dart';
 
@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:link_dance/core/functions/dialog_functions.dart';
+import 'package:link_dance/core/utils/dialog_functions.dart';
 import 'package:link_dance/features/event/components/buttons/event_button_unSubs.dart';
 
 class EventDetailScreen extends StatefulWidget {

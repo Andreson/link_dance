@@ -4,7 +4,7 @@ import 'package:link_dance/core/dynamic_links/dynamic_links_helper.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/extensions/datetime_extensions.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
-import 'package:link_dance/core/helpers/util_helper.dart';
+import 'package:link_dance/core/utils/util_helper.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:flutter/material.dart';

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/core/functions/dialog_functions.dart';
+import 'package:link_dance/core/utils/dialog_functions.dart';
 import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
 import 'package:link_dance/features/event/event_helper.dart';
 import 'package:link_dance/features/event/model/event_ticket_model.dart';

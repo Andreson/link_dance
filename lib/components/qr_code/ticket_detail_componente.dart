@@ -5,7 +5,7 @@ import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/extensions/datetime_extensions.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/core/functions/dialog_functions.dart';
+import 'package:link_dance/core/utils/dialog_functions.dart';
 
 import 'package:link_dance/core/helpers/constantes_images.dart';
 import 'package:link_dance/features/event/event_helper.dart';

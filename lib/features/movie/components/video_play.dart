@@ -7,7 +7,7 @@ import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/helpers/movie_cache_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:link_dance/core/helpers/util_helper.dart';
+import 'package:link_dance/core/utils/util_helper.dart';
 import 'package:link_dance/features/movie/model/movie_model.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:video_player/video_player.dart';

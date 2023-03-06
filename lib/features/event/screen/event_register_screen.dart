@@ -10,7 +10,7 @@ import 'package:link_dance/features/event/event_helper.dart';
 import 'package:link_dance/features/event/model/event_list_model.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:flutter/material.dart';
-import 'package:link_dance/core/functions/dialog_functions.dart';
+import 'package:link_dance/core/utils/dialog_functions.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/core/upload_files/file_upload.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';

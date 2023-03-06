@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:link_dance/core/exception/http_exceptions.dart';
+import 'package:link_dance/features/event/model/entry_list_model.dart';
 import 'package:link_dance/model/content_group_model.dart';
 import 'package:link_dance/features/event/model/event_model.dart';
 import 'package:link_dance/features/movie/model/movie_model.dart';
@@ -11,7 +12,7 @@ abstract class AbastractModel {
   String get id;
   DateTime? updatedAt;
 
-  static AbastractModel jsonData<T>(
+    static AbastractModel jsonData<T>(
       {required T type, required Map<String, dynamic> data}) {
 
     var id = data['id'];
@@ -28,8 +29,14 @@ abstract class AbastractModel {
       return TeacherModel.fromJson(data, id);
     }
     if ("NotifyMessageModel" == type.toString()) {
-
       return NotifyMessageModel.fromJson(data, id);
+    }
+    if ("NotifyMessageModel" == type.toString()) {
+      return NotifyMessageModel.fromJson(data, id);
+    }
+
+    if ("EntryListEventModel" == type.toString()) {
+      return EntryListEventModel.fromJson(data);
     }
 
     throw NotImplementedException(

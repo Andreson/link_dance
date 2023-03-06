@@ -35,6 +35,7 @@ class DynamicLinkHelper {
 
   static Future<String> createDynamicLink(
       {required DynamicLinkOptions options}) async {
+
     var parameters = DynamicLinkParameters(
         uriPrefix: ConstantsConfig.dynamicUrl,
         link: options.link,
@@ -46,10 +47,10 @@ class DynamicLinkHelper {
           appStoreId: ConstantsConfig.applerStoreId,
         ),
         socialMetaTagParameters: SocialMetaTagParameters(
-
           title: options.title,
-          imageUrl: Uri.parse(options.imageUrl),)
+          imageUrl: options.imageUrl==null ?null :Uri.parse(options.imageUrl!),)
         );
+
     Uri url;
     if (options.shortUrl) {
       final ShortDynamicLink shortLink = await FirebaseDynamicLinks.instance
@@ -57,6 +58,7 @@ class DynamicLinkHelper {
           .catchError((onError, trace) {
         print("Erro ao criar link dinamico curto  $onError |\n $trace");
       });
+
       url = shortLink.shortUrl;
     } else {
       url = await FirebaseDynamicLinks.instance
@@ -104,8 +106,8 @@ class DynamicLinkOptions {
   bool shortUrl;
 
   late RoutesPages router;
-  late Map<String, dynamic> params;
-  late String imageUrl;
+     Map<String, dynamic> params = {};
+  late String? imageUrl;
   late String title;
   String? subTitle;
   late String _link;
@@ -115,15 +117,33 @@ class DynamicLinkOptions {
     required this.router,
     this.subTitle,
     required this.params,
-    required this.imageUrl,
+      this.imageUrl,
     required this.title,
     link = "https://linkdance.page.link/"
   }) :_link = link;
 
+  DynamicLinkOptions.shortLink({
+    required String releaseDestination,
+    this.subTitle,
+    this.imageUrl,
+    required this.title,
+    required String idDocument
+  }) :_link = "https://linkdance.page.link/", shortUrl = false, params= {DynamicLinkHelper.routerName :releaseDestination, "id" :idDocument};
+
   Uri get link {
+    if  (true) {
+      return shortLink;
+    }
     var queryParams = DynamicLinkHelper.mapToQuery(params: params);
     var uriStr = "$_link$queryParams&${DynamicLinkHelper.routerName}=${router.name}";
-
     return Uri.parse(uriStr);
   }
+
+  Uri get shortLink {
+    var pathReleaseParam=params[DynamicLinkHelper.routerName];
+    var idDoc=params["id"];
+    var uriStr = "$_link$pathReleaseParam/$idDoc";
+    return Uri.parse(uriStr);
+  }
+
 }

@@ -8,7 +8,7 @@ import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/extensions/datetime_extensions.dart';
-import '../../../core/theme/fontStyles.dart';
+
 
 class EventItemComponent extends StatelessWidget {
   EventModel event;

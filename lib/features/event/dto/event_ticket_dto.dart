@@ -99,7 +99,7 @@ class EventTicketResponseDTO {
       required this.httpStatus});
 
   EventTicketResponseDTO.map({required Map<String, dynamic> data}) {
-    message = data['message'];
+    message = data['message'] ?? "";
     hasTicket = data['data'] != null ? data['data']['hasTicket'] : null;
     httpStatus = data['httpStatus'];
     if (data['data'] != null && data['data']['ticket']!=null) {

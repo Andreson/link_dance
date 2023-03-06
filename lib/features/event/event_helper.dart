@@ -3,7 +3,7 @@ import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/core/dto/core_dto.dart';
 
 import 'package:link_dance/core/helpers/constants_api.dart';
-import 'package:link_dance/core/functions/dialog_functions.dart';
+import 'package:link_dance/core/utils/dialog_functions.dart';
 import 'package:link_dance/core/types.dart';
 import 'package:link_dance/core/upload_files/file_upload.dart';
 import 'package:link_dance/features/event/dto/user_event_ticket_dto.dart';

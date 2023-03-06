@@ -2,20 +2,22 @@ import 'package:link_dance/components/autocomplete.dart';
 import 'package:link_dance/components/input_fields/text_field.dart';
 import 'package:link_dance/components/not_found_card.dart';
 import 'package:link_dance/components/widgets/autocomplete/autocomplete_event_component.dart';
-import 'package:link_dance/features/event/entry_list/entry_list_helper.dart';
+import 'package:link_dance/core/exception/custom_exeptions.dart';
+import 'package:link_dance/core/exception/http_exceptions.dart';
+import 'package:link_dance/core/theme/fontStyles.dart';
+import 'package:link_dance/features/event/entry_list_helper.dart';
 import 'package:link_dance/features/event/model/entry_list_model.dart';
 import 'package:link_dance/features/event/model/guest_list_entry_model.dart';
-import 'package:link_dance/features/event/repository/event_entry_list_repository.dart';
+import 'package:link_dance/features/event/repository/entry_list_repository.dart';
 
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/core/functions/dialog_functions.dart';
+import 'package:link_dance/core/utils/dialog_functions.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/core/upload_files/file_upload.dart';
-import 'package:link_dance/features/movie/model/movie_model.dart';
-import 'package:link_dance/features/movie/repository/movie_repository.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:link_dance/features/user/dto/user_response_dto.dart';
 import 'package:link_dance/model/user_model.dart';
 import 'package:provider/provider.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
@@ -41,7 +43,7 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
 
   Map<String, dynamic> _formData = {};
 
-  late EventEntryListHelper eventEntryListHelper;
+  late EntryListHelper eventEntryListHelper;
   List<GuestEntryListModel> _userListEntry = [];
   late AuthenticationFacate _authentication;
   late AutoCompleteEventComponent _autoCompleteEventComponent;
@@ -50,9 +52,15 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
 
   bool isReadOnly = false;
   bool titleReadOnly = false;
+  bool showGenerateDynamicLink = false;
+  bool _eventFormIsValid = true;
+  bool _isUserRegistryComplete = true;
   final FocusNode _descriptionFocus = FocusNode();
   final FocusNode _emailGuestFocus = FocusNode();
-
+  final Text _eventMsgValidation = const Text(
+    "Favor selecionar o evento",
+    style: kErrorText,
+  );
   final TextEditingController _emailGuestcontroller = TextEditingController();
   final TextEditingController _linkGuestcontroller = TextEditingController();
   final TextEditingController _titlecontroller = TextEditingController();
@@ -65,30 +73,63 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
     _authentication = Provider.of<AuthenticationFacate>(context, listen: false);
 
     _userSession = _authentication.user!;
-    if (widget.entryListEventModel != null) {
-      isReadOnly = true;
-      _titlecontroller.text = widget.entryListEventModel!.label;
-    } else {
-
-      if ( // _userSession.userType!=UserType.admin &&
-          _userSession.userType != UserType.promoter) {
-        titleReadOnly = true;
-        _titlecontroller.text = _userSession.name;
-      }else {
-        titleReadOnly = false;
-        _titlecontroller.text = "";
-      }
-      _formData['ownerId']=_userSession.id;
-      _formData['ownerEmail']=_userSession.email;
-
-    }
+    _initData();
     _autoCompleteEventComponent = AutoCompleteEventComponent(
       isExpanded: true,
       required: true,
       onSelected: _selectDataEventAutocomplete,
     );
-    eventEntryListHelper = EventEntryListHelper(auth: _authentication);
+    eventEntryListHelper = EntryListHelper.ctx(context: context);
+
+    _checkRegistryUser();
     super.initState();
+  }
+
+  _initData() {
+    if (widget.entryListEventModel != null) {
+      isReadOnly = true;
+      _titlecontroller.text = widget.entryListEventModel!.label;
+      _formData['label'] = widget.entryListEventModel!.label;
+
+      if (widget.entryListEventModel!.dynamicLink.isEmpty) {
+        showGenerateDynamicLink = true;
+      } else {
+        showGenerateDynamicLink = false;
+        _linkGuestcontroller.text = widget.entryListEventModel!.dynamicLink;
+      }
+    } else {
+      if ( // _userSession.userType!=UserType.admin &&
+          _userSession.userType != UserType.promoter) {
+        titleReadOnly = true;
+        _titlecontroller.text = _userSession.name;
+        _formData['label'] = _userSession.name;
+      } else {
+        titleReadOnly = false;
+        _titlecontroller.text = "";
+        _formData['label'] = "";
+      }
+      _formData['ownerId'] = _userSession.id;
+      _formData['ownerEmail'] = _userSession.email;
+    }
+  }
+
+  Future<UserResponseDTO?> _checkRegistryUser() async {
+    UserResponseDTO response =
+        await eventEntryListHelper.checkUserLoggedRegistration().catchError((onError){
+          print("Erro ao checar cadastro do usuario $onError");
+          showError(context, content: "Ocorreu um erro não esperado ao validar cadastro de usuário.");
+
+        });
+
+    if (response.hasBussinessError()) {
+        _isUserRegistryComplete = response.userDTO.completeRegistration;
+      showWarning(context,
+          content:
+              "Seu cadastro não está completo, você preencher os seguintes campos para completar seu cadastro: \n"
+                  "${response.errors}"
+                  " \nÉ necessário completar o cadastro de perfil para criar listas.");
+    }
+    return response;
   }
 
   @override
@@ -96,10 +137,7 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
     super.didChangeDependencies();
 
     bool isExpanded = false;
-    if (false) {
-    } else {
-      _linkGuestcontroller.text = "Salve a lista para visualizar o link";
-    }
+
     _autoCompleteEventComponent = AutoCompleteEventComponent(
       isExpanded: isExpanded,
       required: true,
@@ -110,7 +148,8 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
 
   void _initWidgets() {
     _userSession = _authentication.user!;
-    entryListRepository = Provider.of<EntryListRepository>(context, listen: false);
+    entryListRepository =
+        Provider.of<EntryListRepository>(context, listen: false);
   }
 
   @override
@@ -120,7 +159,14 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Criar lista"),
-        actions: [buttonSaveRegistry(onPressed: () {})],
+        actions: [
+          buttonSaveRegistry(
+              onPressed: _isUserRegistryComplete
+                  ? () {
+                      save();
+                    }
+                  : null)
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -136,40 +182,47 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     CustomTextField(
-                        focusNode: _descriptionFocus,
-                        textAlign: titleReadOnly ? TextAlign.center :TextAlign.left,
-                        required: false,
-                        controller: _titlecontroller,
-                        readOnly: titleReadOnly,
-                        label: "Nome da lista",
-                      textStyle:titleReadOnly ? const TextStyle(
-                        fontSize: 14,
-                        color: Colors.white70,
-                        fontWeight: FontWeight.bold
-                      ):null,
-                        ),
+                      focusNode: _descriptionFocus,
+                      textAlign:
+                          titleReadOnly ? TextAlign.center : TextAlign.left,
+                      required: false,
+                      controller: _titlecontroller,
+                      readOnly: titleReadOnly,
+                      label: "Nome da lista",
+                      textStyle: titleReadOnly
+                          ? const TextStyle(
+                              fontSize: 14,
+                              color: Colors.white70,
+                              fontWeight: FontWeight.bold)
+                          : null,
+                    ),
                     _autoCompleteEventComponent,
+                    if (!_eventFormIsValid) _eventMsgValidation,
                     CustomTextField(
                         readOnly: true,
                         required: false,
-                        textStyle:  TextStyle(
+                        textStyle: TextStyle(
                             fontSize: 14,
                             color: Colors.blue[800],
-                            fontWeight: FontWeight.bold
-                        ),
+                            fontWeight: FontWeight.bold),
                         controller: _linkGuestcontroller,
                         label: "Link para convite",
                         suffixIcon: IconButton(
                           iconSize: 20,
                           onPressed: () {
-                            if (_linkGuestcontroller.text != "") {
+                            if (!showGenerateDynamicLink) {
                               copyClipboardData(
                                   _linkGuestcontroller.text, context,
                                   mensage: "Link convite copiado");
+                            } else {
+                              eventEntryListHelper.createDynamicLinkEntryList(
+                                  entryListID: widget.entryListEventModel!.id);
                             }
                           },
-                          icon: const Icon(Icons.copy),
-                        ) ),
+                          icon: showGenerateDynamicLink
+                              ? const Icon(FontAwesomeIcons.arrowsRotate)
+                              : const Icon(Icons.copy),
+                        )),
                     sizedBox15(),
                     _formAddGuest(),
                     sizedBox10(),
@@ -234,10 +287,10 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
       _findUserGuest(email: _emailGuestcontroller.text);
       ScaffoldMessenger.of(context)
           .showSnackBar(snackBar(mensage: "Usuário adicionado a lista"));
-    }
-    else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(snackBar(mensage: "Usuário de email \"$email\" já esta na lista lista",level:  LevelEnum.warn));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(snackBar(
+          mensage: "Usuário de email \"$email\" já esta na lista lista",
+          level: LevelEnum.warn));
     }
   }
 
@@ -292,38 +345,61 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
   }
 
   bool _validations() {
-    var formIsvalid = _formKey.currentState!.validate();
-
-    if (!formIsvalid) {
+    if (_formData['eventId'] == null) {
+      setState(() {
+        _eventFormIsValid = false;
+      });
       return false;
     } else {
-      _formKey.currentState?.save();
+      setState(() {
+        _eventFormIsValid = true;
+      });
     }
-
     return true;
   }
 
   save() async {
+    if (!_validations()) {
+      return;
+    }
+
+    FocusScope.of(context).unfocus();
     onLoading(context, actionMesage: "Salvando registro");
+    _formKey.currentState!.save();
+    _formData["entryListType"] = EntryListType.birthday.name;
     EntryListEventModel entryList = EntryListEventModel.fromJson(_formData);
+    entryList.guests = _userListEntry;
 
-
-    entryListRepository.saveOrUpdateBase(data: entryList.body())
-        .then((value) {
+    eventEntryListHelper.createEntryList(entryList: entryList).then((data) {
       Navigator.of(context).pop();
-
-      showInfo(
-          onPressed: () {
-            Navigator.pushNamed(context, RoutesPages.movieAdmin.name);
-          },
-          context: context,
-          content: "Lista criada com sucesso",
-          title: "Aêêêêêêêêê");
-    }).catchError((e, stacktrace) {
+      setState(() {
+        _linkGuestcontroller.text = data.dynamicLink;
+      });
+    }).catchError((onError, trace) {
       Navigator.of(context).pop();
-      showError(context, content: "Erro ao salvar registro do video");
-      print("Erro ao salvar registro do video ${stacktrace}");
+      _formData['eventId'] = null;
+      print("Erro ao criar lista $trace");
+      if (onError is NoCriticalException) {
+        _showSucessPopUp();
+        return;
+      }
+      if (onError is HttpBussinessException) {
+        showError(context, content: (onError).message);
+      } else {
+        showError(context,
+            content: "Ocorreu um erro não esperado ao salvar lista.");
+      }
     });
+  }
+
+  void _showSucessPopUp() {
+    showInfo(
+        onPressed: () {
+          //    Navigator.pushNamed(context, RoutesPages.movieAdmin.name);
+        },
+        context: context,
+        content: "Lista criada com sucesso",
+        title: "Aêêêêêêêêê");
   }
 
   ListTile _itemBuild(
@@ -368,6 +444,8 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
       _formData['eventTitle'] = value.label;
       _formData['eventPlace'] = value.data!['eventPlace'];
       _formData['eventDate'] = value.data!['eventDate'];
+    } else {
+      _formData['eventId'] = null;
     }
   }
 

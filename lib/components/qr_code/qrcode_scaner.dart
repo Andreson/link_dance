@@ -6,7 +6,7 @@ import 'package:link_dance/components/qr_code/ticket_detail_componente.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/exception/http_exceptions.dart';
-import 'package:link_dance/core/functions/dialog_functions.dart';
+import 'package:link_dance/core/utils/dialog_functions.dart';
 import 'package:link_dance/features/event/dto/event_ticket_dto.dart';
 import 'package:link_dance/features/event/model/event_ticket_model.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';

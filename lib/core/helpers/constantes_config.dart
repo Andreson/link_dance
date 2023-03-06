@@ -9,7 +9,6 @@ class ConstantsConfig {
   static String get packageName => "br.com.link_dance.link_dance";
   static const String applerStoreId = "0";
 
-
   static String userAuthData="userAuthData";
   static String userTeacherData="userTeacherData";
   static const int pageSize=15;

@@ -385,7 +385,7 @@ Widget buttonNewRegistry({required void Function() onPressed}) {
   return IconButton(onPressed: onPressed, icon: iconNewRegistry);
 }
 
-Widget buttonSaveRegistry({required void Function() onPressed}) {
+Widget buttonSaveRegistry({  void Function()? onPressed}) {
   return IconButton(onPressed: onPressed, icon: iconSaveRegistry);
 }
 

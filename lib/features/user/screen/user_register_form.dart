@@ -15,7 +15,7 @@ import 'package:link_dance/core/theme/theme_data.dart';
 import 'package:link_dance/core/upload_files/file_upload.dart';
 import 'package:link_dance/model/address_model.dart';
 import 'package:link_dance/model/imagem_model.dart';
-import 'package:link_dance/core/functions/dialog_functions.dart';
+import 'package:link_dance/core/utils/dialog_functions.dart';
 import 'package:link_dance/model/teacher_model.dart';
 import 'package:link_dance/model/user_model.dart';
 import 'package:link_dance/repository/teacher_repository.dart';

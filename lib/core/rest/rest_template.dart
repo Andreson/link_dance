@@ -69,11 +69,12 @@ class RestTemplate {
         headers: headers, url: url, targetFiresbase: targetFirebase);
     url = config['url'];
     headers = config['header'];
+
     final response = await http.post(
       Uri.parse(url),
       headers: headers,
       encoding: Encoding.getByName('utf-8'),
-      body: jsonEncode(body),
+      body: jsonEncode(body)
     );
     return postCallConfig(responseParam: response);
   }
@@ -93,9 +94,7 @@ class RestTemplate {
       Uri.parse(url),
     );
 
-    var temp =postCallConfig(responseParam: response);
-
-    return ResponseDTO(httpStatus: temp['httpStatus'], data: temp['data']);
+    return postCallConfiguration(responseParam: response);
 
   }
 
@@ -146,7 +145,7 @@ class RestTemplate {
       token = await _refreshToken( );
     }
     headers ??= {};
-    debugPrint(url);
+
     if (targetFiresbase) {
       url = "$url&auth=$token";
     } else {
@@ -155,6 +154,7 @@ class RestTemplate {
     return {"url": url, "header": headers};
   }
 
+  @deprecated
   Map<String, dynamic> postCallConfig({required http.Response responseParam}) {
     Map<String, dynamic> response = {};
     if ( responseParam.statusCode>460 && responseParam.statusCode<499){
@@ -170,6 +170,22 @@ class RestTemplate {
     return response;
   }
 
+  ResponseDTO postCallConfiguration({required http.Response responseParam}) {
+    Map<String, dynamic> response = {};
+    HttpBussinessException? bussinessException;
+    if ( responseParam.statusCode>460 && responseParam.statusCode<499){
+      bussinessException=  HttpBussinessException(response: responseParam);
+    }
+    if (responseParam.statusCode > 499) {
+      throw HttpException(responseParam);
+    }
+    var responseData =   jsonDecode( utf8.decode(responseParam.bodyBytes));
+    response['httpStatus']  = responseParam.statusCode;
+    response['data']  = responseData["data"];
+
+    return ResponseDTO(httpStatus: responseParam.statusCode, data: responseData,bussinessException: bussinessException);
+  }
+
 
 
 }
@@ -177,12 +193,19 @@ class RestTemplate {
 class ResponseDTO {
   int httpStatus;
   Map<String, dynamic>? _data ;
-
+  HttpBussinessException? bussinessException;
   Map<String, dynamic> get data=> _data ??{};
 
-  ResponseDTO({required this.httpStatus,required Map<String, dynamic>? data}):_data = data;
+  ResponseDTO({required this.httpStatus, this.bussinessException ,required Map<String, dynamic>? data}):_data = data;
 
   bool hasData() {
     return _data!=null && data!.isNotEmpty!;
+  }
+
+  Map<String, dynamic> mapEntity() {
+    var temp =  data.values.first;
+    temp["id"] =data.keys.first;
+
+    return temp;
   }
 }

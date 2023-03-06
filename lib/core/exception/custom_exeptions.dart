@@ -7,3 +7,16 @@ class InvalidFormException implements Exception{
     return 'NotImplementedException{cause: $cause}';
   }
 }
+
+//Exception para erros que nao impedem o fluxo de criação de um recurso que pode ser criado posteriormente
+//ex: link dinamico para listas
+class NoCriticalException implements Exception{
+  String cause;
+  NoCriticalException(this.cause);
+
+  @override
+  String toString() {
+    return 'NotImplementedException{cause: $cause}';
+  }
+}
+

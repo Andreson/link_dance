@@ -5,7 +5,7 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:link_dance/core/authentication/auth_facate.dart';
-import 'package:link_dance/features/event/repository/event_entry_list_repository.dart';
+import 'package:link_dance/features/event/repository/entry_list_repository.dart';
 import 'package:link_dance/features/login/login_screen.dart';
 import 'package:link_dance/features/event/repository/event_repository.dart';
 import 'package:link_dance/repository/follow_repository.dart';

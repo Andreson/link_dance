@@ -25,32 +25,29 @@ class EntryListEventModel extends AbastractModel {
     return {
       "label": label,
       "ownerId": ownerId,
-
       "eventId": eventId,
-      "eventTitle": eventTitle,
-      "eventPlace": eventPlace,
       "dynamicLink": dynamicLink,
-      "eventDate": eventDate,
       "guests": guests.map((e) => e.body()).toList(),
       "entryListType":entryListType.name
     };
   }
 
   static EntryListEventModel fromJson(Map<String, dynamic> json) {
-    return EntryListEventModel(id: json['id'],
+    return EntryListEventModel(id: json['id'] ??"",
         entryListType: EntryListType.values.byName(json['entryListType']),
         label: json['label'],
         ownerId: json['ownerId'],
-
         eventId: json['eventId'],
         eventTitle: json['eventTitle'],
         eventPlace: json['eventPlace'],
-        dynamicLink: json['dynamicLink'],
+        dynamicLink: json['dynamicLink'] ??"",
         eventDate: json['eventDate'],
-        guests: GuestEntryListModel.fromJsonToList(json));
+        guests: json['guests']!=null? GuestEntryListModel.fromJsonToList(json):[]);
   }
 
   @override
   String get id => _id;
+
+   set id(String id) => _id= id;
 
 }

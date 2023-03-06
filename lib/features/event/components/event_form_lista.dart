@@ -9,7 +9,7 @@ import 'package:link_dance/core/exception/custom_exeptions.dart';
 import 'package:link_dance/core/extensions/datetime_extensions.dart';
 import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/core/functions/dialog_functions.dart';
+import 'package:link_dance/core/utils/dialog_functions.dart';
 import 'package:link_dance/core/theme/fontStyles.dart';
 import 'package:link_dance/core/theme/theme_data.dart';
 import 'package:link_dance/features/event/model/event_list_model.dart';

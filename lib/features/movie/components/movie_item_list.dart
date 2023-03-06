@@ -6,7 +6,7 @@ import 'package:link_dance/core/helpers/movie_cache_helper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:link_dance/core/enumerate.dart';
-import 'package:link_dance/core/helpers/util_helper.dart';
+import 'package:link_dance/core/utils/util_helper.dart';
 
 import 'package:link_dance/features/movie/model/movie_model.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +65,7 @@ class _MovieItemListComponentState extends State<MovieItemListComponent> {
                         ? 'https://img.youtube.com/vi/$_youTubeCode/0.jpg'
                         : widget.movie.thumb!;
                     var options = DynamicLinkOptions(
-                      shortUrl: false,
+                      shortUrl: true,
                       router: RoutesPages.moviePlay,
                       params: {
                         "movieId": widget.movie.id,
