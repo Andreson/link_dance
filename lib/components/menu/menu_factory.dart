@@ -230,7 +230,7 @@ class MenuFactory {
     menusMap[MenusCode.listTicketEvents] = MenuItemBuilder(
         code: MenusCode.listTicketEvents,
         label: "Listas",
-        destination: RoutesPages.eventTicketListRegistry);
+        destination: RoutesPages.entryListAdmin);
 
     menusMap[MenusCode.checkTicketEvent] = MenuItemBuilder(
         code: MenusCode.checkTicketEvent,

@@ -6,10 +6,24 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/core/theme/fontStyles.dart';
 
+
+Widget _extraActionButton({VoidCallback? extraActionCallBack,required String extraActionlabel}){
+  return CustomTextButton(
+      onPressed: extraActionCallBack,
+      label: extraActionlabel,
+      params: CustomTextButtonParams(fontSize: 13, height: 40, width: 100));
+}
+
+
 Future<void> showWarning(BuildContext context,
     {String content = "Ocorreu um erro nao esperado ao realizar operação!",
-    VoidCallback? onPressed}) {
+    VoidCallback? onPressed,VoidCallback? extraActionCallBack,String? extraActionlabel}) {
   onPressed = onPressed ?? () => {Navigator.of(context).pop()};
+List<Widget> extraAction = [];
+  if ( extraActionlabel!=null) {
+    extraAction.add (_extraActionButton(extraActionCallBack: extraActionCallBack, extraActionlabel: extraActionlabel!));
+  }
+
   var titleWidget = Row(
     children: [
       const Icon(
@@ -21,7 +35,7 @@ Future<void> showWarning(BuildContext context,
       const Text("Algo de errado não está certo", style: kTitleText)
     ],
   );
-  return dialog(context, titleWidget, content, "Ok", onPressed);
+  return dialog(context, titleWidget, content, "Ok", onPressed,actions: extraAction);
 }
 
 Future<void> showError(BuildContext context,
@@ -70,13 +84,13 @@ Future showConfirm(BuildContext context,
             label: "Sim",
             backgroudColor: [Colors.redAccent[100]!, Colors.redAccent[200]!],
             params:
-                CustomTextButtonParams(fontSize: 15, height: 40, width: 100)),
+                CustomTextButtonParams(fontSize: 13, height: 40, width: 100)),
         CustomTextButton(
             onPressed: cancelAction,
             label: "Cancelar",
             backgroudColor: [Colors.lightBlue[100]!, Colors.lightBlue[200]!],
             params:
-                CustomTextButtonParams(fontSize: 15, height: 40, width: 100)),
+                CustomTextButtonParams(fontSize: 13, height: 40, width: 100)),
       ],
     ),
   );
@@ -122,7 +136,7 @@ Future<void> showInfo(
 }
 
 Future<void> dialog(BuildContext context, Widget title, String content,
-    String labelButton, VoidCallback onPressed) {
+    String labelButton, VoidCallback onPressed,{List<Widget>? actions}) {
   return showDialog<void>(
     context: context,
     builder: (ctx) => AlertDialog(
@@ -134,7 +148,8 @@ Future<void> dialog(BuildContext context, Widget title, String content,
             onPressed: onPressed,
             label: labelButton,
             params:
-                CustomTextButtonParams(fontSize: 15, height: 40, width: 100)),
+                CustomTextButtonParams(fontSize: 13, height: 40, width: 100)),
+        ...?actions
       ],
     ),
   );

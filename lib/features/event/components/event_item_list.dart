@@ -119,18 +119,6 @@ class EventItemComponent extends StatelessWidget {
   }
 
   Widget _getImage() {
-    double width = 70;
-    double height = 70;
-    if (event.imageUrl == null || event.imageUrl!.isEmpty) {
-      return Image.asset(
-          fit: BoxFit.cover,
-          width: width,
-          height: height,
-          ConstantsImagens.defaultEvent);
-    } else {
-      String url = event.imageThumbUrl ?? event.imageUrl!;
-      return cachedManager.getImage(
-          url: url, width: 70, height: 70, fit: BoxFit.cover);
-    }
+     return getImageThumb(pathImage: event.imageThumbUrl);
   }
 }

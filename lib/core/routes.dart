@@ -1,6 +1,7 @@
 import 'package:link_dance/components/notify/message_registry_form.dart';
 import 'package:link_dance/components/qr_code/qrcode_scaner.dart';
 import 'package:link_dance/features/event/entry_list/entry_list_form_.dart';
+import 'package:link_dance/features/event/entry_list/entry_list_show_guests_.dart';
 import 'package:link_dance/features/movie/components/movie_list_admin_component.dart';
 import 'package:link_dance/components/notify/notify_list_component.dart';
 import 'package:link_dance/core/enumerate.dart';
@@ -15,7 +16,7 @@ import 'package:link_dance/features/event/screen/event_detail_screen.dart';
 import 'package:link_dance/screens/home_screen.dart';
 import 'package:link_dance/features/login/login_screen.dart';
 import 'package:link_dance/features/movie/screen/movie_play_screen.dart';
-
+import 'package:link_dance/features/event/components/entry_list/entry_list_component.dart';
 import 'package:link_dance/features/movie/screen/movies_list_screen.dart';
 import 'package:link_dance/features/content_group/content_group_registry_screnn.dart';
 import 'package:link_dance/features/user/screen/user_registration_screen.dart';
@@ -24,7 +25,6 @@ import 'package:flutter/material.dart';
 /// Map with routes names associated to pages.
 Map<String, Widget Function(BuildContext)> routes = {
   RoutesPages.login.name: (_) => LoginScreen(),
-
   RoutesPages.home.name: (_) => HomeScreen(),
   RoutesPages.movies.name: (_) => const MoviesListScreen(),
   RoutesPages.moviePlay.name: (_) => MoviePlayScreen(),
@@ -42,6 +42,7 @@ Map<String, Widget Function(BuildContext)> routes = {
   RoutesPages.teacherPage.name: (_) => TeacherPageScreen(),
   RoutesPages.teacherForm.name: (_) => TeacherProfileFormComponent(),
   RoutesPages.qrCodeScan.name: (_) => QrCodeScannerComponent(),
-  RoutesPages.eventTicketListRegistry.name: (_) =>EventEntryListFormComponent( )
-
+  RoutesPages.eventTicketListRegistry.name: (_) =>  EventEntryListFormComponent(),
+  RoutesPages.entryListAdmin.name: (_) => EntryListEventComponent(),
+  RoutesPages.entryListShowGuest.name: (_) => EventEntryListShowGuestComponent()
 };

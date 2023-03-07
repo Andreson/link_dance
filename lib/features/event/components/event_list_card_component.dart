@@ -24,7 +24,7 @@ class EventListCardComponent extends StatelessWidget {
 
     repository = Provider.of<EventRepository>(context, listen: false);
     Future.delayed(Duration.zero, () async {
-      await repository.listBase( );
+      await repository.listBase(conditions: [condition] );
     });
 
     return Container(
@@ -43,6 +43,6 @@ class EventListCardComponent extends StatelessWidget {
   }
 
   Future<void> refresh() async {
-    repository.listBase();
+    repository.listBase(conditions: [condition]);
   }
 }

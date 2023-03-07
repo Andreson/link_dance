@@ -14,4 +14,10 @@ class EntryListRepository extends BaseRepository<EntryListEventModel> {
       throw onError;
     });
   }
+  
+  
+  Future<List<EntryListEventModel>?> getByEventId({required String eventId}) {
+
+    return listBase(orderDesc: true, conditions:[ QueryCondition(fieldName: "eventId",isEqualTo: eventId)], orderBy: "label");
+  }  
 }

@@ -23,19 +23,19 @@ import 'package:provider/provider.dart';
 import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/factory_widget.dart';
 
-class EventEntryListFormComponent extends StatefulWidget {
+class EventEntryListShowGuestComponent extends StatefulWidget {
   final GlobalKey<MovieUploadFormState>? key;
 
   EntryListEventModel? entryListEventModel;
 
-  EventEntryListFormComponent({this.key, this.entryListEventModel})
+  EventEntryListShowGuestComponent({this.key, this.entryListEventModel})
       : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MovieUploadFormState();
 }
 
-class MovieUploadFormState extends State<EventEntryListFormComponent> {
+class MovieUploadFormState extends State<EventEntryListShowGuestComponent> {
   final _formKey = GlobalKey<FormState>();
   EntryListRepository entryListRepository = EntryListRepository();
 

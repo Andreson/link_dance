@@ -405,17 +405,24 @@ ImageAvatarComponent getImageProfile(
   );
 }
 
-Widget getImageThumb({required String? pathImage}) {
-  double width = 70;
-  double height = 70;
+Widget getImageThumb({required String? pathImage,double width=70,double height=70}) {
+
   if (pathImage == null || pathImage.isEmpty) {
     return Image.asset(
         fit: BoxFit.cover,
         width: width,
         height: height,
         ConstantsImagens.defaultEvent);
-  } else {
+  }
+  else if (pathImage.contains("assets") ) {
+    return Image.asset(
+        fit: BoxFit.cover,
+        width: width,
+        height: height,
+        pathImage);
+  }
+  else {
     return CachedManagerHelper()
-        .getImage(url: pathImage, width: 70, height: 70, fit: BoxFit.cover);
+        .getImage(url: pathImage, width: width, height: height, fit: BoxFit.cover);
   }
 }
