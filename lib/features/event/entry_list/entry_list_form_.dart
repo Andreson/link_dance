@@ -307,7 +307,12 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
   Widget _buildList() {
     return GuestGridEntryList(
         userListEntry: _userListEntry,
-        onDeleteItem: (index) {
+        iconTrailing: const Icon(
+          FontAwesomeIcons.trash,
+          size: 16,
+          color: Colors.redAccent,
+        ),
+        actionTrailing:  (index) {
           setState(() {
             _userListEntry.removeAt(index);
             ScaffoldMessenger.of(context)
@@ -405,22 +410,7 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
         title: "Aêêêêêêêêê");
   }
 
-  GuestItemEntryList _itemBuild(
-      {required GuestEntryListModel user,
-      Color? brackgroudColor = Colors.transparent,
-      required int index}) {
-    return GuestItemEntryList(
-      user: user,
-      index: index,
-      onDelete: () {
-        setState(() {
-          _userListEntry.removeAt(index);
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBar(mensage: "Usuário removido da lista"));
-        });
-      },
-    );
-  }
+
 
   void _selectDataEventAutocomplete(AutoCompleteItem value) {
     if (value.isNotNull()) {
@@ -468,13 +458,14 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
 class GuestItemEntryList extends StatelessWidget {
   GuestEntryListModel user;
   int index;
-  void Function() onDelete;
+  Widget? trailing;
   Color? brackgroudColor = Colors.transparent;
+
 
   GuestItemEntryList(
       {required this.user,
       this.brackgroudColor,
-      required this.onDelete,
+      this.trailing,
       required this.index});
 
   @override
@@ -491,13 +482,7 @@ class GuestItemEntryList extends StatelessWidget {
         user.name,
         style: textStyle,
       ),
-      trailing: IconButton(
-          onPressed: onDelete,
-          icon: const Icon(
-            FontAwesomeIcons.trash,
-            size: 16,
-            color: Colors.redAccent,
-          )),
+      trailing: trailing,
       subtitle: Row(children: [
         Flexible(child: Text(user.email!)),
       ]),
@@ -508,9 +493,10 @@ class GuestItemEntryList extends StatelessWidget {
 class GuestGridEntryList extends StatelessWidget {
   late List<GuestEntryListModel> userListEntry;
 
-  late void Function(int index) onDeleteItem;
+  late void Function(int index) actionTrailing;
+  Icon? iconTrailing;
 
-  GuestGridEntryList({required this.userListEntry, required this.onDeleteItem});
+  GuestGridEntryList({required this.userListEntry, required this.actionTrailing, this.iconTrailing});
 
   @override
   Widget build(BuildContext context) {
@@ -535,9 +521,11 @@ class GuestGridEntryList extends StatelessWidget {
                       backgroundColor = Colors.black38;
                     }
                     return GuestItemEntryList(
-                        onDelete: () {
-                          onDeleteItem(index);
-                        },
+                        trailing:iconTrailing !=null? IconButton(
+                            onPressed: () {
+                              actionTrailing(index);
+                            },
+                            icon:iconTrailing!):null,
                         brackgroudColor: backgroundColor,
                         user: userListEntry[index],
                         index: index);

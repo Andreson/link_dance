@@ -1,10 +1,7 @@
 import 'dart:async';
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/factory_widget.dart';
-import 'package:link_dance/core/helpers/constantes_images.dart';
 import 'package:link_dance/core/helpers/movie_cache_helper.dart';
 import 'package:link_dance/core/theme/theme_data.dart';
 import 'package:link_dance/features/event/model/entry_list_model.dart';
@@ -42,7 +39,7 @@ class EntryListEventItemComponent extends StatelessWidget {
         child: Card(
           elevation: 2,
           child: ExpansionTile(
-              key: Key(event.id),
+              key: UniqueKey(),
               onExpansionChanged: (value) {
                 if (!_responseCompleter.isCompleted) {
                   _responseCompleter.complete(
@@ -82,7 +79,7 @@ class EntryListEventItemComponent extends StatelessWidget {
               children: [
                 Divider(height: 20, color: inputField),
                 FutureBuilder(
-                    key: Key(event.id),
+                    key: UniqueKey(),
                     future: _responseCompleter.future,
                     builder: (BuildContext context,
                         AsyncSnapshot<List<EntryListEventModel>?> snapshot) {
@@ -128,7 +125,7 @@ class EntryListEventItemComponent extends StatelessWidget {
       child: InkWell(
         onTap: () {
           Navigator.pushNamed(context, RoutesPages.entryListShowGuest.name,
-              arguments: Object());
+              arguments: entryList);
         },
         child: Column(
           children: [

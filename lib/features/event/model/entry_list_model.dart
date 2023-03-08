@@ -1,4 +1,6 @@
 import 'package:link_dance/core/enumerate.dart';
+import 'package:link_dance/core/extensions/datetime_extensions.dart';
+import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/core/helpers/constantes_images.dart';
 import 'package:link_dance/features/event/model/guest_list_entry_model.dart';
 import 'package:link_dance/model/abastract_model.dart';
@@ -23,6 +25,10 @@ class EntryListEventModel extends AbastractModel {
       {id = "",required this.entryListType,required this.ownerPhone,required this.ownerEmail, required this.ownerImageUrl ,required this.label, required this.ownerId,
         required this.eventId, required this.eventTitle, required this.eventPlace, required this.dynamicLink,
         required this.eventDate, required this.guests}) :_id = id;
+
+  String eventLabel() {
+    return "${eventTitle.capitalizePhrase()} - ${eventPlace.capitalizePhrase()} - ${eventDate.showString()}";
+  }
 
   @override
   Map<String, dynamic> body() {

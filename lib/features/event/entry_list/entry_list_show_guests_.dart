@@ -5,6 +5,7 @@ import 'package:link_dance/components/widgets/autocomplete/autocomplete_event_co
 import 'package:link_dance/core/exception/custom_exeptions.dart';
 import 'package:link_dance/core/exception/http_exceptions.dart';
 import 'package:link_dance/core/theme/fontStyles.dart';
+import 'package:link_dance/features/event/entry_list/entry_list_form_.dart';
 import 'package:link_dance/features/event/entry_list_helper.dart';
 import 'package:link_dance/features/event/model/entry_list_model.dart';
 import 'package:link_dance/features/event/model/guest_list_entry_model.dart';
@@ -26,10 +27,7 @@ import 'package:link_dance/core/factory_widget.dart';
 class EventEntryListShowGuestComponent extends StatefulWidget {
   final GlobalKey<MovieUploadFormState>? key;
 
-  EntryListEventModel? entryListEventModel;
-
-  EventEntryListShowGuestComponent({this.key, this.entryListEventModel})
-      : super(key: key);
+  EventEntryListShowGuestComponent({this.key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MovieUploadFormState();
@@ -39,8 +37,6 @@ class MovieUploadFormState extends State<EventEntryListShowGuestComponent> {
   final _formKey = GlobalKey<FormState>();
   EntryListRepository entryListRepository = EntryListRepository();
 
-  FileUpload _fileUpload = FileUpload();
-
   Map<String, dynamic> _formData = {};
 
   late EntryListHelper eventEntryListHelper;
@@ -49,116 +45,36 @@ class MovieUploadFormState extends State<EventEntryListShowGuestComponent> {
   late AutoCompleteEventComponent _autoCompleteEventComponent;
 
   late UserModel _userSession;
+  final FocusNode _findGuestFocus = FocusNode();
+  final TextEditingController _findGuestcontroller = TextEditingController();
 
-  bool isReadOnly = false;
-  bool titleReadOnly = false;
-  bool showGenerateDynamicLink = false;
-  bool _eventFormIsValid = true;
-  bool _isUserRegistryComplete = true;
-  final FocusNode _descriptionFocus = FocusNode();
-  final FocusNode _emailGuestFocus = FocusNode();
-  final Text _eventMsgValidation = const Text(
-    "Favor selecionar o evento",
-    style: kErrorText,
-  );
-  final TextEditingController _emailGuestcontroller = TextEditingController();
-  final TextEditingController _linkGuestcontroller = TextEditingController();
-  final TextEditingController _titlecontroller = TextEditingController();
-
-  String msgVideoSelect =
-      "Por favor, selecione um video para upload ou informe uma URL válida de um video do Youtube!";
+  late EntryListEventModel entryList;
 
   @override
   void initState() {
-    _authentication = Provider.of<AuthenticationFacate>(context, listen: false);
-
-    _userSession = _authentication.user!;
-    _initData();
-    _autoCompleteEventComponent = AutoCompleteEventComponent(
-      isExpanded: true,
-      required: true,
-      onSelected: _selectDataEventAutocomplete,
-    );
-    eventEntryListHelper = EntryListHelper.ctx(context: context);
-
     super.initState();
-  }
 
-  _initData() {
-    if (widget.entryListEventModel != null) {
-      isReadOnly = true;
-      _titlecontroller.text = widget.entryListEventModel!.label;
-      _formData['label'] = widget.entryListEventModel!.label;
-
-      if (widget.entryListEventModel!.dynamicLink.isEmpty) {
-        showGenerateDynamicLink = true;
-      } else {
-        showGenerateDynamicLink = false;
-        _linkGuestcontroller.text = widget.entryListEventModel!.dynamicLink;
-      }
-    } else {
-      if ( // _userSession.userType!=UserType.admin &&
-          _userSession.userType != UserType.promoter) {
-        titleReadOnly = true;
-        _titlecontroller.text = _userSession.name;
-        _formData['label'] = _userSession.name;
-      } else {
-        titleReadOnly = false;
-        _titlecontroller.text = "";
-        _formData['label'] = "";
-      }
-      _formData['ownerId'] = _userSession.id;
-      _formData['ownerEmail'] = _userSession.email;
-    }
-  }
-
-  Future<UserResponseDTO?> _checkRegistryUser() async {
-    UserResponseDTO response = await eventEntryListHelper
-        .checkUserLoggedRegistration()
-        .catchError((onError) {
-      print("Erro ao checar cadastro do usuario $onError");
-      // showError(context,
-      //     content:
-      //         "Ocorreu um erro não esperado ao validar cadastro de usuário.");
-    });
-    if (response.hasBussinessError()) {
-      _isUserRegistryComplete = response.userDTO.completeRegistration;
-      showDialogRegistryIncomplete(errors: response.errors, context: context);
-    }
-    return null;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _checkRegistryUser();
-    bool isExpanded = false;
+    entryList =
+    ModalRoute.of(context)!.settings.arguments as EntryListEventModel;
 
-    _autoCompleteEventComponent = AutoCompleteEventComponent(
-      isExpanded: isExpanded,
-      required: true,
-      onSelected: _selectDataEventAutocomplete,
-    );
-    _autoCompleteEventComponent.textEdit.text = "Digite o nome do evento";
+    _userListEntry = entryList.guests;
   }
 
-  void _initWidgets() {
-    _userSession = _authentication.user!;
-    entryListRepository =
-        Provider.of<EntryListRepository>(context, listen: false);
-  }
+  void _initWidgets() {}
 
   @override
   Widget build(BuildContext context) {
+
+
     _initWidgets();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Criar lista"),
-        actions: [
-          buttonSaveRegistry(onPressed: () {
-            save();
-          })
-        ],
+        title: const Text("Convidados da lista"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -174,49 +90,24 @@ class MovieUploadFormState extends State<EventEntryListShowGuestComponent> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     CustomTextField(
-                      focusNode: _descriptionFocus,
-                      textAlign:
-                          titleReadOnly ? TextAlign.center : TextAlign.left,
-                      required: false,
-                      controller: _titlecontroller,
-                      readOnly: titleReadOnly,
-                      label: "Nome da lista",
-                      textStyle: titleReadOnly
-                          ? const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white70,
-                              fontWeight: FontWeight.bold)
-                          : null,
-                    ),
-                    _autoCompleteEventComponent,
-                    if (!_eventFormIsValid) _eventMsgValidation,
-                    CustomTextField(
-                        readOnly: true,
                         required: false,
-                        textStyle: TextStyle(
+                        initialValue: entryList.label,
+                        readOnly: true,
+                        label: "Nome da lista",
+                        textStyle: const TextStyle(
                             fontSize: 14,
-                            color: Colors.blue[800],
-                            fontWeight: FontWeight.bold),
-                        controller: _linkGuestcontroller,
-                        label: "Link para convite",
-                        suffixIcon: IconButton(
-                          iconSize: 20,
-                          onPressed: () {
-                            if (!showGenerateDynamicLink) {
-                              copyClipboardData(
-                                  _linkGuestcontroller.text, context,
-                                  mensage: "Link convite copiado");
-                            } else {
-                              eventEntryListHelper.createDynamicLinkEntryList(
-                                  entryListID: widget.entryListEventModel!.id);
-                            }
-                          },
-                          icon: showGenerateDynamicLink
-                              ? const Icon(FontAwesomeIcons.arrowsRotate)
-                              : const Icon(Icons.copy),
-                        )),
-                    sizedBox15(),
-                    _formAddGuest(),
+                            color: Colors.white70,
+                            fontWeight: FontWeight.bold)),
+                    CustomTextField(
+                        required: false,
+                        initialValue: entryList.eventLabel(),
+                        readOnly: true,
+                        label: "Evento",
+                        textStyle: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.white70,
+                            fontWeight: FontWeight.bold)),
+                    _formFindGuest(),
                     sizedBox10(),
                     _buildList()
                   ],
@@ -229,323 +120,82 @@ class MovieUploadFormState extends State<EventEntryListShowGuestComponent> {
     );
   }
 
-  Container _formAddGuest() {
+  Container _formFindGuest() {
     return Container(
       decoration: box(opacity: 0.20, allBorderRadius: 10),
       child: Column(children: [
         sizedBox20(),
-        Text("Adicionar convidado"),
+        Text("Procurar convidado por nome"),
         Row(
           children: [
             Flexible(
               child: Padding(
                 padding: const EdgeInsets.only(left: 15, top: 10),
                 child: CustomTextField(
-                  focusNode: _emailGuestFocus,
+                  onChanged: (value) => _filterUserList(),
+                  focusNode: _findGuestFocus,
                   required: false,
-                  controller: _emailGuestcontroller,
-                  label: "Email do convidado",
+                  controller: _findGuestcontroller,
+                  label: "Nome do convidado",
                 ),
               ),
             ),
-            IconButton(
-                onPressed: () {
-                  inforGuestRequirements();
-                },
-                icon: const Icon(
-                  FontAwesomeIcons.circleInfo,
-                  color: Colors.blue,
-                ))
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _userListEntry = entryList.guests;
+                    });
+                  },
+                  icon: const Icon(Icons.filter_alt_off)),
+            )
           ],
         ),
-        sizedBox10(),
-        OutlinedButton(
-            onPressed: () {
-              _addUserList();
-            },
-            child: Text("Add")),
+
         sizedBox15(),
       ]),
     );
   }
 
-  Future _addUserList() async {
-    var email = _emailGuestcontroller.text;
-    FocusScope.of(context).unfocus();
-    bool checkUser =
-        _userListEntry.where((element) => element.email == email).isEmpty;
+  Future _filterUserList() async {
 
-    if (checkUser) {
-      _findUserGuest(email: _emailGuestcontroller.text);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(snackBar(mensage: "Usuário adicionado a lista"));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(snackBar(
-          mensage: "Usuário de email \"$email\" já esta na lista lista",
-          level: LevelEnum.warn));
-    }
-  }
+    var userName = _findGuestcontroller.text;
+    print("object procurando usuario que comecem com $userName");
 
-  Future _findUserGuest({required String email}) async {
-    onLoading(context);
-    UserModel? user = await eventEntryListHelper
-        .findUserByEmail(email: email)
-        .whenComplete(() => Navigator.of(context).pop());
+    List<GuestEntryListModel> tempList = _userListEntry
+        .where((element) => element.name.toLowerCase().startsWith(userName.toLowerCase()) || element.name.toLowerCase() .contains(userName.toLowerCase()))
+        .toList();
 
-    if (user != null) {
+    if ( userName=="") {
       setState(() {
-        _userListEntry.add(GuestEntryListModel.user(user: user));
+        _userListEntry = entryList.guests;
       });
-    } else {
-      showWarning(context,
-          content:
-              "Não encontramos nenhum usuário cadastrado com o email \"$email\".\n"
-              "Poderia verificar se seu convidado possui conta ativa no Linkdance e tentar novamente?");
+    }
+    else {
+      setState(() {
+        _userListEntry = tempList;
+      });
     }
   }
+
+ 
 
   Widget _buildList() {
     return GuestGridEntryList(
         userListEntry: _userListEntry,
-        onDeleteItem: (index) {
+        iconTrailing: const Icon(
+          FontAwesomeIcons.personCircleCheck,
+          color: Colors.blue,
+        ),
+        actionTrailing: (index) {
           setState(() {
-            _userListEntry.removeAt(index);
+          //  _userListEntry.removeAt(index);
             ScaffoldMessenger.of(context)
                 .showSnackBar(snackBar(mensage: "Usuário removido da lista"));
           });
         });
-    // return Flexible(
-    //   child: Container(
-    //     height: 300,
-    //     decoration: box(opacity: 0.4, allBorderRadius: 10),
-    //     child: Column(children: [
-    //       const Text("Convidados na lista "),
-    //       Flexible(
-    //         child: Padding(
-    //           padding: const EdgeInsets.only(bottom: 50),
-    //           child: ListView.builder(
-    //               itemCount: _userListEntry.length,
-    //               itemBuilder: (BuildContext context, int index) {
-    //                 var backgroundColor = Colors.transparent;
-    //                 if (_userListEntry.isEmpty) {
-    //                   return DataNotFoundComponent();
-    //                 }
-    //                 if (index % 2 == 0) {
-    //                   backgroundColor = Colors.black38;
-    //                 }
-    //                 return _itemBuild(
-    //                     user: _userListEntry[index],
-    //                     brackgroudColor: backgroundColor,
-    //                     index: index);
-    //               }),
-    //         ),
-    //       )
-    //     ]),
-    //   ),
-    // );
   }
 
-  bool _validations() {
-    if (_formData['eventId'] == null) {
-      setState(() {
-        _eventFormIsValid = false;
-      });
-      return false;
-    } else {
-      setState(() {
-        _eventFormIsValid = true;
-      });
-    }
-    return true;
-  }
 
-  save() async {
-    if (!_validations()) {
-      return;
-    }
-
-    FocusScope.of(context).unfocus();
-    onLoading(context, actionMesage: "Salvando registro");
-    _formKey.currentState!.save();
-    _formData["entryListType"] = EntryListType.birthday.name;
-    EntryListEventModel entryList = EntryListEventModel.fromJson(_formData);
-    entryList.guests = _userListEntry;
-
-    eventEntryListHelper.createEntryList(entryList: entryList).then((data) {
-      Navigator.of(context).pop();
-      setState(() {
-        _linkGuestcontroller.text = data.dynamicLink;
-      });
-    }).catchError((onError, trace) {
-      Navigator.of(context).pop();
-      _formData['eventId'] = null;
-      print("Erro ao criar lista $trace");
-      if (onError is NoCriticalException) {
-        _showSucessPopUp();
-        return;
-      }
-      if (onError is HttpBussinessException) {
-        showWarning(context,
-            content:
-                "Não foi possível criar a sua lista.\n${(onError).message}");
-      } else {
-        showError(context,
-            content: "Ocorreu um erro não esperado ao salvar lista.");
-      }
-    });
-  }
-
-  void _showSucessPopUp() {
-    showInfo(
-        onPressed: () {
-          //    Navigator.pushNamed(context, RoutesPages.movieAdmin.name);
-        },
-        context: context,
-        content: "Lista criada com sucesso",
-        title: "Aêêêêêêêêê");
-  }
-
-  GuestItemEntryList _itemBuild(
-      {required GuestEntryListModel user,
-      Color? brackgroudColor = Colors.transparent,
-      required int index}) {
-    return GuestItemEntryList(
-      user: user,
-      index: index,
-      onDelete: () {
-        setState(() {
-          _userListEntry.removeAt(index);
-          ScaffoldMessenger.of(context)
-              .showSnackBar(snackBar(mensage: "Usuário removido da lista"));
-        });
-      },
-    );
-  }
-
-  void _selectDataEventAutocomplete(AutoCompleteItem value) {
-    if (value.isNotNull()) {
-      _formData['eventId'] = value.id;
-      _formData['eventTitle'] = value.label;
-      _formData['eventPlace'] = value.data!['eventPlace'];
-      _formData['eventDate'] = value.data!['eventDate'];
-    } else {
-      _formData['eventId'] = null;
-    }
-  }
-
-  cleanForm() {
-    setState(() {
-      _formKey.currentState?.reset();
-      _formData = {};
-      //   FocusScope.of(context).unfocus();
-    });
-  }
-
-  void inforGuestRequirements() {
-    showInfo(
-        context: context,
-        title: "Informações sobre convidados",
-        content:
-            "O acesso e validação do ingresso serão feitos pelo app. Portato "
-            "é necessario que seus convidados tenham uma conta ativa no Linkdance para que consigam ser adicionados da lista.",
-        labelButton: "Tendeu");
-  }
-
-  void showDialogRegistryIncomplete(
-      {required List<dynamic> errors, required BuildContext context}) {
-    showWarning(context,
-        content:
-            "Seu cadastro não está completo, você precisa preencher os seguintes campos para completar seu cadastro: \n"
-            "${errors.map((e) => "  * $e").join("  \n")}"
-            " \nÉ necessário completar o cadastro de perfil para criar listas.",
-        extraActionlabel: "Editar perfil", extraActionCallBack: () {
-      Navigator.pushNamed(context, RoutesPages.registration.name,
-          arguments: _userSession);
-    });
-  }
-}
-
-class GuestItemEntryList extends StatelessWidget {
-  GuestEntryListModel user;
-  int index;
-  void Function() onDelete;
-  Color? brackgroudColor = Colors.transparent;
-
-  GuestItemEntryList(
-      {required this.user,
-      this.brackgroudColor,
-      required this.onDelete,
-      required this.index});
-
-  @override
-  Widget build(BuildContext context) {
-    var textStyle = const TextStyle(fontSize: 14);
-    return ListTile(
-      shape: RoundedRectangleBorder(
-        side: const BorderSide(width: 1, color: Colors.black26),
-        borderRadius: BorderRadius.circular(1),
-      ),
-      tileColor: brackgroudColor,
-      leading: getImageThumb(pathImage: user.photoUrl),
-      title: Text(
-        user.name,
-        style: textStyle,
-      ),
-      trailing: IconButton(
-          onPressed: onDelete,
-          icon: const Icon(
-            FontAwesomeIcons.trash,
-            size: 16,
-            color: Colors.redAccent,
-          )),
-      subtitle: Row(children: [
-        Flexible(child: Text(user.email!)),
-      ]),
-    );
-  }
-}
-
-class GuestGridEntryList extends StatelessWidget {
-  late List<GuestEntryListModel> userListEntry;
-
-  late void Function(int index) onDeleteItem;
-
-  GuestGridEntryList({required this.userListEntry, required this.onDeleteItem});
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Flexible(
-      child: Container(
-        height: 300,
-        decoration: box(opacity: 0.4, allBorderRadius: 10),
-        child: Column(children: [
-          const Text("Convidados na lista "),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 50),
-              child: ListView.builder(
-                  itemCount: userListEntry.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    var backgroundColor = Colors.transparent;
-                    if (userListEntry.isEmpty) {
-                      return DataNotFoundComponent();
-                    }
-                    if (index % 2 == 0) {
-                      backgroundColor = Colors.black38;
-                    }
-                    return GuestItemEntryList(
-                        onDelete: () {
-                          onDeleteItem(index);
-                        },
-                        brackgroudColor: backgroundColor,
-                        user: userListEntry[index],
-                        index: index);
-                  }),
-            ),
-          )
-        ]),
-      ),
-    );
-  }
 }

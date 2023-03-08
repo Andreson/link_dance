@@ -11,7 +11,7 @@ import 'package:link_dance/repository/base_repository.dart';
 import 'package:provider/provider.dart';
 
 /*
-Compoentne de listagem de listas. Esse compoente mostra a listagem de todos os eventos, e mostra um submenu que permite
+Componente de listagem de listas. Esse compoente mostra a listagem de todos os eventos, e mostra um submenu que permite
 visualiar a lista por cada evento
  */
 class EntryListEventComponent extends StatelessWidget {
