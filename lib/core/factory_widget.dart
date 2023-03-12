@@ -389,6 +389,10 @@ Widget buttonSaveRegistry({  void Function()? onPressed}) {
   return IconButton(onPressed: onPressed, icon: iconSaveRegistry);
 }
 
+Widget buttonUpdateRegistry({  void Function()? onPressed}) {
+  return IconButton(onPressed: onPressed, icon: iconUpdateRegistry);
+}
+
 Widget leadingToBackScaffold({required void Function() onPressed}) {
   return IconButton(
       icon: const Icon(FontAwesomeIcons.chevronLeft), onPressed: onPressed);

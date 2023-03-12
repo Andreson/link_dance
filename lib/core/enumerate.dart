@@ -22,7 +22,7 @@ enum RoutesPages {
   eventList,
   eventDetail,
   eventTicketManager,
-  eventTicketListRegistry,
+  entryListRegistry,
   entryListAdmin,
   entryListShowGuest,
   contentGroup,

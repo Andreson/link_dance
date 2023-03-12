@@ -58,6 +58,7 @@ class MovieUploadFormState extends State<MenssageRegistryPage> {
     _authentication = Provider.of<AuthenticationFacate>(context, listen: false);
 
     autoCompleteEventComponent = AutoCompleteEventComponent(
+      isStatefullSelection: false,
       onSelected: _selectDataEvent,
       isExpanded: expanded,
     );

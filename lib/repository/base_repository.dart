@@ -44,7 +44,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
   Future<Future<DocumentReference<Object?>>?> saveOrUpdateBase(
       {required Map<String, dynamic> data}) async {
     if (data['id'] != null && data['id'].toString().isNotEmpty) {
-      updateBase(data: data);
+      updateBase(data: data,id: data['id']);
       return null;
     } else {
       return saveBase(data: data);
@@ -71,16 +71,20 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
     data.removeWhere((key, value) => key == "id");
     var response = getCollectionBase(collectionName: collectionName).add(data);
     if (data['id'] != null) {
-      updateBase(data: data);
+      updateBase(data: data,id: data['id']);
     } else {
       await response.then((value) {});
     }
   }
 
-  Future<void> updateBase({required Map<String, dynamic> data}) async {
+  Future<void> updateBase({required Map<String, dynamic> data, required String id}) async {
     return getCollectionBase(collectionName: collectionName)
-        .doc(data['id'])
-        .update(data);
+        .doc(id)
+        .update(data).catchError((onError,trace){
+
+
+      throw onError;
+    });
   }
 
   Future<void> removeBase({required String idDocument}) async {
@@ -151,7 +155,7 @@ abstract class BaseRepository<T extends AbastractModel> with ChangeNotifier {
 
     if (notifyListen) notifyListeners();
 
-    print("quantidade de resultados da consulta  ${listData.length}");
+    print("Consultando collection  '$collectionName'. Registros retornados :   ${listData.length}");
     return listData;
   }
 

@@ -18,11 +18,13 @@ class AutoCompleteEventComponent extends StatefulWidget {
   TextInputAction textInputAction;
   InputDecoration? inputDecoration;
   bool required;
+  bool isStatefullSelection;
   //Se for necessario chamar o autocomplete dentro de uma Stack, passar false
   bool isExpanded;
 
   AutoCompleteEventComponent({Key? key,
     this.onSelected,
+    required this.isStatefullSelection,
     this.required=false,
     this.isExpanded = false,
     this.textInputAction = TextInputAction.search,
@@ -31,10 +33,10 @@ class AutoCompleteEventComponent extends StatefulWidget {
 
   @override
   State<AutoCompleteEventComponent> createState() =>
-      _AutoCompleteRhythmState();
+      _AutoCompleteEventState();
 }
 
-class _AutoCompleteRhythmState extends State<AutoCompleteEventComponent> {
+class _AutoCompleteEventState extends State<AutoCompleteEventComponent> {
 
   late EventRepository repository;
   late AuthenticationFacate authentication;
@@ -47,6 +49,7 @@ class _AutoCompleteRhythmState extends State<AutoCompleteEventComponent> {
       required: widget.required,
       isExpanded: widget.isExpanded,
       decoration: widget.inputDecoration,
+      isStatefullSelection : widget.isStatefullSelection,
       loadData: loadDataAutocomplete,
 
       textInputAction: TextInputAction.search,

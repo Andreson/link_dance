@@ -1,3 +1,4 @@
+import 'package:link_dance/core/helpers/constantes_images.dart';
 import 'package:link_dance/model/user_model.dart';
 
 class GuestEntryListModel {
@@ -16,7 +17,7 @@ class GuestEntryListModel {
       : name = user.name,
         email = user.email!,
         idUserGuest = user.id,
-        photoUrl = user.photoUrl!;
+        photoUrl = user.photoUrl ?? ConstantsImagens.defaultAvatar;
 
   Map<String, dynamic> body() {
     return {
@@ -43,4 +44,15 @@ class GuestEntryListModel {
         idUserGuest: json['idUserGuest'],
         photoUrl: json['photoUrl']);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GuestEntryListModel &&
+          runtimeType == other.runtimeType &&
+          email == other.email &&
+          idUserGuest == other.idUserGuest;
+
+  @override
+  int get hashCode => email.hashCode ^ idUserGuest.hashCode;
 }

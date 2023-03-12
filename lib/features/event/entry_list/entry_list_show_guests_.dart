@@ -1,3 +1,4 @@
+
 import 'package:link_dance/components/autocomplete.dart';
 import 'package:link_dance/components/input_fields/text_field.dart';
 import 'package:link_dance/components/not_found_card.dart';
@@ -5,6 +6,7 @@ import 'package:link_dance/components/widgets/autocomplete/autocomplete_event_co
 import 'package:link_dance/core/exception/custom_exeptions.dart';
 import 'package:link_dance/core/exception/http_exceptions.dart';
 import 'package:link_dance/core/theme/fontStyles.dart';
+import 'package:link_dance/features/event/components/entry_list_grid.dart';
 import 'package:link_dance/features/event/entry_list/entry_list_form_.dart';
 import 'package:link_dance/features/event/entry_list_helper.dart';
 import 'package:link_dance/features/event/model/entry_list_model.dart';
@@ -25,19 +27,18 @@ import 'package:link_dance/core/decorators/box_decorator.dart';
 import 'package:link_dance/core/factory_widget.dart';
 
 class EventEntryListShowGuestComponent extends StatefulWidget {
-  final GlobalKey<MovieUploadFormState>? key;
+  final GlobalKey<EventEntryListShowGuestState>? key;
 
   EventEntryListShowGuestComponent({this.key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => MovieUploadFormState();
+  State<StatefulWidget> createState() => EventEntryListShowGuestState();
 }
 
-class MovieUploadFormState extends State<EventEntryListShowGuestComponent> {
+class EventEntryListShowGuestState extends State<EventEntryListShowGuestComponent> {
   final _formKey = GlobalKey<FormState>();
   EntryListRepository entryListRepository = EntryListRepository();
 
-  Map<String, dynamic> _formData = {};
 
   late EntryListHelper eventEntryListHelper;
   List<GuestEntryListModel> _userListEntry = [];
@@ -53,28 +54,34 @@ class MovieUploadFormState extends State<EventEntryListShowGuestComponent> {
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     entryList =
-    ModalRoute.of(context)!.settings.arguments as EntryListEventModel;
+        ModalRoute.of(context)!.settings.arguments as EntryListEventModel;
 
     _userListEntry = entryList.guests;
   }
 
   void _initWidgets() {}
 
+  void _save() {}
+
   @override
   Widget build(BuildContext context) {
-
-
     _initWidgets();
     return Scaffold(
       appBar: AppBar(
+
         title: const Text("Convidados da lista"),
+
+        actions: [
+          buttonSaveRegistry(onPressed: () {
+            _save();
+          })
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -120,6 +127,7 @@ class MovieUploadFormState extends State<EventEntryListShowGuestComponent> {
     );
   }
 
+
   Container _formFindGuest() {
     return Container(
       decoration: box(opacity: 0.20, allBorderRadius: 10),
@@ -152,34 +160,31 @@ class MovieUploadFormState extends State<EventEntryListShowGuestComponent> {
             )
           ],
         ),
-
         sizedBox15(),
       ]),
     );
   }
 
   Future _filterUserList() async {
-
     var userName = _findGuestcontroller.text;
     print("object procurando usuario que comecem com $userName");
 
     List<GuestEntryListModel> tempList = _userListEntry
-        .where((element) => element.name.toLowerCase().startsWith(userName.toLowerCase()) || element.name.toLowerCase() .contains(userName.toLowerCase()))
+        .where((element) =>
+            element.name.toLowerCase().startsWith(userName.toLowerCase()) ||
+            element.name.toLowerCase().contains(userName.toLowerCase()))
         .toList();
 
-    if ( userName=="") {
+    if (userName == "") {
       setState(() {
         _userListEntry = entryList.guests;
       });
-    }
-    else {
+    } else {
       setState(() {
         _userListEntry = tempList;
       });
     }
   }
-
- 
 
   Widget _buildList() {
     return GuestGridEntryList(
@@ -190,12 +195,10 @@ class MovieUploadFormState extends State<EventEntryListShowGuestComponent> {
         ),
         actionTrailing: (index) {
           setState(() {
-          //  _userListEntry.removeAt(index);
+            //  _userListEntry.removeAt(index);
             ScaffoldMessenger.of(context)
                 .showSnackBar(snackBar(mensage: "Usuário removido da lista"));
           });
         });
   }
-
-
 }

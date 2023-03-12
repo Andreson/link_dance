@@ -42,7 +42,7 @@ Map<String, Widget Function(BuildContext)> routes = {
   RoutesPages.teacherPage.name: (_) => TeacherPageScreen(),
   RoutesPages.teacherForm.name: (_) => TeacherProfileFormComponent(),
   RoutesPages.qrCodeScan.name: (_) => QrCodeScannerComponent(),
-  RoutesPages.eventTicketListRegistry.name: (_) =>  EventEntryListFormComponent(),
+  RoutesPages.entryListRegistry.name: (_) =>  EventEntryListFormComponent(),
   RoutesPages.entryListAdmin.name: (_) => EntryListEventComponent(),
   RoutesPages.entryListShowGuest.name: (_) => EventEntryListShowGuestComponent()
 };

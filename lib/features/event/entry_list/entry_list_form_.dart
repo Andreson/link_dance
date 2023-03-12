@@ -4,12 +4,15 @@ import 'package:link_dance/components/not_found_card.dart';
 import 'package:link_dance/components/widgets/autocomplete/autocomplete_event_component.dart';
 import 'package:link_dance/core/exception/custom_exeptions.dart';
 import 'package:link_dance/core/exception/http_exceptions.dart';
+import 'package:link_dance/core/extensions/string_extensions.dart.dart';
 import 'package:link_dance/core/theme/fontStyles.dart';
+import 'package:link_dance/features/event/components/entry_list_grid.dart';
 import 'package:link_dance/features/event/entry_list_helper.dart';
 import 'package:link_dance/features/event/model/entry_list_model.dart';
 import 'package:link_dance/features/event/model/guest_list_entry_model.dart';
 import 'package:link_dance/features/event/repository/entry_list_repository.dart';
-
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/utils/dialog_functions.dart';
 import 'package:link_dance/core/authentication/auth_facate.dart';
@@ -26,10 +29,7 @@ import 'package:link_dance/core/factory_widget.dart';
 class EventEntryListFormComponent extends StatefulWidget {
   final GlobalKey<MovieUploadFormState>? key;
 
-  EntryListEventModel? entryListEventModel;
-
-  EventEntryListFormComponent({this.key, this.entryListEventModel})
-      : super(key: key);
+  EventEntryListFormComponent({this.key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MovieUploadFormState();
@@ -39,8 +39,7 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
   final _formKey = GlobalKey<FormState>();
   EntryListRepository entryListRepository = EntryListRepository();
 
-  FileUpload _fileUpload = FileUpload();
-
+  EntryListEventModel? _entryListEventModel;
   Map<String, dynamic> _formData = {};
 
   late EntryListHelper eventEntryListHelper;
@@ -49,10 +48,12 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
   late AutoCompleteEventComponent _autoCompleteEventComponent;
 
   late UserModel _userSession;
-
-  bool isReadOnly = false;
-  bool titleReadOnly = false;
-  bool showGenerateDynamicLink = false;
+  String _pageTitle = "Criar nova Lista";
+  bool _isReadOnly = false;
+  bool _isEdit = false;
+  bool _isLinkChange = false;
+  bool _titleReadOnly = false;
+  bool _showGenerateDynamicLink = false;
   bool _eventFormIsValid = true;
   bool _isUserRegistryComplete = true;
   final FocusNode _descriptionFocus = FocusNode();
@@ -71,75 +72,69 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
   @override
   void initState() {
     _authentication = Provider.of<AuthenticationFacate>(context, listen: false);
-
     _userSession = _authentication.user!;
-    _initData();
-    _autoCompleteEventComponent = AutoCompleteEventComponent(
-      isExpanded: true,
-      required: true,
-      onSelected: _selectDataEventAutocomplete,
-    );
     eventEntryListHelper = EntryListHelper.ctx(context: context);
-
     super.initState();
   }
 
   _initData() {
-    if (widget.entryListEventModel != null) {
-      isReadOnly = true;
-      _titlecontroller.text = widget.entryListEventModel!.label;
-      _formData['label'] = widget.entryListEventModel!.label;
+    _entryListEventModel =
+        ModalRoute.of(context)?.settings.arguments as EntryListEventModel?;
 
-      if (widget.entryListEventModel!.dynamicLink.isEmpty) {
-        showGenerateDynamicLink = true;
+    if (_entryListEventModel != null && _entryListEventModel!.id.isNotEmpty) {
+      _isEdit = true;
+      _pageTitle = "Editar lista de convidados";
+      _autoCompleteEventComponent.textEdit.text =
+          _entryListEventModel!.eventTitle.capitalizePhrase();
+      _formData = _entryListEventModel!.body();
+      _userListEntry = _entryListEventModel!.guests;
+      _isReadOnly = true;
+      _titlecontroller.text = _entryListEventModel!.label;
+      //fallback para re-gerar link dinamico caso o mesmo nao seja cria
+      if (_entryListEventModel!.dynamicLink.isEmpty) {
+        _showGenerateDynamicLink = true;
       } else {
-        showGenerateDynamicLink = false;
-        _linkGuestcontroller.text = widget.entryListEventModel!.dynamicLink;
+        _showGenerateDynamicLink = false;
+        _linkGuestcontroller.text = _entryListEventModel!.dynamicLink;
       }
     } else {
+      _isEdit = false; // se for um novo cadastro
       if ( // _userSession.userType!=UserType.admin &&
           _userSession.userType != UserType.promoter) {
-        titleReadOnly = true;
+        _titleReadOnly = true;
         _titlecontroller.text = _userSession.name;
         _formData['label'] = _userSession.name;
       } else {
-        titleReadOnly = false;
+        _titleReadOnly = false;
         _titlecontroller.text = "";
         _formData['label'] = "";
       }
       _formData['ownerId'] = _userSession.id;
       _formData['ownerEmail'] = _userSession.email;
     }
-  }
 
-  Future<UserResponseDTO?> _checkRegistryUser() async {
-    UserResponseDTO response = await eventEntryListHelper
-        .checkUserLoggedRegistration()
-        .catchError((onError) {
-      print("Erro ao checar cadastro do usuario $onError");
-      // showError(context,
-      //     content:
-      //         "Ocorreu um erro não esperado ao validar cadastro de usuário.");
-    });
-    if (response.hasBussinessError()) {
-      _isUserRegistryComplete = response.userDTO.completeRegistration;
-      showDialogRegistryIncomplete(errors: response.errors, context: context);
+    if (_entryListEventModel != null && _entryListEventModel!.eventId.isNotEmpty) {
+      _autoCompleteEventComponent.textEdit.text =
+          _entryListEventModel!.eventTitle.capitalizePhrase();
+      _formData['eventId'] = _entryListEventModel!.eventId;
+      _formData['eventTitle'] = _entryListEventModel!.eventTitle;
+      _formData['eventPlace'] = _entryListEventModel!.eventPlace;
+      _formData['eventDate'] = _entryListEventModel!.eventDate;
     }
-    return null;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _checkRegistryUser();
-    bool isExpanded = false;
-
     _autoCompleteEventComponent = AutoCompleteEventComponent(
-      isExpanded: isExpanded,
+      isStatefullSelection: true,
+      isExpanded: false,
       required: true,
       onSelected: _selectDataEventAutocomplete,
     );
-    _autoCompleteEventComponent.textEdit.text = "Digite o nome do evento";
+
+    _initData();
+    _checkRegistryUser();
   }
 
   void _initWidgets() {
@@ -151,13 +146,24 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
   @override
   Widget build(BuildContext context) {
     _initWidgets();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Criar lista"),
+        title: Text(_pageTitle),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.orange),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
         actions: [
-          buttonSaveRegistry(onPressed: () {
-            save();
-          })
+          _isEdit
+              ? buttonUpdateRegistry(onPressed: () {
+                  update();
+                })
+              : buttonSaveRegistry(onPressed: () {
+                  save();
+                })
         ],
       ),
       body: SingleChildScrollView(
@@ -176,12 +182,12 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
                     CustomTextField(
                       focusNode: _descriptionFocus,
                       textAlign:
-                          titleReadOnly ? TextAlign.center : TextAlign.left,
+                          _titleReadOnly ? TextAlign.center : TextAlign.left,
                       required: false,
                       controller: _titlecontroller,
-                      readOnly: titleReadOnly,
+                      readOnly: _titleReadOnly,
                       label: "Nome da lista",
-                      textStyle: titleReadOnly
+                      textStyle: _titleReadOnly
                           ? const TextStyle(
                               fontSize: 14,
                               color: Colors.white70,
@@ -202,16 +208,18 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
                         suffixIcon: IconButton(
                           iconSize: 20,
                           onPressed: () {
-                            if (!showGenerateDynamicLink) {
+                            if (!_showGenerateDynamicLink) {
                               copyClipboardData(
                                   _linkGuestcontroller.text, context,
                                   mensage: "Link convite copiado");
                             } else {
-                              eventEntryListHelper.createDynamicLinkEntryList(
-                                  entryListID: widget.entryListEventModel!.id);
+                              eventEntryListHelper
+                                  .createDynamicLinkEntryList(
+                                      entryListID: _entryListEventModel!.id)
+                                  .then((value) => _isLinkChange = true);
                             }
                           },
-                          icon: showGenerateDynamicLink
+                          icon: _showGenerateDynamicLink
                               ? const Icon(FontAwesomeIcons.arrowsRotate)
                               : const Icon(Icons.copy),
                         )),
@@ -227,6 +235,48 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
         ),
       ),
     );
+  }
+
+  Future<UserResponseDTO?> _checkRegistryUser() async {
+    if (_entryListEventModel != null && _entryListEventModel!.id.isNotEmpty) {
+      return null;
+    }
+    UserResponseDTO response = await eventEntryListHelper
+        .checkUserLoggedRegistration()
+        .catchError((onError) {
+      print("Erro ao checar cadastro do usuario $onError");
+      // showError(context,
+      //     content:
+      //         "Ocorreu um erro não esperado ao validar cadastro de usuário.");
+    });
+    if (response.hasBussinessError()) {
+      _isUserRegistryComplete = response.userDTO.completeRegistration;
+      showDialogRegistryIncomplete(errors: response.errors, context: context);
+    }
+    return null;
+  }
+
+  bool entryListHasChange() {
+    var handlerListHash =
+        md5.convert(utf8.encode(_userListEntry.toString())).toString();
+    var originalListHash = md5
+        .convert(utf8.encode(_entryListEventModel!.guests.toString()))
+        .toString();
+
+    if (handlerListHash == originalListHash) {
+      print("As listas sao iguais ");
+    } else {
+      showInfo(
+          context: context,
+          content:
+              "As alterações feitas na lista não foram salvas. Tem certeza q deseja sair sem salvar?");
+      print("As listas sao diferentes ");
+    }
+
+    if (_userListEntry.length == _entryListEventModel!.guests.length) {
+      return true;
+    }
+    return false;
   }
 
   Container _formAddGuest() {
@@ -304,7 +354,7 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
     }
   }
 
-  Widget _buildList() {
+  GuestGridEntryList _buildList() {
     return GuestGridEntryList(
         userListEntry: _userListEntry,
         iconTrailing: const Icon(
@@ -312,42 +362,13 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
           size: 16,
           color: Colors.redAccent,
         ),
-        actionTrailing:  (index) {
+        actionTrailing: (index) {
           setState(() {
             _userListEntry.removeAt(index);
             ScaffoldMessenger.of(context)
                 .showSnackBar(snackBar(mensage: "Usuário removido da lista"));
           });
         });
-    // return Flexible(
-    //   child: Container(
-    //     height: 300,
-    //     decoration: box(opacity: 0.4, allBorderRadius: 10),
-    //     child: Column(children: [
-    //       const Text("Convidados na lista "),
-    //       Flexible(
-    //         child: Padding(
-    //           padding: const EdgeInsets.only(bottom: 50),
-    //           child: ListView.builder(
-    //               itemCount: _userListEntry.length,
-    //               itemBuilder: (BuildContext context, int index) {
-    //                 var backgroundColor = Colors.transparent;
-    //                 if (_userListEntry.isEmpty) {
-    //                   return DataNotFoundComponent();
-    //                 }
-    //                 if (index % 2 == 0) {
-    //                   backgroundColor = Colors.black38;
-    //                 }
-    //                 return _itemBuild(
-    //                     user: _userListEntry[index],
-    //                     brackgroudColor: backgroundColor,
-    //                     index: index);
-    //               }),
-    //         ),
-    //       )
-    //     ]),
-    //   ),
-    // );
   }
 
   bool _validations() {
@@ -364,6 +385,18 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
     return true;
   }
 
+  update() {
+    _formData["ownerUserType"] = _userSession.userType.name();
+    eventEntryListHelper
+        .updateGuestEntryList(
+            guests: _userListEntry, id: _entryListEventModel!.id)
+        .then((value) =>
+            _showSucessPopUp(message: "Lista Atualizada com sucesso"))
+        .catchError((onError) {
+      showError(context);
+    });
+  }
+
   save() async {
     if (!_validations()) {
       return;
@@ -372,12 +405,14 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
     FocusScope.of(context).unfocus();
     onLoading(context, actionMesage: "Salvando registro");
     _formKey.currentState!.save();
+    _formData["ownerUserType"] = _userSession.userType.name();
     _formData["entryListType"] = EntryListType.birthday.name;
     EntryListEventModel entryList = EntryListEventModel.fromJson(_formData);
     entryList.guests = _userListEntry;
 
     eventEntryListHelper.createEntryList(entryList: entryList).then((data) {
       Navigator.of(context).pop();
+      _showSucessPopUp();
       setState(() {
         _linkGuestcontroller.text = data.dynamicLink;
       });
@@ -400,17 +435,15 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
     });
   }
 
-  void _showSucessPopUp() {
+  void _showSucessPopUp({String message = "Lista criada com sucesso"}) {
     showInfo(
-        onPressed: () {
-          //    Navigator.pushNamed(context, RoutesPages.movieAdmin.name);
-        },
+        // onPressed: () {
+        //       Navigator.pushNamed(context, RoutesPages.movieAdmin.name);
+        // },
         context: context,
-        content: "Lista criada com sucesso",
+        content: message,
         title: "Aêêêêêêêêê");
   }
-
-
 
   void _selectDataEventAutocomplete(AutoCompleteItem value) {
     if (value.isNotNull()) {
@@ -444,6 +477,7 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
   void showDialogRegistryIncomplete(
       {required List<dynamic> errors, required BuildContext context}) {
     showWarning(context,
+        labelButton: "Fechar",
         content:
             "Seu cadastro não está completo, você precisa preencher os seguintes campos para completar seu cadastro: \n"
             "${errors.map((e) => "  * $e").join("  \n")}"
@@ -452,88 +486,5 @@ class MovieUploadFormState extends State<EventEntryListFormComponent> {
       Navigator.pushNamed(context, RoutesPages.registration.name,
           arguments: _userSession);
     });
-  }
-}
-
-class GuestItemEntryList extends StatelessWidget {
-  GuestEntryListModel user;
-  int index;
-  Widget? trailing;
-  Color? brackgroudColor = Colors.transparent;
-
-
-  GuestItemEntryList(
-      {required this.user,
-      this.brackgroudColor,
-      this.trailing,
-      required this.index});
-
-  @override
-  Widget build(BuildContext context) {
-    var textStyle = const TextStyle(fontSize: 14);
-    return ListTile(
-      shape: RoundedRectangleBorder(
-        side: const BorderSide(width: 1, color: Colors.black26),
-        borderRadius: BorderRadius.circular(1),
-      ),
-      tileColor: brackgroudColor,
-      leading: getImageThumb(pathImage: user.photoUrl),
-      title: Text(
-        user.name,
-        style: textStyle,
-      ),
-      trailing: trailing,
-      subtitle: Row(children: [
-        Flexible(child: Text(user.email!)),
-      ]),
-    );
-  }
-}
-
-class GuestGridEntryList extends StatelessWidget {
-  late List<GuestEntryListModel> userListEntry;
-
-  late void Function(int index) actionTrailing;
-  Icon? iconTrailing;
-
-  GuestGridEntryList({required this.userListEntry, required this.actionTrailing, this.iconTrailing});
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Flexible(
-      child: Container(
-        height: 300,
-        decoration: box(opacity: 0.4, allBorderRadius: 10),
-        child: Column(children: [
-          const Text("Convidados na lista "),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 50),
-              child: ListView.builder(
-                  itemCount: userListEntry.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    var backgroundColor = Colors.transparent;
-                    if (userListEntry.isEmpty) {
-                      return DataNotFoundComponent();
-                    }
-                    if (index % 2 == 0) {
-                      backgroundColor = Colors.black38;
-                    }
-                    return GuestItemEntryList(
-                        trailing:iconTrailing !=null? IconButton(
-                            onPressed: () {
-                              actionTrailing(index);
-                            },
-                            icon:iconTrailing!):null,
-                        brackgroudColor: backgroundColor,
-                        user: userListEntry[index],
-                        index: index);
-                  }),
-            ),
-          )
-        ]),
-      ),
-    );
   }
 }

@@ -20,3 +20,14 @@ class NoCriticalException implements Exception{
   }
 }
 
+
+class PersistenceFirebaseException implements Exception{
+  String cause;
+  PersistenceFirebaseException(this.cause);
+
+  @override
+  String toString() {
+    return 'Erro ao persistir dados no firebase {cause: $cause}';
+  }
+}
+

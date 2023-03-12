@@ -16,7 +16,7 @@ Widget _extraActionButton({VoidCallback? extraActionCallBack,required String ext
 
 
 Future<void> showWarning(BuildContext context,
-    {String content = "Ocorreu um erro nao esperado ao realizar operação!",
+    {String content = "Ocorreu um erro nao esperado ao realizar operação!",String labelButton="Ok",
     VoidCallback? onPressed,VoidCallback? extraActionCallBack,String? extraActionlabel}) {
   onPressed = onPressed ?? () => {Navigator.of(context).pop()};
 List<Widget> extraAction = [];
@@ -35,7 +35,7 @@ List<Widget> extraAction = [];
       const Text("Algo de errado não está certo", style: kTitleText)
     ],
   );
-  return dialog(context, titleWidget, content, "Ok", onPressed,actions: extraAction);
+  return dialog(context, titleWidget, content, labelButton, onPressed,actions: extraAction);
 }
 
 Future<void> showError(BuildContext context,

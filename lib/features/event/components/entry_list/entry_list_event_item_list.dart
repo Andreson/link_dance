@@ -1,5 +1,7 @@
 import 'dart:async';
-
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/factory_widget.dart';
 import 'package:link_dance/core/helpers/movie_cache_helper.dart';
@@ -20,7 +22,7 @@ class EntryListEventItemComponent extends StatelessWidget {
 
   EntryListEventItemComponent({required this.event, this.readOnly = true});
 
-  Completer<List<EntryListEventModel>?> _responseCompleter = new Completer();
+  Completer<List<EntryListEventModel>?> _responseCompleter =   Completer();
 
   CachedManagerHelper cachedManager = CachedManagerHelper();
 
@@ -65,11 +67,9 @@ class EntryListEventItemComponent extends StatelessWidget {
                         child: IconButton(
                           tooltip: "Nova lista",
                           onPressed: () {
-                            event.id = "";
-
                             Navigator.pushNamed(context,
-                                RoutesPages.eventTicketListRegistry.name,
-                                arguments: event);
+                                RoutesPages.entryListRegistry.name,
+                                arguments: EntryListEventModel.event(event: event));
                           },
                           icon: const Icon(Icons.playlist_add),
                         ),
@@ -129,23 +129,34 @@ class EntryListEventItemComponent extends StatelessWidget {
         },
         child: Column(
           children: [
-            Row(children: [
+            Row( mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+
               getImageThumb(
                   pathImage: entryList.ownerImageUrl, height: 55, width: 55),
-              const Divider(height: 25, color: inputField),
-              Padding(
-                padding: const EdgeInsets.only(left: 15, bottom: 3, top: 3),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(entryList.label,
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text(entryList.ownerEmail,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                        )),
-                  ],
+
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15, bottom: 0, top: 3),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(entryList.label,
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text("Convidados: ${entryList.guests.length}",
+                          style: const TextStyle(
+                            color: Colors.white70,
+                          )),
+                    ],
+                  ),
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: IconButton(onPressed: (){
+                  Navigator.pushNamed(context, RoutesPages.entryListRegistry.name,
+                      arguments: entryList);
+
+                }, icon: const Icon(FontAwesomeIcons.penToSquare,)),
               )
             ]),
             const Divider(height: 5, color: inputField),

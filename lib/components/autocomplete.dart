@@ -10,11 +10,16 @@ class AutocompleteComponent extends StatelessWidget {
   ScrollController scrollController = ScrollController();
   bool required;
   bool isExpanded;
+  //se informado true, salva o valor do input field e uma variavel, e mantem o mesmo caso
+  //o input seja acionado e um novo item nao seja selecionado no autocompletar
+  bool isStatefullSelection;
   InputDecoration? decoration;
   TextInputAction? textInputAction;
+  String _bufferText="";
 
   AutocompleteComponent({super.key,
     required this.loadData,
+    this.isStatefullSelection=false,
     this.decoration,
     this.textInputAction,
     this.required = true,
@@ -65,15 +70,35 @@ class AutocompleteComponent extends StatelessWidget {
           TextEditingController textEditingController,
           FocusNode focusNode,
           VoidCallback onFieldSubmitted) {
+
+        focusNode.addListener(() {
+          print("Has focus: ${focusNode.hasFocus} e  isStatefullSelection $isStatefullSelection");
+          if ( !focusNode.hasFocus && isStatefullSelection) {
+            if (textEditingController.text.isEmpty) {
+              print("----- read Buffer text content  $_bufferText");
+              textEditingController.text = _bufferText;
+            }
+          }
+        });
+
         return TextFormField(
+
           style: formInputsStyles,
           scrollPadding: const EdgeInsets.only(bottom: 350),
           onTap: () {
+            _bufferText =textEditingController.text;
+            print("set Buffer text content $_bufferText");
             textEditingController.text = "";
+          },
+          onTapOutside: (PointerDownEvent event){
+            print(" ********************************* set onTapOutside $event");
+          },
+          onEditingComplete: (){
+
           },
           textInputAction: textInputAction ?? TextInputAction.next,
           onChanged: (value) {
-
+            print(" ********************************* set onChanged ");
           },
           validator: required ? defaultInputValidator : null,
           decoration: decoration,
