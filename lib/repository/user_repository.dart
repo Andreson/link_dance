@@ -28,11 +28,11 @@ class UserRepository extends BaseRepository<UserModel> {
 
   Future<UserModel?> update(UserModel user) async {
     var response = await restTemplate.patch(
+      targetFirebase: true,
       body: user.deserialize(),
       url: "${ConstantsAPI.userDbUrl}/${user.id}.json?",
     );
 
-    user.id = response['id']; //recupera ID gerado pelo realtime database
     print("User ID return ${user.id}");
     return user;
   }

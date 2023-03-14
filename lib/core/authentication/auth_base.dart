@@ -4,6 +4,7 @@ import 'package:link_dance/core/helpers/constants_api.dart';
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/exception/http_exceptions.dart';
 import 'package:link_dance/core/rest/rest_template.dart';
+import 'package:link_dance/model/imagem_model.dart';
 import 'package:link_dance/model/login_model.dart';
 import 'package:link_dance/model/user_model.dart';
 import 'package:dio/dio.dart';
@@ -93,7 +94,7 @@ abstract class BaseAuthentication with ChangeNotifier {
         email: userCredential.user!.email!,
         name: userCredential.user!.displayName ??"",
         phone: userCredential.user!.phoneNumber ?? "",
-        photoUrl: userCredential.user!.photoURL,
+        image: ImagemModel(url:  userCredential.user!.photoURL??"", thumb:  userCredential.user!.photoURL ??"", storageRef: []),
         login: login);
   }
 

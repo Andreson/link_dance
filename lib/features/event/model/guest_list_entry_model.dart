@@ -2,22 +2,25 @@ import 'package:link_dance/core/helpers/constantes_images.dart';
 import 'package:link_dance/model/user_model.dart';
 
 class GuestEntryListModel {
-  late String name;
+  late final String _name;
   late String email;
   late String idUserGuest;
   late String photoUrl;
 
   GuestEntryListModel(
-      {required this.name,
+      {required String name,
       required this.email,
       required this.idUserGuest,
-      required this.photoUrl});
+      required this.photoUrl}): _name = name;
 
   GuestEntryListModel.user({required UserModel user})
-      : name = user.name,
+      : _name = user.name,
         email = user.email!,
         idUserGuest = user.id,
         photoUrl = user.photoUrl ?? ConstantsImagens.defaultAvatar;
+
+
+  String get name=> _name.toLowerCase();
 
   Map<String, dynamic> body() {
     return {

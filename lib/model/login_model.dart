@@ -1,7 +1,8 @@
 import 'package:link_dance/core/enumerate.dart';
 import 'package:link_dance/core/authentication/auth_base.dart';
 
-import 'abastract_model.dart';
+import 'abastract_model.dart';String? photoUrl;
+  String? photoThumbUrl;
 
 
 class LoginModel extends AbastractModel  {

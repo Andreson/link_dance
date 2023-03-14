@@ -30,7 +30,7 @@ class EventHelper {
         targetFirebase: false,
         url:
             "${ConstantsAPI.eventApi}/event/ticket/check-in?ticketId=$ticketId&userId=${auth.user!.id}");
-    return UserEventTicketResponseDTO.map(data: respose);
+    return UserEventTicketResponseDTO.map(data: respose.data);
   }
 
   //Valida o ticket e retorna os dados para o checkin

@@ -1,4 +1,5 @@
 import 'package:link_dance/core/enumerate.dart';
+import 'package:link_dance/core/helpers/constantes_images.dart';
 import 'package:link_dance/model/abastract_model.dart';
 import 'package:link_dance/model/imagem_model.dart';
 import 'package:link_dance/model/login_model.dart';
@@ -13,14 +14,16 @@ class UserModel extends AbastractModel {
   String? phone;
   String? birthDate;
   String? postalCode;
-  String? photoUrl;
-  String? photoThumbUrl;
+
   UserType userType;
   LoginModel? login;
-  ImagemModel? imagemModel;
+  ImagemModel? image;
   GenderType? gender;
   TeacherModel? teacherProfile;
   bool completeRegistration=false;
+
+  String get photoUrl =>image==null? ConstantsImagens.defaultAvatar: image!.url;
+
 
   String emailKey() {
     return email!.replaceAll(".", "").replaceAll("@", "");
@@ -36,8 +39,9 @@ class UserModel extends AbastractModel {
 
   UserModel(
       {this.id = "",
-        this.gender, this.photoThumbUrl,
-      this.imagemModel,
+        this.gender,
+        this.completeRegistration=false,
+        this.image,
       this.login,
     required  this.name,
         required this.email,
@@ -46,7 +50,7 @@ class UserModel extends AbastractModel {
       this.birthDate,
       this.postalCode,
       required this.userType,
-      this.photoUrl});
+      }) ;
 
   Widget get photo {
     if (photoUrl != null && photoUrl!.isNotEmpty) {
@@ -76,13 +80,14 @@ class UserModel extends AbastractModel {
             : photoUrl;
     var u = UserModel(
         id: appUserData.id,
-        name: appUserData.name ?? name,
-        email: appUserData.email ?? email,
+        name: appUserData.name,
+        email: appUserData.email,
         birthDate: appUserData.birthDate ?? birthDate,
         phone: appUserData.phone ?? phone,
         postalCode: appUserData.postalCode ?? postalCode,
         userType: appUserData.userType ?? userType,
-        photoUrl: urlPhoto,
+
+        image: appUserData.image,
         gender:appUserData.gender,
         login: appUserData.login ?? login);
     return u;
@@ -90,16 +95,17 @@ class UserModel extends AbastractModel {
 
   Map<String, dynamic> body() {
     return {
-      "imagem": imagemModel?.body(),
+      "image": image?.body(),
       "name": name,
-      "gender":gender,
+      "gender":gender?.name,
       "email": email,
       "birthDate": birthDate,
       "phone": phone,
       "postalCode": postalCode,
       "userType": userType?.name(),
       "photoUrl": photoUrl,
-      "photoThumbUrl": photoThumbUrl
+      "photoThumbUrl": photoThumbUrl,
+
     };
   }
 
@@ -110,23 +116,24 @@ class UserModel extends AbastractModel {
         teacherProfile: json['teacherProfile'],
         name: json['name'],
         email: json['email'],
-
+        image:ImagemModel.fromJson( json['image']),
         birthDate: json['birthDate'],
         phone: json['phone'],
-        photoUrl: json['photoUrl'],
-        photoThumbUrl: json['photoThumbUrl'],
         userType: UserType.values.byName(json['userType']),
+        completeRegistration :json['completeRegistration'],
         gender: GenderType.values.byName(json['gender'] ??"other"),
         postalCode: json['postalCode']);
   }
 
+  @deprecated
   static UserModel build(Map<String, dynamic> json, String id) {
     return UserModel(
         id: id,
         name: json['name'],
-        photoUrl: json['photoUrl'],
+        image: json['image'],
         email: json['email'],
         birthDate: json['birthDate'],
+        completeRegistration: json['completeRegistration'],
         phone: json['phone'],
         userType: UserType.values.byName(json['userType']),
         postalCode: json['postalCode'],

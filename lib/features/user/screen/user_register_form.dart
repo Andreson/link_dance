@@ -158,8 +158,7 @@ class RegistrationUserFormState extends State<RegisterUserFormComponent> {
     onLoading(context, actionMesage: "Salvando registro");
     if (imageChange) {
       imagemData!;
-      widget.userModel!.photoUrl = imagemData['photo'];
-      widget.userModel!.imagemModel = ImagemModel(
+      widget.userModel!.image = ImagemModel(
           url: imagemData['photo'],
           thumb: imagemData['thumbPhoto'],
           storageRef: imagemData['storageRef']);

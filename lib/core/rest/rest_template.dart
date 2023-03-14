@@ -17,7 +17,7 @@ class RestTemplate {
 
   RestTemplate({required this.auth});
 
-  Future<Map<String, dynamic>> patch(
+  Future<ResponseDTO> patch(
       {   Object? body,
       required String url,
       Map<String, String>? headers,
@@ -35,7 +35,9 @@ class RestTemplate {
       encoding: Encoding.getByName('utf-8'),
       body: jsonEncode(body),
     );
-    return postCallConfig(responseParam: response);
+
+
+    return postCallConfiguration(responseParam: response);
   }
 
   Future<Map<String, dynamic>> put(
